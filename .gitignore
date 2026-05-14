@@ -1,0 +1,7 @@
+.manual
+.fastygo
+node_modules
+/tmp/
+*.exe
+.env
+.DS_Store
