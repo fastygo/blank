@@ -2,23 +2,26 @@ package layout
 
 import "github.com/a-h/templ"
 
-// NavItem describes a single sidebar navigation link.
+// NavItem describes a single navigation link.
 type NavItem struct {
 	Path  string
 	Label string
 	Icon  string
 }
 
-// SidebarProps configures the sidebar navigation.
-type SidebarProps struct {
-	Items  []NavItem
-	Active string
+// NavProps configures horizontal or vertical navigation links.
+type NavProps struct {
+	Items    []NavItem
+	Active   string
+	Vertical bool
 }
 
 // HeaderProps configures the top header bar.
 type HeaderProps struct {
+	BrandName       string
+	NavItems        []NavItem
+	Active          string
 	ShowMenuTrigger bool
-	Title           string
 	Trailing        templ.Component
 	ThemeToggle     ThemeToggleProps
 }
@@ -30,14 +33,14 @@ type ThemeToggleProps struct {
 	SwitchToLightLabel string
 }
 
-// ShellProps configures the full page shell (sidebar + header + main).
+// ShellProps configures the full page shell (header + main + footer).
 type ShellProps struct {
 	Title          string
-	HeaderTitle    string
 	Lang           string
 	BrandName      string
 	Active         string
 	NavItems       []NavItem
+	FooterText     string
 	HeadExtra      templ.Component
 	HeaderTrailing templ.Component
 	ThemeToggle    ThemeToggleProps

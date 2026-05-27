@@ -12,11 +12,12 @@ type AssetPaths struct {
 	AppJS   string
 }
 
-// LayoutData drives the app shell (sidebar + header).
+// LayoutData drives the app shell (header, main, footer).
 type LayoutData struct {
 	PageTitle      string
 	Lang           string
 	Brand          string
+	FooterText     string
 	Active         string
 	NavItems       []layout.NavItem
 	Assets         AssetPaths
@@ -32,16 +33,16 @@ func (d LayoutData) DocumentTitle() string {
 // FormatDocumentTitle builds "Page · Brand" for the document head.
 func FormatDocumentTitle(pageTitle, brand string) string {
 	if brand == "" {
-		brand = "Blank"
+		brand = "FastyGo"
 	}
 	return pageTitle + " · " + brand
 }
 
-// HomeData is the home page body inside the shell.
+// HomeData is the home page hero body inside the shell.
 type HomeData struct {
-	Title       string
-	Description string
-	Body        string
+	Welcome      string
+	WelcomeBrand string
+	Description  string
 }
 
 // SampleData is a second stub route for onboarding new pages.

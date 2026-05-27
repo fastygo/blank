@@ -11,18 +11,20 @@ var localeFS embed.FS
 
 // Locale holds embedded copy for one language.
 type Locale struct {
-	Brand string `json:"brand"`
-	Theme struct {
+	Brand               string `json:"brand"`
+	Footer              string `json:"footer"`
+	Theme               struct {
 		Label             string `json:"label"`
 		SwitchToDarkLabel string `json:"switch_to_dark"`
 		SwitchToLight     string `json:"switch_to_light"`
 	} `json:"theme"`
 	LanguageToggleLabel string `json:"language_toggle_label"`
 	Home                struct {
-		NavLabel    string `json:"nav_label"`
-		Title       string `json:"title"`
-		Description string `json:"description"`
-		Body        string `json:"body"`
+		NavLabel     string `json:"nav_label"`
+		Title        string `json:"title"`
+		Welcome      string `json:"welcome"`
+		WelcomeBrand string `json:"welcome_brand"`
+		Description  string `json:"description"`
 	} `json:"home"`
 	Sample struct {
 		NavLabel    string `json:"nav_label"`

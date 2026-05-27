@@ -12,10 +12,11 @@ import (
 
 func TestSiteShell_homeRenders(t *testing.T) {
 	d := LayoutData{
-		PageTitle: "Home",
-		Lang:      "en",
-		Brand:     "Blank",
-		Active:    "/",
+		PageTitle:  "Home",
+		Lang:       "en",
+		Brand:      "FastyGo",
+		FooterText: "Made with 🤍 in FastyGo",
+		Active:     "/",
 		NavItems: []layout.NavItem{
 			{Label: "Home", Path: "/", Icon: "home"},
 		},
@@ -33,7 +34,11 @@ func TestSiteShell_homeRenders(t *testing.T) {
 			},
 		},
 	}
-	body := HomePage(HomeData{Title: "Home", Description: "d", Body: "b"})
+	body := HomePage(HomeData{
+		Welcome:      "Welcome",
+		WelcomeBrand: "to FastyGo",
+		Description:  "Minimal starter.",
+	})
 	var buf bytes.Buffer
 	if err := SiteShell(d, body).Render(context.Background(), &buf); err != nil {
 		t.Fatal(err)
@@ -42,14 +47,26 @@ func TestSiteShell_homeRenders(t *testing.T) {
 	if !strings.Contains(strings.ToLower(html), "<!doctype html>") {
 		t.Fatal("expected full document with doctype")
 	}
+	if strings.Contains(html, "<aside") {
+		t.Fatal("expected no sidebar aside")
+	}
 	if !strings.Contains(html, `data-ui8kit="sheet"`) {
 		t.Fatal("expected shell mobile sheet markup")
 	}
 	if !strings.Contains(html, `id="ui8kit-theme-toggle"`) {
 		t.Fatal("expected theme toggle control")
 	}
-	if !strings.Contains(html, "<title>Home · Blank</title>") {
+	if !strings.Contains(html, `id="ui8kit-mobile-sheet-trigger"`) {
+		t.Fatal("expected mobile menu trigger")
+	}
+	if !strings.Contains(html, "Made with 🤍 in FastyGo") {
+		t.Fatal("expected footer copy")
+	}
+	if !strings.Contains(html, "<title>Home · FastyGo</title>") {
 		t.Fatal("expected brand in document title")
+	}
+	if !strings.Contains(html, "Welcome") || !strings.Contains(html, "to FastyGo") {
+		t.Fatal("expected hero welcome copy")
 	}
 	if !strings.Contains(html, `role="group"`) || !strings.Contains(html, "En") {
 		t.Fatal("expected language switch control")

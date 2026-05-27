@@ -5,15 +5,15 @@ import (
 	"github.com/fastygo/blank/internal/ui/components/icon"
 )
 
-templ Sidebar(props SidebarProps) {
+templ Nav(props NavProps) {
 	for _, item := range props.Items {
-		@sidebarNavLink(props.Active, item)
+		@navLink(props.Active, item, props.Vertical)
 	}
 }
 
-templ sidebarNavLink(active string, item NavItem) {
-	@ui.Button(sidebarLinkButtonProps(active, item)) {
-		if item.Icon != "" {
+templ navLink(active string, item NavItem, vertical bool) {
+	@ui.Button(navLinkButtonProps(active, item, vertical)) {
+		if vertical && item.Icon != "" {
 			@icon.Icon(icon.IconProps{Name: item.Icon, Size: "sm"})
 		}
 		@ui.Text(ui.TextProps{Tag: "span", Class: "min-w-0"}, item.Label)

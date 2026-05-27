@@ -1,0 +1,14 @@
+package layout
+
+import "github.com/fastygo/templ/ui"
+
+templ Footer(text string) {
+	if text != "" {
+		@ui.Block(ui.BlockProps{
+			Tag:   "footer",
+			Class: "shrink-0 border-t border-border px-4 py-4 text-center text-xs text-muted-foreground",
+		}) {
+			@ui.Text(ui.TextProps{Tag: "p"}, text)
+		}
+	}
+}

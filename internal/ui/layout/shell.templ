@@ -1,6 +1,9 @@
 package layout
 
-import "github.com/fastygo/templ/ui"
+import (
+	templpkg "github.com/a-h/templ"
+	"github.com/fastygo/templ/ui"
+)
 
 templ Shell(props ShellProps) {
 	<!DOCTYPE html>
@@ -19,7 +22,7 @@ templ Shell(props ShellProps) {
 					@ui.Box(mobileSheetOverlayBox())
 					@ui.Box(ui.BoxProps{Class: "absolute left-0 top-0 h-full max-h-dvh w-80 max-w-full overflow-y-auto border-r border-border bg-card p-4"}) {
 						@ui.Group(ui.GroupProps{Class: "flex items-center justify-between gap-2"}) {
-							@ui.Box(ui.BoxProps{Attrs: templ.Attributes{"id": "ui8kit-mobile-sheet-title"}}) {
+							@ui.Box(ui.BoxProps{Attrs: templpkg.Attributes{"id": "ui8kit-mobile-sheet-title"}}) {
 								@ui.Text(ui.TextProps{Tag: "span", Class: "text-sm text-muted-foreground"}, shellBrand(props.BrandName))
 							}
 							@ui.Button(mobileSheetCloseButtonProps()) {
@@ -28,34 +31,25 @@ templ Shell(props ShellProps) {
 						}
 						@ui.Box(ui.BoxProps{Class: "mt-4"}) {
 							@ui.Stack(ui.StackProps{Tag: "nav", Class: "w-full gap-1 p-2"}) {
-								@Sidebar(SidebarProps{Items: props.NavItems, Active: props.Active})
+								@Nav(NavProps{Items: props.NavItems, Active: props.Active, Vertical: true})
 							}
 						}
 					}
 				}
 			}
-			@ui.Group(ui.GroupProps{Class: "flex min-h-screen w-full"}) {
-				if shellHasNavigation(props) {
-					@ui.Block(ui.BlockProps{Tag: "aside", Class: "hidden border-r border-border bg-card md:block md:w-64"}) {
-						@ui.Box(ui.BoxProps{Class: "flex h-15 items-center border-b border-border px-4"}) {
-							@ui.Text(ui.TextProps{Tag: "span", Class: "text-sm font-semibold"}, shellBrand(props.BrandName))
-						}
-						@ui.Stack(ui.StackProps{Tag: "nav", Class: "w-full gap-1 p-2"}) {
-							@Sidebar(SidebarProps{Items: props.NavItems, Active: props.Active})
-						}
-					}
+			@ui.Box(ui.BoxProps{Class: "flex min-h-screen w-full flex-col"}) {
+				@Header(HeaderProps{
+					BrandName:       props.BrandName,
+					NavItems:        props.NavItems,
+					Active:          props.Active,
+					ShowMenuTrigger: shellHasNavigation(props),
+					Trailing:        props.HeaderTrailing,
+					ThemeToggle:     props.ThemeToggle,
+				})
+				@ui.Block(ui.BlockProps{Tag: "main", Class: "flex w-full min-w-0 max-w-full flex-1 flex-col"}) {
+					{ children... }
 				}
-				@ui.Box(ui.BoxProps{Class: "flex min-w-0 flex-1 flex-col"}) {
-					@Header(HeaderProps{
-						ShowMenuTrigger: shellHasNavigation(props),
-						Title:           shellHeaderTitle(props),
-						Trailing:        props.HeaderTrailing,
-						ThemeToggle:     props.ThemeToggle,
-					})
-					@ui.Block(ui.BlockProps{Tag: "main", Class: "flex w-full min-w-0 max-w-full flex-col gap-6 p-4 md:p-6"}) {
-						{ children... }
-					}
-				}
+				@Footer(props.FooterText)
 			}
 		</body>
 	</html>

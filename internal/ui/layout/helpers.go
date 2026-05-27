@@ -1,8 +1,6 @@
 package layout
 
 import (
-	"strings"
-
 	"github.com/a-h/templ"
 	"github.com/fastygo/templ/ui"
 	uiutils "github.com/fastygo/templ/utils"
@@ -12,13 +10,6 @@ const (
 	MobileSheetTriggerID = "ui8kit-mobile-sheet-trigger"
 	MobileSheetPanelID   = "ui8kit-mobile-sheet-panel"
 )
-
-func shellHeaderTitle(props ShellProps) string {
-	if strings.TrimSpace(props.HeaderTitle) != "" {
-		return props.HeaderTitle
-	}
-	return props.Title
-}
 
 func shellBrand(name string) string {
 	if name == "" {
@@ -66,12 +57,31 @@ func themeToggleSwitchToLightLabel(value string) string {
 	return value
 }
 
-func sidebarItemClasses(active, path string) string {
-	base := "flex w-full items-center gap-2 rounded-md px-4 py-2 text-sm"
-	if active == path {
-		return uiutils.Cn(base, "bg-accent text-accent-foreground")
+func navItemClasses(active, path string, vertical bool) string {
+	if vertical {
+		base := "flex w-full items-center gap-2 rounded-md px-4 py-2 text-sm"
+		if active == path {
+			return uiutils.Cn(base, "bg-accent text-accent-foreground")
+		}
+		return uiutils.Cn(base, "text-muted-foreground hover:bg-accent")
 	}
-	return uiutils.Cn(base, "text-muted-foreground hover:bg-accent")
+	base := "inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors"
+	if active == path {
+		return uiutils.Cn(base, "text-foreground")
+	}
+	return uiutils.Cn(base, "text-muted-foreground hover:text-foreground")
+}
+
+func brandLogoButtonProps(brandName string) ui.ButtonProps {
+	name := shellBrand(brandName)
+	return ui.ButtonProps{
+		Href:    "/",
+		Variant: "unstyled",
+		Class:   "text-base font-semibold tracking-tight text-foreground transition-colors hover:text-foreground/80",
+		Attrs: uiutils.MergeAttrs(
+			templ.Attributes{"aria-label": name + " home"},
+		),
+	}
 }
 
 func headerMenuButtonProps() ui.ButtonProps {
@@ -156,7 +166,7 @@ func mobileSheetCloseButtonProps() ui.ButtonProps {
 	}
 }
 
-func sidebarLinkButtonProps(active string, item NavItem) ui.ButtonProps {
+func navLinkButtonProps(active string, item NavItem, vertical bool) ui.ButtonProps {
 	attrs := templ.Attributes{}
 	if active == item.Path {
 		attrs = uiutils.MergeAttrs(attrs, uiutils.AriaCurrent("page"))
@@ -164,7 +174,7 @@ func sidebarLinkButtonProps(active string, item NavItem) ui.ButtonProps {
 	return ui.ButtonProps{
 		Href:    item.Path,
 		Variant: "unstyled",
-		Class:   sidebarItemClasses(active, item.Path),
+		Class:   navItemClasses(active, item.Path, vertical),
 		Attrs:   attrs,
 	}
 }

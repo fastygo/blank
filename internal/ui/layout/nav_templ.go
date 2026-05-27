@@ -13,7 +13,7 @@ import (
 	"github.com/fastygo/templ/ui"
 )
 
-func Sidebar(props SidebarProps) templ.Component {
+func Nav(props NavProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -35,7 +35,7 @@ func Sidebar(props SidebarProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		for _, item := range props.Items {
-			templ_7745c5c3_Err = sidebarNavLink(props.Active, item).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = navLink(props.Active, item, props.Vertical).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -44,7 +44,7 @@ func Sidebar(props SidebarProps) templ.Component {
 	})
 }
 
-func sidebarNavLink(active string, item NavItem) templ.Component {
+func navLink(active string, item NavItem, vertical bool) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -77,7 +77,7 @@ func sidebarNavLink(active string, item NavItem) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			if item.Icon != "" {
+			if vertical && item.Icon != "" {
 				templ_7745c5c3_Err = icon.Icon(icon.IconProps{Name: item.Icon, Size: "sm"}).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -93,7 +93,7 @@ func sidebarNavLink(active string, item NavItem) templ.Component {
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = ui.Button(sidebarLinkButtonProps(active, item)).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = ui.Button(navLinkButtonProps(active, item, vertical)).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

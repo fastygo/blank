@@ -55,11 +55,11 @@ func SiteShell(d LayoutData, body templpkg.Component) templ.Component {
 		})
 		templ_7745c5c3_Err = layout.Shell(layout.ShellProps{
 			Title:          d.DocumentTitle(),
-			HeaderTitle:    d.PageTitle,
 			Lang:           d.Lang,
 			BrandName:      d.Brand,
 			Active:         d.Active,
 			NavItems:       d.NavItems,
+			FooterText:     d.FooterText,
 			HeadExtra:      partials.ShellHead(d.Assets.CSS, d.Assets.ThemeJS, d.Assets.AppJS),
 			HeaderTrailing: partials.HeaderTrailing(d.LanguageSwitch),
 			ThemeToggle:    d.Theme,

@@ -1,5 +1,6 @@
 {
-  "brand": "Blank",
+  "brand": "FastyGo",
+  "footer": "Made with 🤍 in FastyGo",
   "theme": {
     "label": "Theme",
     "switch_to_dark": "Switch to dark",
@@ -9,13 +10,14 @@
   "home": {
     "nav_label": "Home",
     "title": "Home",
-    "description": "Minimal app shell — add your features here.",
-    "body": "Welcome. This page is intentionally empty — use it as a starting point for new apps."
+    "welcome": "Welcome",
+    "welcome_brand": "to FastyGo",
+    "description": "Minimal Go + templ starter — ship your app shell in minutes."
   },
   "sample": {
     "nav_label": "Sample",
     "title": "Sample",
-    "description": "Placeholder page for a second navigation item",
+    "description": "Placeholder page for a second navigation item.",
     "body": "Replace this route and copy with your own pages."
   }
 }

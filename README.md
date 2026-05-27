@@ -1,6 +1,6 @@
 # Blank
 
-Minimal **Go + templ** app shell on [FastyGo Framework](https://github.com/fastygo/framework) and [github.com/fastygo/templ](https://github.com/fastygo/templ). Sidebar, mobile sheet, header, dark theme, and En/Ru locale switching — nothing else. Use it as a neutral starting point for a new app.
+Minimal **Go + templ** app shell on [FastyGo Framework](https://github.com/fastygo/framework) and [github.com/fastygo/templ](https://github.com/fastygo/templ). Top navigation, centered hero welcome, mobile sheet, dark theme, and En/Ru locale switching — nothing else. Use it as a neutral starting point for a new app.
 
 ## Prerequisites
 
@@ -21,7 +21,7 @@ Static assets (Tailwind CSS, theme script, `@ui8kit/aria` dialog bundle) live un
 
 `bun run go` runs [`scripts/run-server.mjs`](scripts/run-server.mjs): the server starts with the **repository root as cwd** and **Ctrl+C** is forwarded to the Go process.
 
-Open [http://127.0.0.1:8080/](http://127.0.0.1:8080/) — home page with sidebar. Second demo route: [http://127.0.0.1:8080/sample](http://127.0.0.1:8080/sample).
+Open [http://127.0.0.1:8080/](http://127.0.0.1:8080/) — hero welcome page. Second demo route: [http://127.0.0.1:8080/sample](http://127.0.0.1:8080/sample).
 
 ## Environment
 
@@ -41,7 +41,7 @@ Probes: `GET /healthz` and `GET /readyz` in [`cmd/server/main.go`](cmd/server/ma
 | [`cmd/server/main.go`](cmd/server/main.go) | Composition root: config, locales, health, site feature |
 | [`internal/site/`](internal/site/) | HTTP routes: `/`, `/sample` |
 | [`internal/fixtures/locale/`](internal/fixtures/locale/) | Embedded JSON copy per locale |
-| [`internal/ui/layout/`](internal/ui/layout/) | Shell, sidebar, header |
+| [`internal/ui/layout/`](internal/ui/layout/) | Shell, header nav, footer, mobile sheet |
 | [`internal/ui/components/`](internal/ui/components/) | Icon, language switch |
 | [`internal/views/`](internal/views/) | `templ` pages and shell glue |
 | [`web/static/`](web/static/) | `app.css`, tokens, fonts, `theme.js`, `ui8kit.js` |
@@ -60,4 +60,4 @@ Runs: `templ generate` → Tailwind build → `build:js` (dialog-only `@ui8kit/a
 2. Add a nav item in [`internal/site/feature.go`](internal/site/feature.go) (`siteNav`).
 3. Add `internal/views/<page>.templ` and a route handler in `internal/site/feature.go`.
 
-For auth, panel navigation, and cabinet routes, use the **`dashboard`** branch as a reference.
+For the previous sidebar layout, use the **`sidebar`** branch as a reference.

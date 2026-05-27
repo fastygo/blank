@@ -9,10 +9,10 @@ Minimal app shell; no blocks/widgets staging.
 
 ```
 internal/ui/
-  layout/       # shell, header, sidebar, helpers — permanent app chrome
+  layout/       # shell, header nav, footer, mobile sheet, helpers
   components/   # dumb reusable pieces (icon, toggles)
 internal/views/
-  *.templ       # route pages (home, sample, …)
+  *.templ       # route pages (home hero, sample, …)
   partials/     # shell head assets, header trailing glue
   models.go     # LayoutData, page structs
 internal/site/
@@ -23,7 +23,7 @@ internal/fixtures/
 
 | Path | Role |
 |------|------|
-| `internal/ui/layout` | Sidebar, mobile sheet, header, theme toggle |
+| `internal/ui/layout` | Header nav (desktop center), mobile sheet, footer, theme toggle |
 | `internal/ui/components` | Props-only UI; no HTTP or fetch |
 | `internal/views` | Compose layout + resolved fixture strings |
 | `internal/site` | HTTP routes and layout data assembly |
@@ -31,3 +31,5 @@ internal/fixtures/
 **views** receive resolved strings/structs only — no `fixtures.LoadLocale` inside `.templ`.
 
 When adding a page: extend `fixtures.Locale` + every `locale/*.json`, add nav in `site/feature.go`, add `internal/views/<page>.templ`, register route in `site/feature.go`.
+
+For sidebar layout, see git branch **`sidebar`**.
