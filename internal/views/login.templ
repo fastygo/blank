@@ -1,8 +1,8 @@
 package views
 
 import (
-	"github.com/fastygo/ui8kit/layout"
-	"github.com/fastygo/ui8kit/ui"
+	"github.com/fastygo/blank/internal/ui/layout"
+	"github.com/fastygo/templ/ui"
 )
 
 const loginFormAction = "/cabinet/login"
@@ -17,28 +17,40 @@ templ LoginPage(d LoginPageData) {
 			}
 			@ui.Form(ui.FormProps{Action: loginFormAction, Method: "post", Class: "flex flex-col gap-4"}) {
 				if d.ReturnTo != "" {
-					@ui.Field(ui.FieldProps{Type: "hidden", Name: "return_to", Value: d.ReturnTo})
+					@ui.Input(ui.InputProps{Type: "hidden", Name: "return_to", Value: d.ReturnTo})
 				}
-				@ui.Field(ui.FieldProps{
-					Type:           "email",
-					Name:           "email",
-					Label:          d.EmailLabel,
-					Placeholder:    d.EmailLabel,
-					Required:       true,
-					Autocomplete:   "username",
-				})
-				@ui.Field(ui.FieldProps{
-					Type:           "password",
-					Name:           "password",
-					Label:          d.PasswordLabel,
-					Required:       true,
-					Autocomplete:   "current-password",
-				})
+				@ui.FormItem(ui.FormItemProps{}) {
+					@ui.Label(ui.LabelProps{HTMLFor: "login-email"}) {
+						{ d.EmailLabel }
+					}
+					@ui.Input(ui.InputProps{
+						ID:           "login-email",
+						Type:         "email",
+						Name:         "email",
+						Placeholder:  d.EmailLabel,
+						Required:     true,
+						Autocomplete: "username",
+					})
+				}
+				@ui.FormItem(ui.FormItemProps{}) {
+					@ui.Label(ui.LabelProps{HTMLFor: "login-password"}) {
+						{ d.PasswordLabel }
+					}
+					@ui.Input(ui.InputProps{
+						ID:           "login-password",
+						Type:         "password",
+						Name:         "password",
+						Required:     true,
+						Autocomplete: "current-password",
+					})
+				}
 				@ui.Button(ui.ButtonProps{
 					Type:    "submit",
-					Variant: "unstyled",
-					Class:   "inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow-xs transition-colors hover:opacity-90",
-				}, d.SubmitLabel)
+					Variant: "default",
+					Class:   "w-full",
+				}) {
+					{ d.SubmitLabel }
+				}
 			}
 		}
 	}

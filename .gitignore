@@ -1,7 +1,13 @@
 .manual
-.fastygo
+bin
 node_modules
 /tmp/
 *.exe
 .env
 .DS_Store
+vendor/*
+!vendor/github.com/
+vendor/github.com/*
+!vendor/github.com/fastygo/
+vendor/github.com/fastygo/*
+!vendor/github.com/fastygo/**

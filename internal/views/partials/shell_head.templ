@@ -1,0 +1,18 @@
+package partials
+
+// ShellHead emits shell asset tags for <head> (favicons, CSS, deferred scripts).
+// Edit this partial to extend global head content (preload, dns-prefetch, etc.).
+templ ShellHead(css, themeJS, appJS string) {
+	<link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon-32x32.png"/>
+	<link rel="icon" type="image/png" sizes="192x192" href="/static/img/favicon-192x192.png"/>
+	<link rel="apple-touch-icon" sizes="192x192" href="/static/img/favicon-192x192.png"/>
+	if css != "" {
+		<link rel="stylesheet" href={ css }/>
+	}
+	if themeJS != "" {
+		<script defer src={ themeJS }></script>
+	}
+	if appJS != "" {
+		<script defer src={ appJS }></script>
+	}
+}

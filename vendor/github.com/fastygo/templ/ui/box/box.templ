@@ -1,0 +1,48 @@
+/**
+ * Box is a generic layout wrapper for internal sections.
+ * Not for top-level landmarks — use Block for page regions.
+ */
+
+// Copy: components/ui/box/box.templ — internal layout only; not for top-level landmarks.
+
+package box
+
+import "github.com/fastygo/templ/utils"
+
+// BoxProps configures tag override and layout classes.
+type BoxProps struct {
+	Class string
+	// Tag — optional element name; defaults to div
+	Tag   string
+	Attrs templ.Attributes
+}
+
+// Box renders a flexible layout container.
+templ Box(p BoxProps) {
+	@boxTag(p) {
+		{ children... }
+	}
+}
+
+templ boxTag(p BoxProps) {
+	switch uiutils.ResolveTag(p.Tag, "div", uiutils.TagGroupLayout) {
+		case "section":
+			<section class={ p.Class } { p.Attrs... }>{ children... }</section>
+		case "article":
+			<article class={ p.Class } { p.Attrs... }>{ children... }</article>
+		case "aside":
+			<aside class={ p.Class } { p.Attrs... }>{ children... }</aside>
+		case "header":
+			<header class={ p.Class } { p.Attrs... }>{ children... }</header>
+		case "footer":
+			<footer class={ p.Class } { p.Attrs... }>{ children... }</footer>
+		case "main":
+			<main class={ p.Class } { p.Attrs... }>{ children... }</main>
+		case "nav":
+			<nav class={ p.Class } { p.Attrs... }>{ children... }</nav>
+		case "figure":
+			<figure class={ p.Class } { p.Attrs... }>{ children... }</figure>
+		default:
+			<div class={ p.Class } { p.Attrs... }>{ children... }</div>
+	}
+}

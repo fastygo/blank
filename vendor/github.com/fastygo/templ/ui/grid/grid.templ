@@ -1,0 +1,37 @@
+/**
+ * Grid lays out children in a CSS grid with optional column wrappers.
+ */
+
+// Copy: components/ui/grid/grid.templ
+
+package grid
+
+import "github.com/fastygo/templ/utils"
+
+// GridProps configures the grid container classes.
+type GridProps struct {
+	Class string
+}
+
+// GridColProps configures a single grid cell or track child.
+type GridColProps struct {
+	Class string
+}
+
+func GridClasses(p GridProps) string {
+	return uiutils.Cn("grid", p.Class)
+}
+
+// Grid renders a display:grid container.
+templ Grid(p GridProps) {
+	<div class={ GridClasses(p) }>
+		{ children... }
+	</div>
+}
+
+// GridCol renders one grid column child.
+templ GridCol(p GridColProps) {
+	<div class={ p.Class }>
+		{ children... }
+	</div>
+}

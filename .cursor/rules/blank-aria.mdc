@@ -1,0 +1,25 @@
+---
+description: Blank Panel — static ARIA (templ/utils) + @ui8kit/aria client patterns
+alwaysApply: true
+---
+
+# ARIA (Blank Panel)
+
+## Static markup
+
+Use **`github.com/fastygo/templ/utils`** ARIA helpers in Go/`helpers.go` (`AriaLabel`, `AriaExpanded`, `AriaControls`, `MergeAttrs`, …) on interactive server-rendered controls (mobile sheet trigger, nav collapse hit target, theme toggle).
+
+## Client behavior
+
+- **`@ui8kit/aria`** patterns: dialog/sheet (mobile menu), disclosure, tabs, … as bundled in **`web/static/js/ui8kit.js`**.
+- Markup contract: `data-ui8kit`, `data-ui8kit-dialog-*`, `data-nav-collapse-*` — must match manifest.
+- After changing hooks or JS bundle: **`bun run validate:aria`** (see **`blank-validation-testing.mdc`**).
+- Keep **`web/static/js/manifest.json`** aligned with bundled patterns (`ariaVersion`, `patterns`).
+
+## Shell patterns in this app
+
+- Mobile nav: `#ui8kit-mobile-sheet-panel`, `#ui8kit-mobile-sheet-trigger`
+- Theme: `#ui8kit-theme-toggle`, `#theme-toggle-icon` (updated by `theme.js`)
+- Nav overflow: `data-nav-collapse`, `data-nav-collapse-expand`
+
+Add a manifest pattern when introducing a new interactive primitive.

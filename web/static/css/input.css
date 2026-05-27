@@ -3,9 +3,29 @@
 @source "../../internal/views/**/*.go";
 @source "../../internal/ui/**/*.templ";
 @source "../../internal/ui/**/*.go";
+@source "../../vendor/github.com/fastygo/templ/ui/**/*.templ";
+@source "../../vendor/github.com/fastygo/templ/ui/**/*_templ.go";
+@source "../../vendor/github.com/fastygo/templ/components/**/*.templ";
+@source "../../vendor/github.com/fastygo/templ/components/**/*_templ.go";
 
 @import "./tweakcn.css";
 @import "./fonts.css";
-@import "./ui8kit/shell.css";
-@import "./ui8kit/components.css";
-@import "./ui8kit/latty.css";
+@import "./latty-icons.css";
+@import "./nav-sidebar.css";
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-secondary rounded cursor-pointer;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary;
+}

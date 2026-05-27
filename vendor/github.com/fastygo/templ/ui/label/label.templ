@@ -1,0 +1,30 @@
+/**
+ * Label associates visible text with a form control via the for attribute.
+ */
+
+// Copy: components/ui/label/label.templ
+
+package label
+
+import "github.com/fastygo/templ/utils"
+
+// LabelProps configures the label element.
+type LabelProps struct {
+	Class   string
+	// HTMLFor — id of the labeled control
+	HTMLFor string
+	Attrs   templ.Attributes
+}
+
+// Label renders accessible text linked to a control.
+templ Label(p LabelProps) {
+	<label
+		class={ uiutils.Cn("text-sm font-medium leading-none", p.Class) }
+		if p.HTMLFor != "" {
+			for={ p.HTMLFor }
+		}
+		{ p.Attrs... }
+	>
+		{ children... }
+	</label>
+}

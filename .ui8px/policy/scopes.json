@@ -2,26 +2,25 @@
   "defaultScope": "layout",
   "scopes": [
     {
-      "name": "views",
-      "files": ["**/internal/views/**"],
-      "spacing": "layout"
-    },
-    {
-      "name": "ui-elements",
-      "files": ["**/internal/ui/elements/**"],
-      "spacing": "control"
-    },
-    {
-      "name": "ui8kit-assets",
+      "name": "controls",
       "files": [
-        "web/static/css/ui8kit/**",
-        "**/web/static/css/ui8kit/**"
+        "**/internal/ui/**",
+        "web/static/css/latty-icons.css",
+        "**/web/static/css/latty-icons.css"
       ],
       "spacing": "control"
     },
     {
+      "name": "layout",
+      "files": ["**/internal/views/**"],
+      "spacing": "layout"
+    },
+    {
       "name": "fonts",
-      "files": ["web/static/css/gfonts.css"],
+      "files": [
+        "web/static/css/fonts.css",
+        "**/web/static/css/fonts.css"
+      ],
       "spacing": "control"
     }
   ]

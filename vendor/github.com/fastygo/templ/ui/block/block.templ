@@ -1,0 +1,53 @@
+/**
+ * Block is a top-level page landmark (main, header, section, nav, …).
+ * Use for document structure; do not nest Block inside Block.
+ */
+
+// Copy: components/ui/block/block.templ — top-level landmarks only; do not nest Block in Block.
+
+package block
+
+import "github.com/fastygo/templ/utils"
+
+// BlockProps configures landmark tag, id, and classes.
+type BlockProps struct {
+	ID    string
+	Class string
+	// Tag — semantic landmark: main, header, section, footer, nav, article, aside, figure
+	Tag   string
+	Attrs templ.Attributes
+}
+
+func blockAttrs(p BlockProps) templ.Attributes {
+	return uiutils.DOMAttrs(p.ID, "", "", p.Attrs)
+}
+
+// Block renders a resolved landmark element with children.
+templ Block(p BlockProps) {
+	@blockTag(p) {
+		{ children... }
+	}
+}
+
+templ blockTag(p BlockProps) {
+	switch uiutils.ResolveTag(p.Tag, "div", uiutils.TagGroupLayout) {
+		case "section":
+			<section class={ p.Class } { blockAttrs(p)... }>{ children... }</section>
+		case "article":
+			<article class={ p.Class } { blockAttrs(p)... }>{ children... }</article>
+		case "aside":
+			<aside class={ p.Class } { blockAttrs(p)... }>{ children... }</aside>
+		case "header":
+			<header class={ p.Class } { blockAttrs(p)... }>{ children... }</header>
+		case "footer":
+			<footer class={ p.Class } { blockAttrs(p)... }>{ children... }</footer>
+		case "main":
+			<main class={ p.Class } { blockAttrs(p)... }>{ children... }</main>
+		case "nav":
+			<nav class={ p.Class } { blockAttrs(p)... }>{ children... }</nav>
+		case "figure":
+			<figure class={ p.Class } { blockAttrs(p)... }>{ children... }</figure>
+		default:
+			<div class={ p.Class } { blockAttrs(p)... }>{ children... }</div>
+	}
+}

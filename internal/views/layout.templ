@@ -2,22 +2,20 @@ package views
 
 import (
 	templpkg "github.com/a-h/templ"
+	"github.com/fastygo/blank/internal/ui/layout"
 	"github.com/fastygo/blank/internal/views/partials"
-	"github.com/fastygo/ui8kit/layout"
 )
 
 templ CabinetLayout(d LayoutData, body templpkg.Component) {
 	@layout.Shell(layout.ShellProps{
-		Title:          d.Title,
+		Title:          d.DocumentTitle(),
+		HeaderTitle:    d.PageTitle,
 		Lang:           d.Lang,
 		BrandName:      d.Brand,
 		Active:         d.Active,
 		NavItems:       d.NavItems,
-		CSSPath:        d.Assets.CSS,
-		ThemeJSPath:    d.Assets.ThemeJS,
-		AppJSPath:      d.Assets.AppJS,
-		HeaderExtra:    nil,
-		HeaderTrailing: partials.AccountMenu(d.AccountEmail, d.AccountSignOutText, d.LanguageToggle),
+		HeadExtra:      partials.ShellHead(d.Assets.CSS, d.Assets.ThemeJS, d.Assets.AppJS),
+		HeaderTrailing: partials.HeaderTrailing(d.LanguageSwitch, d.AccountEmail, d.AccountSignOut),
 		ThemeToggle:    d.Theme,
 		MarketingShell: false,
 	}) {

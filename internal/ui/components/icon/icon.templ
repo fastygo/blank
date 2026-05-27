@@ -1,0 +1,21 @@
+package icon
+
+import templpkg "github.com/a-h/templ"
+
+type IconProps struct {
+	Name  string
+	Size  string
+	Class string
+	ID    string
+	Attrs templpkg.Attributes
+}
+
+templ Icon(p IconProps) {
+	<span
+		if p.ID != "" {
+			id={ p.ID }
+		}
+		class={ iconClasses(p) }
+		{ p.Attrs... }
+	></span>
+}

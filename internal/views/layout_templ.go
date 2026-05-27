@@ -10,8 +10,8 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	templpkg "github.com/a-h/templ"
+	"github.com/fastygo/blank/internal/ui/layout"
 	"github.com/fastygo/blank/internal/views/partials"
-	"github.com/fastygo/ui8kit/layout"
 )
 
 func CabinetLayout(d LayoutData, body templpkg.Component) templ.Component {
@@ -54,16 +54,14 @@ func CabinetLayout(d LayoutData, body templpkg.Component) templ.Component {
 			return nil
 		})
 		templ_7745c5c3_Err = layout.Shell(layout.ShellProps{
-			Title:          d.Title,
+			Title:          d.DocumentTitle(),
+			HeaderTitle:    d.PageTitle,
 			Lang:           d.Lang,
 			BrandName:      d.Brand,
 			Active:         d.Active,
 			NavItems:       d.NavItems,
-			CSSPath:        d.Assets.CSS,
-			ThemeJSPath:    d.Assets.ThemeJS,
-			AppJSPath:      d.Assets.AppJS,
-			HeaderExtra:    nil,
-			HeaderTrailing: partials.AccountMenu(d.AccountEmail, d.AccountSignOutText, d.LanguageToggle),
+			HeadExtra:      partials.ShellHead(d.Assets.CSS, d.Assets.ThemeJS, d.Assets.AppJS),
+			HeaderTrailing: partials.HeaderTrailing(d.LanguageSwitch, d.AccountEmail, d.AccountSignOut),
 			ThemeToggle:    d.Theme,
 			MarketingShell: false,
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)

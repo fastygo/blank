@@ -1,0 +1,54 @@
+/**
+ * Group arranges children in a horizontal flex row.
+ * Supports fieldset for related form controls.
+ */
+
+// Copy: components/ui/group/group.templ
+
+package group
+
+import "github.com/fastygo/templ/utils"
+
+// GroupProps configures inline flex grouping.
+type GroupProps struct {
+	Class string
+	// Tag — div or fieldset for related controls
+	Tag   string
+	Attrs templ.Attributes
+}
+
+func GroupClasses(p GroupProps) string {
+	return uiutils.Cn("flex min-w-0", p.Class)
+}
+
+// Group renders a horizontal flex container.
+templ Group(p GroupProps) {
+	@groupTag(p) {
+		{ children... }
+	}
+}
+
+templ groupTag(p GroupProps) {
+	switch uiutils.ResolveTag(p.Tag, "div", uiutils.TagGroupGroup) {
+		case "section":
+			<section class={ GroupClasses(p) } { p.Attrs... }>{ children... }</section>
+		case "article":
+			<article class={ GroupClasses(p) } { p.Attrs... }>{ children... }</article>
+		case "aside":
+			<aside class={ GroupClasses(p) } { p.Attrs... }>{ children... }</aside>
+		case "header":
+			<header class={ GroupClasses(p) } { p.Attrs... }>{ children... }</header>
+		case "footer":
+			<footer class={ GroupClasses(p) } { p.Attrs... }>{ children... }</footer>
+		case "main":
+			<main class={ GroupClasses(p) } { p.Attrs... }>{ children... }</main>
+		case "nav":
+			<nav class={ GroupClasses(p) } { p.Attrs... }>{ children... }</nav>
+		case "figure":
+			<figure class={ GroupClasses(p) } { p.Attrs... }>{ children... }</figure>
+		case "fieldset":
+			<fieldset class={ GroupClasses(p) } { p.Attrs... }>{ children... }</fieldset>
+		default:
+			<div class={ GroupClasses(p) } { p.Attrs... }>{ children... }</div>
+	}
+}

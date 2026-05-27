@@ -1,0 +1,76 @@
+/**
+ * Table composes semantic table, caption, sections, rows, and cells.
+ * Supports scope, colspan, and headers attrs on head cells.
+ */
+
+// Copy: components/ui/table/table.templ
+
+package table
+
+// Table renders the root table element.
+templ Table(p TableProps) {
+	<table class={ p.Class } { tableAttrs(p)... }>
+		{ children... }
+	</table>
+}
+
+// TableCaption renders the table caption.
+templ TableCaption(p TableCaptionProps) {
+	<caption class={ p.Class }>
+		{ children... }
+	</caption>
+}
+
+// TableHead renders thead section.
+templ TableHead(p TableSectionProps) {
+	<thead class={ p.Class }>
+		{ children... }
+	</thead>
+}
+
+// TableBody renders tbody section.
+templ TableBody(p TableSectionProps) {
+	<tbody class={ p.Class }>
+		{ children... }
+	</tbody>
+}
+
+// TableFoot renders tfoot section.
+templ TableFoot(p TableSectionProps) {
+	<tfoot class={ p.Class }>
+		{ children... }
+	</tfoot>
+}
+
+// TableRow renders one tr row.
+templ TableRow(p TableRowProps) {
+	<tr class={ p.Class }>
+		{ children... }
+	</tr>
+}
+
+// TableHeadCell renders th with optional scope and abbr.
+templ TableHeadCell(p TableCellProps) {
+	<th class={ p.Class } { tableCellAttrs(p, true)... }>
+		{ children... }
+	</th>
+}
+
+// TableCell renders td with colspan and rowspan.
+templ TableCell(p TableCellProps) {
+	<td class={ p.Class } { tableCellAttrs(p, false)... }>
+		{ children... }
+	</td>
+}
+
+// TableColGroup renders colgroup with optional span.
+templ TableColGroup(p TableColGroupProps) {
+	<colgroup class={ p.Class } { spanAttrs(p.Span)... }>
+		{ children... }
+	</colgroup>
+}
+
+// TableCol renders a single col definition.
+templ TableCol(p TableColProps) {
+	<col class={ p.Class } { spanAttrs(p.Span)... }/>
+}

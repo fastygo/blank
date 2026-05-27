@@ -1,0 +1,48 @@
+/**
+ * Checkbox is a native boolean form control.
+ * Wireframe styling via Variant and Size; supports standard ARIA attrs.
+ */
+
+// Copy: components/ui/checkbox/checkbox.templ
+
+package checkbox
+
+import "github.com/fastygo/templ/utils"
+
+// CheckboxProps configures a single checkbox input.
+type CheckboxProps struct {
+	Variant   string
+	Size      string
+	Class     string
+	Name      string
+	Value     string
+	Checked   bool
+	Disabled  bool
+	Required  bool
+	ID        string
+	Role      string
+	TabIndex  string
+	AriaLabel string
+	Attrs     templ.Attributes
+}
+
+func CheckboxClasses(p CheckboxProps) string {
+	return uiutils.ControlClasses(p.Variant, p.Size, p.Class)
+}
+
+// Checkbox renders a styled input[type=checkbox].
+templ Checkbox(p CheckboxProps) {
+	<input
+		if p.ID != "" {
+			id={ p.ID }
+		}
+		type="checkbox"
+		name={ p.Name }
+		value={ p.Value }
+		class={ CheckboxClasses(p) }
+		checked?={ p.Checked }
+		disabled?={ p.Disabled }
+		required?={ p.Required }
+		{ uiutils.ControlAttrs(p.ID, p.Role, p.TabIndex, p.AriaLabel, p.Attrs)... }
+	/>
+}

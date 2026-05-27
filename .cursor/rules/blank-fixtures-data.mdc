@@ -1,0 +1,25 @@
+---
+description: Blank Panel — fixtures, locale JSON, view models
+alwaysApply: true
+---
+
+# Data & fixtures (Blank Panel)
+
+## Two layers
+
+1. **`internal/fixtures/`** — embedded `locale/*.json`, typed **`Locale`** in `fixtures.go`, **`LoadLocale(code)`**.
+2. **Handlers** (`internal/cabinet`) — resolve locale from context, build **`views.LayoutData`** / page structs with **already-translated** strings.
+
+## Rules
+
+- User-visible copy lives in **`locale/en.json`**, **`locale/ru.json`**, … — not hard-coded in `.templ`.
+- Extend **`Locale`** + **every** locale file when adding new UI strings (theme labels, nav-adjacent copy, form labels, errors).
+- **`internal/views`** and **`internal/ui/components`** take props only; no fixture imports in templ.
+- Keep **accessible names** (aria labels, button titles) in fixtures when shown to users or used as `aria-label`.
+
+## Locale switching
+
+- Header control: **`toggles.LanguageSwitch`** built in `cabinet/feature.go` via **`locale.BuildLangHref`**.
+- Framework cookie/query strategy is configured in `cmd/server/main.go` (`WithLocales`).
+
+See **`blank-atomic-ui8px.mdc`** for presentation boundaries.

@@ -1,0 +1,31 @@
+---
+description: Blank Panel — internal/ui tree, layout vs components vs views
+alwaysApply: true
+---
+
+# Blank Panel — UI structure
+
+Minimal cabinet shell; no blocks/widgets staging.
+
+```
+internal/ui/
+  layout/       # shell, header, sidebar, helpers — permanent app chrome
+  components/   # dumb reusable pieces (icon, toggles, account menu)
+internal/views/
+  *.templ       # route pages (login, dashboard, …)
+  partials/     # shell head assets, header trailing glue
+  models.go     # LayoutData, LoginPageData, …
+internal/fixtures/
+  locale/*.json # i18n copy
+```
+
+| Path | Role |
+|------|------|
+| `internal/ui/layout` | Sidebar, mobile sheet, header, theme toggle hooks |
+| `internal/ui/components` | Props-only UI; no HTTP, auth, or fetch |
+| `internal/views` | Compose layout + resolved fixture strings |
+| `internal/cabinet` | Routes, auth gate, locale + asset wiring |
+
+**views** receive resolved strings/structs only — no `fixtures.LoadLocale` inside `.templ`.
+
+When adding a cabinet page: extend `paneldef`, add handler in `cabinet/feature.go`, add `internal/views/<page>.templ`, extend `fixtures.Locale` + every `locale/*.json`, update `@source` in `web/static/css/input.css` if new paths.

@@ -1,0 +1,211 @@
+/**
+ * Package ui re-exports all primitive registry components.
+ * Import github.com/fastygo/templ/ui and use @ui.Button, @ui.Stack, etc.
+ */
+
+package ui
+
+import (
+	"github.com/fastygo/templ/ui/badge"
+	"github.com/fastygo/templ/ui/block"
+	"github.com/fastygo/templ/ui/box"
+	"github.com/fastygo/templ/ui/button"
+	"github.com/fastygo/templ/ui/checkbox"
+	"github.com/fastygo/templ/ui/container"
+	"github.com/fastygo/templ/ui/form"
+	"github.com/fastygo/templ/ui/switch"
+	"github.com/fastygo/templ/ui/grid"
+	"github.com/fastygo/templ/ui/group"
+	"github.com/fastygo/templ/ui/input"
+	"github.com/fastygo/templ/ui/label"
+	"github.com/fastygo/templ/ui/list"
+	"github.com/fastygo/templ/ui/radio"
+	"github.com/fastygo/templ/ui/select"
+	"github.com/fastygo/templ/ui/stack"
+	"github.com/fastygo/templ/ui/table"
+	"github.com/fastygo/templ/ui/text"
+	"github.com/fastygo/templ/ui/textarea"
+	"github.com/fastygo/templ/ui/title"
+)
+
+templ Block(p BlockProps) {
+	@block.Block(p) {
+		{ children... }
+	}
+}
+
+templ Box(p BoxProps) {
+	@box.Box(p) {
+		{ children... }
+	}
+}
+
+templ Container(p ContainerProps) {
+	@container.Container(p) {
+		{ children... }
+	}
+}
+
+templ Stack(p StackProps) {
+	@stack.Stack(p) {
+		{ children... }
+	}
+}
+
+templ Group(p GroupProps) {
+	@group.Group(p) {
+		{ children... }
+	}
+}
+
+templ Grid(p GridProps) {
+	@grid.Grid(p) {
+		{ children... }
+	}
+}
+
+templ GridCol(p GridColProps) {
+	@grid.GridCol(p) {
+		{ children... }
+	}
+}
+
+templ Text(p TextProps, value string) {
+	@text.Text(p, value)
+}
+
+templ Title(p TitleProps, value string) {
+	@title.Title(p, value)
+}
+
+templ Button(p ButtonProps) {
+	@button.Button(p) {
+		{ children... }
+	}
+}
+
+templ Badge(p BadgeProps) {
+	@badge.Badge(p) {
+		{ children... }
+	}
+}
+
+templ Input(p InputProps) {
+	@input.Input(p)
+}
+
+templ Textarea(p TextareaProps) {
+	@textarea.Textarea(p)
+}
+
+templ Select(p SelectProps) {
+	@selectfield.Select(p)
+}
+
+templ Checkbox(p CheckboxProps) {
+	@checkbox.Checkbox(p)
+}
+
+templ Radio(p RadioProps) {
+	@radio.Radio(p)
+}
+
+templ Switch(p SwitchProps) {
+	@formswitch.Switch(p)
+}
+
+templ Label(p LabelProps) {
+	@label.Label(p) {
+		{ children... }
+	}
+}
+
+templ Form(p FormProps) {
+	@form.Form(p) {
+		{ children... }
+	}
+}
+
+templ FormItem(p FormItemProps) {
+	@form.FormItem(p) {
+		{ children... }
+	}
+}
+
+templ FormDescription(p FormDescriptionProps, value string) {
+	@form.FormDescription(p, value)
+}
+
+templ FormMessage(p FormMessageProps, value string) {
+	@form.FormMessage(p, value)
+}
+
+templ List(p ListProps) {
+	@list.List(p) {
+		{ children... }
+	}
+}
+
+templ ListItem(p ListItemProps) {
+	@list.ListItem(p) {
+		{ children... }
+	}
+}
+
+templ Table(p TableProps) {
+	@table.Table(p) {
+		{ children... }
+	}
+}
+
+templ TableCaption(p TableCaptionProps) {
+	@table.TableCaption(p) {
+		{ children... }
+	}
+}
+
+templ TableHead(p TableSectionProps) {
+	@table.TableHead(p) {
+		{ children... }
+	}
+}
+
+templ TableBody(p TableSectionProps) {
+	@table.TableBody(p) {
+		{ children... }
+	}
+}
+
+templ TableFoot(p TableSectionProps) {
+	@table.TableFoot(p) {
+		{ children... }
+	}
+}
+
+templ TableRow(p TableRowProps) {
+	@table.TableRow(p) {
+		{ children... }
+	}
+}
+
+templ TableHeadCell(p TableCellProps) {
+	@table.TableHeadCell(p) {
+		{ children... }
+	}
+}
+
+templ TableCell(p TableCellProps) {
+	@table.TableCell(p) {
+		{ children... }
+	}
+}
+
+templ TableColGroup(p TableColGroupProps) {
+	@table.TableColGroup(p) {
+		{ children... }
+	}
+}
+
+templ TableCol(p TableColProps) {
+	@table.TableCol(p)
+}

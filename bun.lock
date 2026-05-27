@@ -4,6 +4,9 @@
   "workspaces": {
     "": {
       "name": "fastygo-blank",
+      "dependencies": {
+        "@ui8kit/aria": "^0.1.0",
+      },
       "devDependencies": {
         "@tailwindcss/cli": "^4.2.1",
         "tailwindcss": "^4.2.1",
@@ -79,6 +82,8 @@
     "@tailwindcss/oxide-win32-arm64-msvc": ["@tailwindcss/oxide-win32-arm64-msvc@4.3.0", "", { "os": "win32", "cpu": "arm64" }, "sha512-Pe+RPVTi1T+qymuuRpcdvwSVZjnll/f7n8gBxMMh3xLTctMDKqpdfGimbMyioqtLhUYZxdJ9wGNhV7MKHvgZsQ=="],
 
     "@tailwindcss/oxide-win32-x64-msvc": ["@tailwindcss/oxide-win32-x64-msvc@4.3.0", "", { "os": "win32", "cpu": "x64" }, "sha512-Mvrf2kXW/yeW/OTezZlCGOirXRcUuLIBx/5Y12BaPM7wJoryG6dfS/NJL8aBPqtTEx/Vm4T4vKzFUcKDT+TKUA=="],
+
+    "@ui8kit/aria": ["@ui8kit/aria@0.1.0", "", {}, "sha512-jxgxEpN9LHq77PkvV/xHBcDKqyfgndORZ7EpU8h0kNjoijRes2CdmGsL8/0Xk2+OlEP50VKNfz8ZPiSjchE/4A=="],
 
     "detect-libc": ["detect-libc@2.1.2", "", {}, "sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ=="],
 

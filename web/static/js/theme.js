@@ -40,12 +40,12 @@
   }
 
   function ensureThemeIcon(button) {
-    var icon = document.getElementById("theme-toggle-icon");
-    if (!icon && button) {
-      icon = document.createElement("span");
-      icon.id = "theme-toggle-icon";
-      icon.setAttribute("aria-hidden", "true");
-      button.appendChild(icon);
+    if (!button || !button.querySelector) {
+      return null;
+    }
+    var icon = button.querySelector("#theme-toggle-icon");
+    if (!icon) {
+      return null;
     }
     return icon;
   }
@@ -65,8 +65,8 @@
 
     if (icon) {
       icon.className = dark
-        ? "ui-theme-icon latty latty-sun"
-        : "ui-theme-icon latty latty-moon";
+        ? "inline-block size-4 shrink-0 bg-current latty latty-sun"
+        : "inline-block size-4 shrink-0 bg-current latty latty-moon";
     }
 
     if (button) {

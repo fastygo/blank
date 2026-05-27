@@ -1,0 +1,55 @@
+/**
+ * Select is a native dropdown built from Option items.
+ */
+
+// Copy: components/ui/select/select.templ
+
+package selectfield
+
+import "github.com/fastygo/templ/utils"
+
+// Option is one select choice.
+type Option struct {
+	Value string
+	Label string
+}
+
+// SelectProps configures a native select element.
+type SelectProps struct {
+	Variant   string
+	Size      string
+	Class     string
+	Name      string
+	// Value — currently selected option value
+	Value     string
+	Disabled  bool
+	Required  bool
+	Options   []Option
+	ID        string
+	Role      string
+	TabIndex  string
+	AriaLabel string
+	Attrs     templ.Attributes
+}
+
+func SelectClasses(p SelectProps) string {
+	return uiutils.InputClasses(p.Variant, p.Size, p.Class)
+}
+
+// Select renders option children from Options slice.
+templ Select(p SelectProps) {
+	<select
+		if p.ID != "" {
+			id={ p.ID }
+		}
+		name={ p.Name }
+		class={ SelectClasses(p) }
+		disabled?={ p.Disabled }
+		required?={ p.Required }
+		{ uiutils.ControlAttrs(p.ID, p.Role, p.TabIndex, p.AriaLabel, p.Attrs)... }
+	>
+		for _, opt := range p.Options {
+			<option value={ opt.Value } selected?={ opt.Value == p.Value }>{ opt.Label }</option>
+		}
+	</select>
+}

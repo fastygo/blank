@@ -1,0 +1,56 @@
+/**
+ * Stack arranges children vertically in a flex column.
+ * Default layout primitive for spacing sections and form fields.
+ */
+
+// Copy: components/ui/stack/stack.templ
+
+package stack
+
+import "github.com/fastygo/templ/utils"
+
+// StackProps configures vertical flex layout.
+type StackProps struct {
+	Class string
+	// Tag — div, ul, ol, nav, section, etc.
+	Tag   string
+	Attrs templ.Attributes
+}
+
+func StackClasses(p StackProps) string {
+	return uiutils.Cn("flex flex-col items-start justify-start", p.Class)
+}
+
+// Stack renders a vertical flex container.
+templ Stack(p StackProps) {
+	@stackTag(p) {
+		{ children... }
+	}
+}
+
+templ stackTag(p StackProps) {
+	switch uiutils.ResolveTag(p.Tag, "div", uiutils.TagGroupStack) {
+		case "nav":
+			<nav class={ StackClasses(p) } { p.Attrs... }>{ children... }</nav>
+		case "section":
+			<section class={ StackClasses(p) } { p.Attrs... }>{ children... }</section>
+		case "article":
+			<article class={ StackClasses(p) } { p.Attrs... }>{ children... }</article>
+		case "aside":
+			<aside class={ StackClasses(p) } { p.Attrs... }>{ children... }</aside>
+		case "header":
+			<header class={ StackClasses(p) } { p.Attrs... }>{ children... }</header>
+		case "footer":
+			<footer class={ StackClasses(p) } { p.Attrs... }>{ children... }</footer>
+		case "main":
+			<main class={ StackClasses(p) } { p.Attrs... }>{ children... }</main>
+		case "figure":
+			<figure class={ StackClasses(p) } { p.Attrs... }>{ children... }</figure>
+		case "ul":
+			<ul class={ StackClasses(p) } { p.Attrs... }>{ children... }</ul>
+		case "ol":
+			<ol class={ StackClasses(p) } { p.Attrs... }>{ children... }</ol>
+		default:
+			<div class={ StackClasses(p) } { p.Attrs... }>{ children... }</div>
+	}
+}

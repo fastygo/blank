@@ -1,8 +1,8 @@
 package views
 
 import (
-	"github.com/fastygo/framework/pkg/web/view"
-	ui8layout "github.com/fastygo/ui8kit/layout"
+	"github.com/fastygo/blank/internal/ui/components/toggles"
+	"github.com/fastygo/blank/internal/ui/layout"
 )
 
 // AssetPaths are URLs for CSS and JS bundles.
@@ -14,16 +14,29 @@ type AssetPaths struct {
 
 // LayoutData drives the cabinet shell (sidebar + header).
 type LayoutData struct {
-	Title              string
-	Lang               string
-	Brand              string
-	Active             string
-	NavItems           []ui8layout.NavItem
-	Assets             AssetPaths
-	Theme              ui8layout.ThemeToggleProps
-	LanguageToggle     view.LanguageToggleData
-	AccountEmail       string
-	AccountSignOutText string
+	PageTitle      string
+	Lang           string
+	Brand          string
+	Active         string
+	NavItems       []layout.NavItem
+	Assets         AssetPaths
+	Theme          layout.ThemeToggleProps
+	LanguageSwitch toggles.LanguageSwitchProps
+	AccountEmail   string
+	AccountSignOut string
+}
+
+// DocumentTitle returns the SEO document title for <title>.
+func (d LayoutData) DocumentTitle() string {
+	return FormatDocumentTitle(d.PageTitle, d.Brand)
+}
+
+// FormatDocumentTitle builds "Page · Brand" for the document head.
+func FormatDocumentTitle(pageTitle, brand string) string {
+	if brand == "" {
+		brand = "Blank Panel"
+	}
+	return pageTitle + " · " + brand
 }
 
 // LoginPageData is the sign-in screen.
@@ -38,8 +51,8 @@ type LoginPageData struct {
 	EmailLabel     string
 	PasswordLabel  string
 	SubmitLabel    string
-	Theme          ui8layout.ThemeToggleProps
-	LanguageToggle view.LanguageToggleData
+	Theme          layout.ThemeToggleProps
+	LanguageSwitch toggles.LanguageSwitchProps
 }
 
 // DashboardData is the cabinet home page body.

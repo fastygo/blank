@@ -1,0 +1,51 @@
+/**
+ * Text renders inline or block prose with a resolved semantic tag.
+ * Pass copy as value; use Tag for span, small, code, blockquote, etc.
+ */
+
+// Copy: components/ui/text/text.templ
+
+package text
+
+import "github.com/fastygo/templ/utils"
+
+// TextProps configures typography element and classes.
+type TextProps struct {
+	Class string
+	// Tag — p, span, small, code, blockquote, …; defaults to p
+	Tag   string
+}
+
+// Text renders plain copy in the chosen semantic tag.
+templ Text(p TextProps, value string) {
+	switch uiutils.ResolveTag(p.Tag, "p", uiutils.TagGroupText) {
+		case "span":
+			<span class={ p.Class }>{ value }</span>
+		case "small":
+			<small class={ p.Class }>{ value }</small>
+		case "time":
+			<time class={ p.Class }>{ value }</time>
+		case "em":
+			<em class={ p.Class }>{ value }</em>
+		case "strong":
+			<strong class={ p.Class }>{ value }</strong>
+		case "blockquote":
+			<blockquote class={ p.Class }>{ value }</blockquote>
+		case "figcaption":
+			<figcaption class={ p.Class }>{ value }</figcaption>
+		case "cite":
+			<cite class={ p.Class }>{ value }</cite>
+		case "abbr":
+			<abbr class={ p.Class }>{ value }</abbr>
+		case "address":
+			<address class={ p.Class }>{ value }</address>
+		case "pre":
+			<pre class={ p.Class }>{ value }</pre>
+		case "code":
+			<code class={ p.Class }>{ value }</code>
+		case "mark":
+			<mark class={ p.Class }>{ value }</mark>
+		default:
+			<p class={ p.Class }>{ value }</p>
+	}
+}

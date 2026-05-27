@@ -1,0 +1,47 @@
+/**
+ * Radio is a native single-choice control within a named group.
+ */
+
+// Copy: components/ui/radio/radio.templ
+
+package radio
+
+import "github.com/fastygo/templ/utils"
+
+// RadioProps configures one radio input in a group.
+type RadioProps struct {
+	Variant   string
+	Size      string
+	Class     string
+	Name      string
+	Value     string
+	Checked   bool
+	Disabled  bool
+	Required  bool
+	ID        string
+	Role      string
+	TabIndex  string
+	AriaLabel string
+	Attrs     templ.Attributes
+}
+
+func RadioClasses(p RadioProps) string {
+	return uiutils.ControlClasses(p.Variant, p.Size, p.Class)
+}
+
+// Radio renders input[type=radio] with shared Name for grouping.
+templ Radio(p RadioProps) {
+	<input
+		if p.ID != "" {
+			id={ p.ID }
+		}
+		type="radio"
+		name={ p.Name }
+		value={ p.Value }
+		class={ RadioClasses(p) }
+		checked?={ p.Checked }
+		disabled?={ p.Disabled }
+		required?={ p.Required }
+		{ uiutils.ControlAttrs(p.ID, p.Role, p.TabIndex, p.AriaLabel, p.Attrs)... }
+	/>
+}

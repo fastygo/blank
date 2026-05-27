@@ -1,3 +1,7 @@
 
-.manual
-plans/
+vendor/*
+!vendor/github.com/
+vendor/github.com/*
+!vendor/github.com/fastygo/
+vendor/github.com/fastygo/*
+!vendor/github.com/fastygo/**

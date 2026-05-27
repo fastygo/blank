@@ -1,0 +1,139 @@
+/**
+ * Button triggers an action on click.
+ * Button navigates when Href is set.
+ */
+
+// Copy: components/ui/button/button.templ — requires github.com/fastygo/templ/utils
+
+package button
+
+import (
+	"strings"
+
+	"github.com/fastygo/templ/utils"
+)
+
+var ButtonVariants = uiutils.Variants{
+	Base: "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+	Keys: []string{"variant", "size"},
+	ByKey: map[string]map[string]string{
+		"variant": {
+			"default":     "bg-primary text-primary-foreground hover:bg-primary/90",
+			"destructive": "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+			"outline":     "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+			"secondary":   "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+			"ghost":       "hover:bg-accent hover:text-accent-foreground",
+			"link":        "text-primary underline-offset-4 hover:underline",
+			"unstyled":    "",
+		},
+		"size": {
+			"default": "h-10 px-4 py-2",
+			"sm":      "h-9 rounded-md px-3",
+			"lg":      "h-11 rounded-md px-8",
+			"icon":    "h-10 w-10",
+		},
+	},
+	Defaults: map[string]string{
+		"variant": "default",
+		"size":    "default",
+	},
+}
+
+// ButtonProps holds Button configuration.
+type ButtonProps struct {
+	// Variant sets appearance preset: default, secondary, destructive, outline, ghost, link, unstyled
+	Variant   string
+	// Size sets density preset: default, sm, lg, icon
+	Size      string
+	// Class adds Tailwind utilities
+	Class     string
+	// Type sets button type: button, submit, reset
+	Type      string
+	// Form links button to a form id
+	Form      string
+	// Disabled blocks interaction
+	Disabled  bool
+	// Href renders anchor instead of button
+	Href      string
+	ID        string
+	Role      string
+	TabIndex  string
+	// AriaLabel sets accessible name for icon buttons
+	AriaLabel string
+	Attrs     templ.Attributes
+}
+
+func ButtonClasses(p ButtonProps) string {
+	state := ""
+	if p.Disabled {
+		state = "pointer-events-none opacity-50"
+	}
+	if strings.TrimSpace(p.Variant) == "unstyled" {
+		return uiutils.Cn(state, p.Class)
+	}
+	return uiutils.Cn(
+		uiutils.Compose(ButtonVariants, map[string]string{
+			"variant": p.Variant,
+			"size":    p.Size,
+		}),
+		state,
+		p.Class,
+	)
+}
+
+func buttonSpreadAttrs(p ButtonProps) templ.Attributes {
+	attrs := uiutils.ControlAttrs(p.ID, p.Role, p.TabIndex, p.AriaLabel, p.Attrs)
+	if strings.TrimSpace(p.Href) != "" && p.Disabled {
+		attrs["aria-disabled"] = "true"
+		attrs["tabindex"] = "-1"
+		if _, ok := attrs["role"]; !ok {
+			attrs["role"] = "link"
+		}
+	}
+	return attrs
+}
+
+// Button renders button or anchor with variant classes.
+templ Button(p ButtonProps) {
+	if strings.TrimSpace(p.Href) != "" {
+		if p.Disabled {
+			<a
+				href={ templ.SafeURL(p.Href) }
+				class={ ButtonClasses(p) }
+				rel="nofollow noopener noreferrer"
+				if p.ID != "" {
+					id={ p.ID }
+				}
+				{ buttonSpreadAttrs(p)... }
+			>
+				{ children... }
+			</a>
+		} else {
+			<a
+				href={ templ.SafeURL(p.Href) }
+				class={ ButtonClasses(p) }
+				if p.ID != "" {
+					id={ p.ID }
+				}
+				{ buttonSpreadAttrs(p)... }
+			>
+				{ children... }
+			</a>
+		}
+	} else {
+		<button
+			type={ uiutils.DefaultButtonType(p.Type) }
+			class={ ButtonClasses(p) }
+			disabled?={ p.Disabled }
+			if p.ID != "" {
+				id={ p.ID }
+			}
+			if p.Form != "" {
+				form={ p.Form }
+			}
+			{ buttonSpreadAttrs(p)... }
+		>
+			{ children... }
+		</button>
+	}
+}

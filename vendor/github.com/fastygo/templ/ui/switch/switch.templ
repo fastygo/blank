@@ -1,0 +1,48 @@
+/**
+ * Switch is a toggle control (checkbox with switch ARIA semantics).
+ * Use for on/off settings; wireframe uses native checkbox styling.
+ */
+
+// Copy: components/ui/switch/switch.templ
+
+package formswitch
+
+import "github.com/fastygo/templ/utils"
+
+// SwitchProps configures a toggle input.
+type SwitchProps struct {
+	Variant   string
+	Size      string
+	Class     string
+	Name      string
+	Value     string
+	Checked   bool
+	Disabled  bool
+	Required  bool
+	ID        string
+	Role      string
+	TabIndex  string
+	AriaLabel string
+	Attrs     templ.Attributes
+}
+
+func SwitchClasses(p SwitchProps) string {
+	return uiutils.ControlClasses(p.Variant, p.Size, p.Class)
+}
+
+// Switch renders input[type=checkbox] with switch role attrs.
+templ Switch(p SwitchProps) {
+	<input
+		if p.ID != "" {
+			id={ p.ID }
+		}
+		type="checkbox"
+		name={ p.Name }
+		value={ p.Value }
+		class={ SwitchClasses(p) }
+		checked?={ p.Checked }
+		disabled?={ p.Disabled }
+		required?={ p.Required }
+		{ uiutils.SwitchAttrs(p.ID, p.Role, p.TabIndex, p.AriaLabel, p.Checked, p.Attrs)... }
+	/>
+}

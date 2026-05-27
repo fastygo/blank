@@ -17,6 +17,10 @@
   --accent-foreground: hsl(224.4444 64.2857% 32.9412%);
   --destructive: hsl(0 84.2365% 60.1961%);
   --destructive-foreground: hsl(0 0% 100%);
+  --success: hsl(142.1 76.2% 36.3%);
+  --success-foreground: hsl(0 0% 100%);
+  --warning: hsl(45.4 93.4% 47.5%);
+  --warning-foreground: hsl(0 0% 10%);
   --border: hsl(0 0% 80%);
   --input: hsl(220 15.7895% 96.2745%);
   --ring: hsl(13.2143 73.0435% 54.9020%);
@@ -35,7 +39,7 @@
   --sidebar-ring: hsl(13.2143 73.0435% 54.9020%);
   --font-sans: "Google Sans", sans-serif;
   --font-serif: ui-serif, Georgia, serif;
-  --font-mono: ui-monospace, SFMono-Regular, monospace;
+  --font-mono: "Source Code Pro", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --radius: 0.5rem;
   --shadow-x: 0px;
   --shadow-y: 1px;
@@ -53,6 +57,28 @@
   --shadow-2xl: 0px 1px 3px 0px hsl(0 0% 10.1961% / 0.25);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
+
+  /* Modus Operandi (light) code roles — see modus-vivendi overrides in .dark */
+  --code-default: var(--foreground);
+  --code-comment: color-mix(in hsl, var(--muted-foreground) 88%, var(--foreground));
+  --code-keyword: hsl(274 78% 35%);
+  --code-keyword-op: hsl(274 78% 35%);
+  --code-keyword-const: hsl(240 100% 38%);
+  --code-type: hsl(184 100% 19%);
+  --code-string: hsl(227 67% 44%);
+  --code-number: hsl(240 100% 38%);
+  --code-name: var(--foreground);
+  --code-at: var(--foreground);
+  --code-function: hsl(325 91% 26%);
+  --code-variable: hsl(203 100% 27%);
+  --code-builtin: hsl(316 100% 28%);
+  --code-operator: hsl(203 100% 27%);
+  --code-tag: hsl(203 100% 27%);
+  --code-error-fg: var(--destructive);
+  --code-error-bg: color-mix(in hsl, var(--destructive) 15%, transparent);
+  --code-diff-add: hsl(184 100% 19%);
+  --code-diff-del: var(--destructive);
+  --code-highlight: color-mix(in hsl, var(--accent) 50%, transparent);
 }
 
 .dark {
@@ -72,6 +98,10 @@
   --accent-foreground: hsl(213.3333 96.9231% 87.2549%);
   --destructive: hsl(0 84.2365% 60.1961%);
   --destructive-foreground: hsl(0 0% 100%);
+  --success: hsl(142.1 76.2% 36.3%);
+  --success-foreground: hsl(0 0% 100%);
+  --warning: hsl(45.4 93.4% 47.5%);
+  --warning-foreground: hsl(0 0% 10%);
   --border: hsl(0 0% 20.7843%);
   --input: hsl(0 0% 18.8235%);
   --ring: hsl(13.2143 73.0435% 54.9020%);
@@ -90,7 +120,7 @@
   --sidebar-ring: hsl(13.2143 73.0435% 54.9020%);
   --font-sans: "Google Sans", sans-serif;
   --font-serif: ui-serif, Georgia, serif;
-  --font-mono: ui-monospace, SFMono-Regular, monospace;
+  --font-mono: "Source Code Pro", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --radius: 0.5rem;
   --shadow-x: 0px;
   --shadow-y: 1px;
@@ -106,6 +136,22 @@
   --shadow-lg: 0px 1px 3px 0px hsl(0 0% 10.1961% / 0.10), 0px 4px 6px -1px hsl(0 0% 10.1961% / 0.10);
   --shadow-xl: 0px 1px 3px 0px hsl(0 0% 10.1961% / 0.10), 0px 8px 10px -1px hsl(0 0% 10.1961% / 0.10);
   --shadow-2xl: 0px 1px 3px 0px hsl(0 0% 10.1961% / 0.25);
+
+  /* Modus Vivendi (dark) code roles */
+  --code-comment: hsl(0 0% 66%);
+  --code-keyword: hsl(255 100% 83%);
+  --code-keyword-op: hsl(255 100% 83%);
+  --code-keyword-const: hsl(195 100% 50%);
+  --code-type: hsl(158 66% 68%);
+  --code-string: hsl(222 100% 74%);
+  --code-number: hsl(195 100% 50%);
+  --code-function: hsl(330 95% 84%);
+  --code-variable: hsl(178 100% 41%);
+  --code-builtin: hsl(309 89% 80%);
+  --code-operator: hsl(178 100% 41%);
+  --code-tag: hsl(178 100% 41%);
+  --code-diff-add: hsl(158 66% 68%);
+  --code-highlight: color-mix(in hsl, var(--accent) 65%, transparent);
 }
 
 @theme inline {
@@ -125,6 +171,10 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);

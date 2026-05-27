@@ -4,10 +4,9 @@ go 1.25.0
 
 require (
 	github.com/a-h/templ v0.3.1001
-	github.com/fastygo/elements v0.0.0-20260430110846-b42d0f16f431
 	github.com/fastygo/framework v0.0.0-20260428133456-8a8901eca249
 	github.com/fastygo/panel v0.0.0-20260507153054-7d218c36141b
-	github.com/fastygo/ui8kit v0.4.0
+	github.com/fastygo/templ v0.0.0-20260519182834-29250eaf6a34
 )
 
 require (
@@ -28,3 +27,5 @@ require (
 )
 
 tool github.com/a-h/templ/cmd/templ
+
+replace github.com/fastygo/templ => ../@Templ

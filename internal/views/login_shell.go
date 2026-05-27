@@ -1,22 +1,18 @@
 package views
 
 import (
-	etoggles "github.com/fastygo/blank/internal/ui/elements/toggles"
-	layout "github.com/fastygo/ui8kit/layout"
+	"github.com/fastygo/blank/internal/ui/layout"
+	"github.com/fastygo/blank/internal/views/partials"
 )
 
-// LoginShellProps builds UI8Kit shell props for the marketing-style login screen.
+// LoginShellProps builds shell props for the sign-in screen (no sidebar).
 func LoginShellProps(d LoginPageData) layout.ShellProps {
 	return layout.ShellProps{
-		Title:          "Dash · " + d.Title + " · " + d.Brand,
+		Title:          FormatDocumentTitle(d.Title, d.Brand),
 		Lang:           d.Lang,
 		BrandName:      d.Brand,
-		Active:         "",
-		NavItems:       nil,
-		CSSPath:        d.Assets.CSS,
-		ThemeJSPath:    d.Assets.ThemeJS,
-		AppJSPath:      d.Assets.AppJS,
-		HeaderExtra:    etoggles.LanguageToggle(d.LanguageToggle),
+		HeadExtra:      partials.ShellHead(d.Assets.CSS, d.Assets.ThemeJS, d.Assets.AppJS),
+		HeaderExtra:    partials.LoginHeaderExtra(d.LanguageSwitch),
 		ThemeToggle:    d.Theme,
 		MarketingShell: true,
 	}

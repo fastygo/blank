@@ -10,13 +10,13 @@ import (
 	"github.com/fastygo/blank/internal/cap"
 	"github.com/fastygo/blank/internal/fixtures"
 	"github.com/fastygo/blank/internal/paneldef"
+	"github.com/fastygo/blank/internal/ui/components/toggles"
+	"github.com/fastygo/blank/internal/ui/layout"
 	"github.com/fastygo/blank/internal/views"
 	"github.com/fastygo/framework/pkg/app"
 	"github.com/fastygo/framework/pkg/web"
 	"github.com/fastygo/framework/pkg/web/locale"
-	"github.com/fastygo/framework/pkg/web/view"
 	"github.com/fastygo/panel"
-	ui8layout "github.com/fastygo/ui8kit/layout"
 )
 
 // Feature wires cabinet HTTP routes.
@@ -53,11 +53,11 @@ func (f *Feature) NavItems() []app.NavItem {
 	return nil
 }
 
-func (f *Feature) panelNav() []ui8layout.NavItem {
+func (f *Feature) panelNav() []layout.NavItem {
 	raw := f.panel.Registry().NavItems(paneldef.AdminPrincipal)
-	out := make([]ui8layout.NavItem, len(raw))
+	out := make([]layout.NavItem, len(raw))
 	for i, it := range raw {
-		out[i] = ui8layout.NavItem{Label: it.Label, Path: it.Path, Icon: it.Icon}
+		out[i] = layout.NavItem{Label: it.Label, Path: it.Path, Icon: it.Icon}
 	}
 	return out
 }
@@ -99,27 +99,49 @@ func (f *Feature) assetPaths() views.AssetPaths {
 	}
 }
 
+func (f *Feature) languageSwitch(ctx context.Context, r *http.Request, fix fixtures.Locale) toggles.LanguageSwitchProps {
+	current := strings.ToLower(strings.TrimSpace(locale.From(ctx)))
+	if current == "" {
+		current = strings.ToLower(strings.TrimSpace(f.defaultLocale))
+	}
+	labels := map[string]string{"en": "En", "ru": "Ru"}
+	var items []toggles.LanguageSwitchItem
+	for _, loc := range f.available {
+		loc = strings.ToLower(strings.TrimSpace(loc))
+		label := labels[loc]
+		if label == "" {
+			label = strings.ToUpper(loc)
+		}
+		items = append(items, toggles.LanguageSwitchItem{
+			Locale: loc,
+			Label:  label,
+			Href:   locale.BuildLangHref(r, loc, f.defaultLocale),
+			Active: loc == current,
+		})
+	}
+	return toggles.LanguageSwitchProps{
+		AriaLabel: fix.LanguageToggleLabel,
+		Items:     items,
+	}
+}
+
 func (f *Feature) layoutData(ctx context.Context, r *http.Request, title, active string) views.LayoutData {
 	fix := f.fixtureLocale(ctx)
-	lt := view.BuildLanguageToggleFromContext(ctx,
-		view.WithLocaleLabels(map[string]string{"en": "EN", "ru": "RU"}),
-		view.WithLabel(fix.LanguageToggleLabel),
-	)
 	return views.LayoutData{
-		Title:    title + " · " + fix.Brand,
-		Lang:     locale.From(ctx),
-		Brand:    fix.Brand,
-		Active:   active,
-		NavItems: f.panelNav(),
-		Assets:   f.assetPaths(),
-		Theme: ui8layout.ThemeToggleProps{
+		PageTitle:      title,
+		Lang:           locale.From(ctx),
+		Brand:          fix.Brand,
+		Active:         active,
+		NavItems:       f.panelNav(),
+		Assets:         f.assetPaths(),
+		Theme: layout.ThemeToggleProps{
 			Label:              fix.Theme.Label,
 			SwitchToDarkLabel:  fix.Theme.SwitchToDarkLabel,
 			SwitchToLightLabel: fix.Theme.SwitchToLight,
 		},
-		LanguageToggle:     lt,
-		AccountEmail:       sessionEmail(r, f),
-		AccountSignOutText: fix.Account.SignOut,
+		LanguageSwitch: f.languageSwitch(ctx, r, fix),
+		AccountEmail:   sessionEmail(r, f),
+		AccountSignOut: fix.Account.SignOut,
 	}
 }
 
@@ -131,9 +153,29 @@ func sessionEmail(r *http.Request, f *Feature) string {
 	return s.Email
 }
 
+func (f *Feature) loginPageData(ctx context.Context, r *http.Request, fix fixtures.Locale, errMsg, returnTo string) views.LoginPageData {
+	return views.LoginPageData{
+		Title:          fix.Login.Title,
+		Lang:           locale.From(ctx),
+		Brand:          fix.Brand,
+		Subtitle:       fix.Login.Subtitle,
+		Error:          errMsg,
+		ReturnTo:       returnTo,
+		Assets:         f.assetPaths(),
+		EmailLabel:     fix.Login.EmailLabel,
+		PasswordLabel:  fix.Login.PasswordLabel,
+		SubmitLabel:    fix.Login.SubmitLabel,
+		Theme: layout.ThemeToggleProps{
+			Label:              fix.Theme.Label,
+			SwitchToDarkLabel:  fix.Theme.SwitchToDarkLabel,
+			SwitchToLightLabel: fix.Theme.SwitchToLight,
+		},
+		LanguageSwitch: f.languageSwitch(ctx, r, fix),
+	}
+}
+
 // Routes implements app.Feature.
 func (f *Feature) Routes(mux *http.ServeMux) {
-	// Exact root only (Go 1.22+); avoids ServeMux conflict with framework's "/static/" subtree.
 	mux.HandleFunc("GET /{$}", f.getRoot)
 	mux.HandleFunc("GET /cabinet/login", f.getLogin)
 	mux.HandleFunc("POST /cabinet/login", f.postLogin)
@@ -153,28 +195,7 @@ func (f *Feature) getLogin(w http.ResponseWriter, r *http.Request) {
 	}
 	ctx := r.Context()
 	fix := f.fixtureLocale(ctx)
-	lt := view.BuildLanguageToggleFromContext(ctx,
-		view.WithLocaleLabels(map[string]string{"en": "EN", "ru": "RU"}),
-		view.WithLabel(fix.LanguageToggleLabel),
-	)
-	data := views.LoginPageData{
-		Title:         fix.Login.Title,
-		Lang:          locale.From(ctx),
-		Brand:         fix.Brand,
-		Subtitle:      fix.Login.Subtitle,
-		Error:         "",
-		ReturnTo:      r.URL.Query().Get("return_to"),
-		Assets:        f.assetPaths(),
-		EmailLabel:    fix.Login.EmailLabel,
-		PasswordLabel: fix.Login.PasswordLabel,
-		SubmitLabel:   fix.Login.SubmitLabel,
-		Theme: ui8layout.ThemeToggleProps{
-			Label:              fix.Theme.Label,
-			SwitchToDarkLabel:  fix.Theme.SwitchToDarkLabel,
-			SwitchToLightLabel: fix.Theme.SwitchToLight,
-		},
-		LanguageToggle: lt,
-	}
+	data := f.loginPageData(ctx, r, fix, "", r.URL.Query().Get("return_to"))
 	_ = web.Render(ctx, w, views.LoginPage(data))
 }
 
@@ -187,28 +208,7 @@ func (f *Feature) postLogin(w http.ResponseWriter, r *http.Request) {
 	pr, ok := auth.FixtureLogin(r.PostForm.Get("email"), r.PostForm.Get("password"))
 	if !ok {
 		fix := f.fixtureLocale(ctx)
-		lt := view.BuildLanguageToggleFromContext(ctx,
-			view.WithLocaleLabels(map[string]string{"en": "EN", "ru": "RU"}),
-			view.WithLabel(fix.LanguageToggleLabel),
-		)
-		data := views.LoginPageData{
-			Title:         fix.Login.Title,
-			Lang:          locale.From(ctx),
-			Brand:         fix.Brand,
-			Subtitle:      fix.Login.Subtitle,
-			Error:         fix.Login.ErrorBadCreds,
-			ReturnTo:      r.PostForm.Get("return_to"),
-			Assets:        f.assetPaths(),
-			EmailLabel:    fix.Login.EmailLabel,
-			PasswordLabel: fix.Login.PasswordLabel,
-			SubmitLabel:   fix.Login.SubmitLabel,
-			Theme: ui8layout.ThemeToggleProps{
-				Label:              fix.Theme.Label,
-				SwitchToDarkLabel:  fix.Theme.SwitchToDarkLabel,
-				SwitchToLightLabel: fix.Theme.SwitchToLight,
-			},
-			LanguageToggle: lt,
-		}
+		data := f.loginPageData(ctx, r, fix, fix.Login.ErrorBadCreds, r.PostForm.Get("return_to"))
 		_ = web.Render(ctx, w, views.LoginPage(data))
 		return
 	}

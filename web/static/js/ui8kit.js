@@ -36,6 +36,9 @@
     }
 
     var nextButton = button.id ? parsed.getElementById(button.id) : null;
+    if (!nextButton) {
+      nextButton = parsed.querySelector("[data-ui8kit-spa-lang]");
+    }
     if (nextButton) {
       if (nextButton.getAttribute("href")) {
         button.setAttribute("href", nextButton.getAttribute("href"));
@@ -45,6 +48,9 @@
       }
       if (nextButton.dataset.nextLocale) {
         button.dataset.nextLocale = nextButton.dataset.nextLocale;
+      }
+      if (nextButton.dataset.nextLabel) {
+        button.dataset.nextLabel = nextButton.dataset.nextLabel;
       }
       button.textContent = nextButton.textContent;
     }
@@ -93,4 +99,163 @@
   });
 
   namespace.languageSwitch = { init: function () {} };
+})();
+
+(function () {
+  var namespace = window.ui8kit;
+  if (!namespace || typeof namespace.register !== "function") {
+    return;
+  }
+
+  namespace.register({
+    name: "copy-button",
+    init: function (root) {
+      var blocks = root.querySelectorAll('[data-ui8kit="copy-button"]');
+      for (var i = 0; i < blocks.length; i += 1) {
+        var block = blocks[i];
+        if (block.dataset.ui8kitBound) {
+          continue;
+        }
+        var trigger = block.querySelector("[data-copy-trigger]");
+        var sourceEl = block.querySelector("[data-copy-source]");
+        if (!trigger || !sourceEl) {
+          continue;
+        }
+        block.dataset.ui8kitBound = "1";
+        var copyLabel = trigger.getAttribute("data-copy-label") || trigger.textContent || "Copy code";
+        var copiedLabel = trigger.getAttribute("data-copied-label") || "Copied";
+        trigger.addEventListener("click", function (event) {
+          event.stopPropagation();
+          event.preventDefault();
+          var text =
+            sourceEl.value != null && sourceEl.value !== ""
+              ? sourceEl.value
+              : sourceEl.textContent || "";
+          var write =
+            navigator.clipboard && navigator.clipboard.writeText
+              ? navigator.clipboard.writeText(text)
+              : Promise.reject(new Error("clipboard unavailable"));
+          write
+            .then(function () {
+              trigger.setAttribute("aria-label", copiedLabel);
+              window.setTimeout(function () {
+                trigger.setAttribute("aria-label", copyLabel);
+              }, 2000);
+            })
+            .catch(function () {});
+        });
+      }
+      return function () {};
+    },
+  });
+
+  if (typeof namespace.initPattern === "function") {
+    namespace.initPattern("copy-button");
+  }
+})();
+
+(function () {
+  var namespace = window.ui8kit;
+  if (!namespace || typeof namespace.register !== "function") {
+    return;
+  }
+
+  namespace.register({
+    name: "docs-preview",
+    init: function (root) {
+      var hides = root.querySelectorAll("[data-docs-preview-hide]");
+      for (var i = 0; i < hides.length; i += 1) {
+        var hide = hides[i];
+        if (hide.dataset.ui8kitBound) {
+          continue;
+        }
+        hide.dataset.ui8kitBound = "1";
+        (function (btn) {
+          btn.addEventListener("click", function (event) {
+            event.preventDefault();
+            var details = btn.closest("details");
+            if (details) {
+              details.open = false;
+            }
+          });
+        })(hide);
+      }
+      return function () {};
+    },
+  });
+
+  if (typeof namespace.initPattern === "function") {
+    namespace.initPattern("docs-preview");
+  }
+})();
+
+(function () {
+  var namespace = window.ui8kit;
+  if (!namespace || typeof namespace.register !== "function") {
+    return;
+  }
+
+  function expandNavCollapse(block) {
+    block.setAttribute("data-nav-expanded", "true");
+    var teaser = block.querySelector("[data-nav-collapse-teaser]");
+    var overflow = block.querySelector("[data-nav-collapse-overflow]");
+    var hit = block.querySelector("[data-nav-collapse-expand]");
+    if (teaser) {
+      teaser.hidden = true;
+    }
+    if (overflow) {
+      overflow.hidden = false;
+    }
+    if (hit) {
+      hit.setAttribute("aria-expanded", "true");
+    }
+  }
+
+  function navCollapseBlockFromEvent(event) {
+    var target = event.currentTarget;
+    if (!target || typeof target.closest !== "function") {
+      return null;
+    }
+    return target.closest("[data-nav-collapse]");
+  }
+
+  namespace.register({
+    name: "nav-collapse",
+    init: function (root) {
+      var hits = root.querySelectorAll("[data-nav-collapse-expand]");
+      for (var i = 0; i < hits.length; i += 1) {
+        var hit = hits[i];
+        if (hit.dataset.ui8kitBound) {
+          continue;
+        }
+        hit.dataset.ui8kitBound = "1";
+        var block = hit.closest("[data-nav-collapse]");
+        if (!block || block.getAttribute("data-nav-expanded") === "true") {
+          continue;
+        }
+        hit.addEventListener("click", function (event) {
+          event.preventDefault();
+          var section = navCollapseBlockFromEvent(event);
+          if (section) {
+            expandNavCollapse(section);
+          }
+        });
+        hit.addEventListener("keydown", function (event) {
+          if (event.key !== "Enter" && event.key !== " ") {
+            return;
+          }
+          event.preventDefault();
+          var section = navCollapseBlockFromEvent(event);
+          if (section) {
+            expandNavCollapse(section);
+          }
+        });
+      }
+      return function () {};
+    },
+  });
+
+  if (typeof namespace.initPattern === "function") {
+    namespace.initPattern("nav-collapse");
+  }
 })();
