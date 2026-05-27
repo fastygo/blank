@@ -7,6 +7,14 @@ alwaysApply: true
 
 Minimal app shell; no blocks/widgets staging.
 
+## Git branches
+
+| Branch | Layout |
+|--------|--------|
+| `main` | Hero — top nav, no sidebar |
+| `sidebar` | Classic sidebar + header + mobile sheet |
+| `dashboard` | Full app reference (auth, panel, cabinet) |
+
 ```
 internal/ui/
   layout/       # shell, header, sidebar, helpers — permanent app chrome

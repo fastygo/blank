@@ -16,7 +16,7 @@ templ Header(props HeaderProps) {
 				@icon.Icon(icon.IconProps{Name: "menu", Size: "sm", Class: "h-4 w-4 shrink-0"})
 			}
 		}
-		@ui.Title(ui.TitleProps{Order: 1, Class: "min-w-0 flex-1 truncate text-left text-base font-bold tracking-tight"}, props.Title)
+		@ui.Title(ui.TitleProps{Order: 1, Class: "min-w-0 flex-1 truncate text-left text-base font-bold tracking-tight"}, props.PageTitle)
 		@ui.Group(ui.GroupProps{Class: "flex shrink-0 items-center gap-2"}) {
 			if props.Trailing != nil {
 				@props.Trailing

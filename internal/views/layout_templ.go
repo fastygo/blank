@@ -54,8 +54,8 @@ func SiteShell(d LayoutData, body templpkg.Component) templ.Component {
 			return nil
 		})
 		templ_7745c5c3_Err = layout.Shell(layout.ShellProps{
-			Title:          d.DocumentTitle(),
-			HeaderTitle:    d.PageTitle,
+			DocumentTitle:  d.DocumentTitle(),
+			PageTitle:      d.PageTitle,
 			Lang:           d.Lang,
 			BrandName:      d.Brand,
 			Active:         d.Active,

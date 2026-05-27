@@ -49,9 +49,9 @@ func Shell(props ShellProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var3 string
-		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(props.Title)
+		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(props.DocumentTitle)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layout/shell.templ`, Line: 11, Col: 23}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layout/shell.templ`, Line: 11, Col: 31}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -156,7 +156,7 @@ func Shell(props ShellProps) templ.Component {
 							}
 							return nil
 						})
-						templ_7745c5c3_Err = ui.Box(ui.BoxProps{Attrs: templ.Attributes{"id": "ui8kit-mobile-sheet-title"}}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var9), templ_7745c5c3_Buffer)
+						templ_7745c5c3_Err = ui.Box(mobileSheetTitleBox()).Render(templ.WithChildren(ctx, templ_7745c5c3_Var9), templ_7745c5c3_Buffer)
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
@@ -347,7 +347,7 @@ func Shell(props ShellProps) templ.Component {
 				ctx = templ.InitializeContext(ctx)
 				templ_7745c5c3_Err = Header(HeaderProps{
 					ShowMenuTrigger: shellHasNavigation(props),
-					Title:           shellHeaderTitle(props),
+					PageTitle:       props.PageTitle,
 					Trailing:        props.HeaderTrailing,
 					ThemeToggle:     props.ThemeToggle,
 				}).Render(ctx, templ_7745c5c3_Buffer)

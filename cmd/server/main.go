@@ -40,7 +40,7 @@ func main() {
 				Enabled: true,
 				Name:    "lang",
 			},
-			SPA: true,
+			SPA: false,
 		}).
 		WithHealthEndpoints("/healthz", "/readyz").
 		WithFeature(feat)

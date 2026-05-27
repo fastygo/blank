@@ -18,7 +18,7 @@ type SidebarProps struct {
 // HeaderProps configures the top header bar.
 type HeaderProps struct {
 	ShowMenuTrigger bool
-	Title           string
+	PageTitle       string
 	Trailing        templ.Component
 	ThemeToggle     ThemeToggleProps
 }
@@ -32,8 +32,8 @@ type ThemeToggleProps struct {
 
 // ShellProps configures the full page shell (sidebar + header + main).
 type ShellProps struct {
-	Title          string
-	HeaderTitle    string
+	DocumentTitle  string
+	PageTitle      string
 	Lang           string
 	BrandName      string
 	Active         string

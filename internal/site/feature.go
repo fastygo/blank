@@ -14,6 +14,12 @@ import (
 	"github.com/fastygo/framework/pkg/web/locale"
 )
 
+const (
+	assetCSS     = "/static/css/app.css"
+	assetThemeJS = "/static/js/theme.js"
+	assetAppJS   = "/static/js/ui8kit.js"
+)
+
 // Feature wires public HTTP routes for the app shell (sidebar, i18n, theme).
 type Feature struct {
 	available     []string
@@ -28,15 +34,13 @@ func NewFeature(available []string, defaultLocale string) *Feature {
 	}
 }
 
-// SetNavItems implements app.NavProvider.
-func (f *Feature) SetNavItems(_ []app.NavItem) {}
-
 // ID implements app.Feature.
 func (f *Feature) ID() string {
 	return "site"
 }
 
 // NavItems implements app.Feature.
+// Navigation labels are resolved per request from fixtures (see siteNav).
 func (f *Feature) NavItems() []app.NavItem {
 	return nil
 }
@@ -51,14 +55,6 @@ func (f *Feature) fixtureLocale(ctx context.Context) fixtures.Locale {
 		loc, _ = fixtures.LoadLocale(f.defaultLocale)
 	}
 	return loc
-}
-
-func (f *Feature) assetPaths() views.AssetPaths {
-	return views.AssetPaths{
-		CSS:     "/static/css/app.css",
-		ThemeJS: "/static/js/theme.js",
-		AppJS:   "/static/js/ui8kit.js",
-	}
 }
 
 func (f *Feature) siteNav(fix fixtures.Locale) []layout.NavItem {
@@ -94,15 +90,18 @@ func (f *Feature) languageSwitch(ctx context.Context, r *http.Request, fix fixtu
 	}
 }
 
-func (f *Feature) layoutData(ctx context.Context, r *http.Request, title, active string) views.LayoutData {
-	fix := f.fixtureLocale(ctx)
+func (f *Feature) layoutData(ctx context.Context, r *http.Request, fix fixtures.Locale, title, active string) views.LayoutData {
 	return views.LayoutData{
-		PageTitle:      title,
-		Lang:           locale.From(ctx),
-		Brand:          fix.Brand,
-		Active:         active,
-		NavItems:       f.siteNav(fix),
-		Assets:         f.assetPaths(),
+		PageTitle: title,
+		Lang:      locale.From(ctx),
+		Brand:     fix.Brand,
+		Active:    active,
+		NavItems:  f.siteNav(fix),
+		Assets: views.AssetPaths{
+			CSS:     assetCSS,
+			ThemeJS: assetThemeJS,
+			AppJS:   assetAppJS,
+		},
 		Theme: layout.ThemeToggleProps{
 			Label:              fix.Theme.Label,
 			SwitchToDarkLabel:  fix.Theme.SwitchToDarkLabel,
@@ -121,8 +120,8 @@ func (f *Feature) Routes(mux *http.ServeMux) {
 func (f *Feature) getHome(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	fix := f.fixtureLocale(ctx)
-	layout := f.layoutData(ctx, r, fix.Home.Title, "/")
-	_ = web.Render(ctx, w, views.SiteShell(layout, views.HomePage(views.HomeData{
+	data := f.layoutData(ctx, r, fix, fix.Home.Title, "/")
+	_ = web.Render(ctx, w, views.SiteShell(data, views.HomePage(views.HomeData{
 		Title:       fix.Home.Title,
 		Description: fix.Home.Description,
 		Body:        fix.Home.Body,
@@ -132,8 +131,8 @@ func (f *Feature) getHome(w http.ResponseWriter, r *http.Request) {
 func (f *Feature) getSample(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	fix := f.fixtureLocale(ctx)
-	layout := f.layoutData(ctx, r, fix.Sample.Title, "/sample")
-	_ = web.Render(ctx, w, views.SiteShell(layout, views.SamplePage(views.SampleData{
+	data := f.layoutData(ctx, r, fix, fix.Sample.Title, "/sample")
+	_ = web.Render(ctx, w, views.SiteShell(data, views.SamplePage(views.SampleData{
 		Title:       fix.Sample.Title,
 		Description: fix.Sample.Description,
 		Body:        fix.Sample.Body,

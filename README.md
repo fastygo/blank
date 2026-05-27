@@ -1,6 +1,6 @@
 # Blank
 
-Minimal **Go + templ** app shell on [FastyGo Framework](https://github.com/fastygo/framework) and [github.com/fastygo/templ](https://github.com/fastygo/templ). Sidebar, mobile sheet, header, dark theme, and En/Ru locale switching — nothing else. Use it as a neutral starting point for a new app.
+Minimal **Go + templ** app shell on [FastyGo Framework](https://github.com/fastygo/framework) and [github.com/fastygo/templ](https://github.com/fastygo/templ). **This branch (`sidebar`)** ships a classic sidebar + header layout with mobile sheet, dark theme, and En/Ru locale switching — nothing else. Use it as a neutral starting point for a sidebar app. For a hero layout without sidebar, use **`main`**.
 
 ## Prerequisites
 

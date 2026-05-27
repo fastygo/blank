@@ -75,7 +75,7 @@ func Header(props HeaderProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = ui.Title(ui.TitleProps{Order: 1, Class: "min-w-0 flex-1 truncate text-left text-base font-bold tracking-tight"}, props.Title).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = ui.Title(ui.TitleProps{Order: 1, Class: "min-w-0 flex-1 truncate text-left text-base font-bold tracking-tight"}, props.PageTitle).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

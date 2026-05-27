@@ -1,8 +1,6 @@
 package layout
 
 import (
-	"strings"
-
 	"github.com/a-h/templ"
 	"github.com/fastygo/templ/ui"
 	uiutils "github.com/fastygo/templ/utils"
@@ -12,13 +10,6 @@ const (
 	MobileSheetTriggerID = "ui8kit-mobile-sheet-trigger"
 	MobileSheetPanelID   = "ui8kit-mobile-sheet-panel"
 )
-
-func shellHeaderTitle(props ShellProps) string {
-	if strings.TrimSpace(props.HeaderTitle) != "" {
-		return props.HeaderTitle
-	}
-	return props.Title
-}
 
 func shellBrand(name string) string {
 	if name == "" {
@@ -112,6 +103,12 @@ func themeToggleButtonProps(props ThemeToggleProps) ui.ButtonProps {
 			uiutils.AriaLabel(themeToggleLabel(props.Label)),
 			uiutils.AriaPressed(false),
 		),
+	}
+}
+
+func mobileSheetTitleBox() ui.BoxProps {
+	return ui.BoxProps{
+		Attrs: templ.Attributes{"id": "ui8kit-mobile-sheet-title"},
 	}
 }
 

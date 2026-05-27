@@ -45,6 +45,9 @@ func TestSiteShell_homeRenders(t *testing.T) {
 	if !strings.Contains(html, `data-ui8kit="sheet"`) {
 		t.Fatal("expected shell mobile sheet markup")
 	}
+	if !strings.Contains(html, "<aside") {
+		t.Fatal("expected desktop sidebar aside landmark")
+	}
 	if !strings.Contains(html, `id="ui8kit-theme-toggle"`) {
 		t.Fatal("expected theme toggle control")
 	}

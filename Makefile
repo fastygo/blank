@@ -12,7 +12,7 @@ help:
 	@echo "  css        Build minified Tailwind CSS (bun)"
 	@echo "  generate   Run templ code generation"
 	@echo "  build      Production build: generate + css + go build -mod=vendor"
-	@echo "  verify     Full check: templ, css, ui8px lint, go test"
+	@echo "  verify     Full check: templ, css, js, ui8px lint, go test"
 	@echo "  run        Start dev server via bun script (with signal handling)"
 	@echo "  install    Install bun dependencies"
 	@echo "  clean      Remove build artifacts (bin/)"
