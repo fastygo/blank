@@ -6,7 +6,7 @@ BINARY := $(BIN_DIR)/$(APP_NAME)
 
 # Default target shows available commands
 help:
-	@echo "Blank Panel - Makefile targets:"
+	@echo "Blank - Makefile targets:"
 	@echo ""
 	@echo "  tidy       Update go.mod/go.sum and refresh vendor/"
 	@echo "  css        Build minified Tailwind CSS (bun)"

@@ -14,7 +14,7 @@ import (
 	"github.com/fastygo/blank/internal/views/partials"
 )
 
-func CabinetLayout(d LayoutData, body templpkg.Component) templ.Component {
+func SiteShell(d LayoutData, body templpkg.Component) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -54,17 +54,15 @@ func CabinetLayout(d LayoutData, body templpkg.Component) templ.Component {
 			return nil
 		})
 		templ_7745c5c3_Err = layout.Shell(layout.ShellProps{
-			Title:             d.DocumentTitle(),
-			HeaderTitle:       d.PageTitle,
-			Lang:              d.Lang,
-			BrandName:         d.Brand,
-			Active:            d.Active,
-			NavItems:          d.NavItems,
-			HeadExtra:         partials.ShellHead(d.Assets.CSS, d.Assets.ThemeJS, d.Assets.AppJS),
-			HeaderTrailing:    partials.HeaderTrailing(d.LanguageSwitch),
-			HeaderAccountMenu: partials.AccountDropdown(d.AccountEmail, d.AccountProfile, d.AccountSignOut, d.AccountMenuLabel),
-			ThemeToggle:       d.Theme,
-			MarketingShell:    false,
+			Title:          d.DocumentTitle(),
+			HeaderTitle:    d.PageTitle,
+			Lang:           d.Lang,
+			BrandName:      d.Brand,
+			Active:         d.Active,
+			NavItems:       d.NavItems,
+			HeadExtra:      partials.ShellHead(d.Assets.CSS, d.Assets.ThemeJS, d.Assets.AppJS),
+			HeaderTrailing: partials.HeaderTrailing(d.LanguageSwitch),
+			ThemeToggle:    d.Theme,
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

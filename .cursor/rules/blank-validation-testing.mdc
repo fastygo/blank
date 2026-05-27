@@ -1,9 +1,9 @@
 ---
-description: Blank Panel — verify pipeline, ui8px, aria, Go render tests
+description: Blank — verify pipeline, ui8px, aria, Go render tests
 alwaysApply: true
 ---
 
-# Validation & testing (Blank Panel)
+# Validation & testing (Blank)
 
 ## Routine checks
 
@@ -11,19 +11,11 @@ alwaysApply: true
 bun run verify
 ```
 
-Runs: **`templ generate`** → **`build:css`** → **`lint:ui8px`** → **`go test ./...`**
-
-Also run after markup/JS hook changes:
-
-```bash
-bun run validate:aria
-```
-
-(`ui8px validate aria internal/views internal/ui --manifest web/static/js/manifest.json`)
+Runs: **`templ generate`** → **`build:css`** → **`lint:ui8px`** → **`validate:aria`** → **`go test ./...`**
 
 ## Go render tests
 
-Add **`Test*_wireframeRenders`** in `internal/views` for critical surfaces (cabinet shell, login) so layout/mobile sheet/theme/locale markup regress without a browser. See `wireframe_render_test.go`.
+Add **`Test*_wireframeRenders`** in `internal/views` for critical surfaces (app shell, home) so layout/mobile sheet/theme/locale markup regress without a browser. See `wireframe_render_test.go`.
 
 ## CSS validator
 

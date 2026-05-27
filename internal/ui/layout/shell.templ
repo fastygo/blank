@@ -28,7 +28,7 @@ templ Shell(props ShellProps) {
 						}
 						@ui.Box(ui.BoxProps{Class: "mt-4"}) {
 							@ui.Stack(ui.StackProps{Tag: "nav", Class: "w-full gap-1 p-2"}) {
-								@Sidebar(SidebarProps{Items: props.NavItems, Active: props.Active, Mobile: true})
+								@Sidebar(SidebarProps{Items: props.NavItems, Active: props.Active})
 							}
 						}
 					}
@@ -47,13 +47,10 @@ templ Shell(props ShellProps) {
 				}
 				@ui.Box(ui.BoxProps{Class: "flex min-w-0 flex-1 flex-col"}) {
 					@Header(HeaderProps{
-						ShowMenuTrigger:      shellHasNavigation(props),
-						Title:                shellHeaderTitle(props),
-						Extra:                props.HeaderExtra,
-						Trailing:             props.HeaderTrailing,
-						AccountMenu:          props.HeaderAccountMenu,
-						ThemeToggle:          props.ThemeToggle,
-						ThemeToggleComponent: props.ThemeToggleComponent,
+						ShowMenuTrigger: shellHasNavigation(props),
+						Title:           shellHeaderTitle(props),
+						Trailing:        props.HeaderTrailing,
+						ThemeToggle:     props.ThemeToggle,
 					})
 					@ui.Block(ui.BlockProps{Tag: "main", Class: "flex w-full min-w-0 max-w-full flex-col gap-6 p-4 md:p-6"}) {
 						{ children... }

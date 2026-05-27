@@ -2,7 +2,7 @@ package views
 
 import "github.com/fastygo/templ/ui"
 
-templ DashboardPage(data DashboardData) {
+templ HomePage(data HomeData) {
 	@ui.Stack(ui.StackProps{Class: "flex flex-col gap-4"}) {
 		@ui.Title(ui.TitleProps{Order: 1}, data.Title)
 		@ui.Text(ui.TextProps{Class: "text-sm text-muted-foreground"}, data.Description)

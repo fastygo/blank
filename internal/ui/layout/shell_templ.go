@@ -220,7 +220,7 @@ func Shell(props ShellProps) templ.Component {
 								}()
 							}
 							ctx = templ.InitializeContext(ctx)
-							templ_7745c5c3_Err = Sidebar(SidebarProps{Items: props.NavItems, Active: props.Active, Mobile: true}).Render(ctx, templ_7745c5c3_Buffer)
+							templ_7745c5c3_Err = Sidebar(SidebarProps{Items: props.NavItems, Active: props.Active}).Render(ctx, templ_7745c5c3_Buffer)
 							if templ_7745c5c3_Err != nil {
 								return templ_7745c5c3_Err
 							}
@@ -346,13 +346,10 @@ func Shell(props ShellProps) templ.Component {
 				}
 				ctx = templ.InitializeContext(ctx)
 				templ_7745c5c3_Err = Header(HeaderProps{
-					ShowMenuTrigger:      shellHasNavigation(props),
-					Title:                shellHeaderTitle(props),
-					Extra:                props.HeaderExtra,
-					Trailing:             props.HeaderTrailing,
-					AccountMenu:          props.HeaderAccountMenu,
-					ThemeToggle:          props.ThemeToggle,
-					ThemeToggleComponent: props.ThemeToggleComponent,
+					ShowMenuTrigger: shellHasNavigation(props),
+					Title:           shellHeaderTitle(props),
+					Trailing:        props.HeaderTrailing,
+					ThemeToggle:     props.ThemeToggle,
 				}).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err

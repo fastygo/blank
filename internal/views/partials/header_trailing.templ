@@ -1,34 +1,13 @@
 package partials
 
 import (
-	"github.com/fastygo/blank/internal/ui/components/account"
 	"github.com/fastygo/blank/internal/ui/components/toggles"
 	"github.com/fastygo/templ/ui"
 )
 
-const cabinetLogoutPath = "/cabinet/logout"
-
 // HeaderTrailing renders the locale switch in the header bar.
 templ HeaderTrailing(language toggles.LanguageSwitchProps) {
 	@ui.Group(ui.GroupProps{Class: "flex shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-3"}) {
-		@toggles.LanguageSwitch(language)
-	}
-}
-
-// AccountDropdown renders the account menu after the theme toggle.
-templ AccountDropdown(email, profileLabel, signOutLabel, menuLabel string) {
-	@account.Dropdown(account.MenuProps{
-		Email:         email,
-		ProfileLabel:  profileLabel,
-		SignOutLabel:  signOutLabel,
-		SignOutAction: cabinetLogoutPath,
-		MenuLabel:     menuLabel,
-	})
-}
-
-// LoginHeaderExtra renders locale switch on the sign-in shell.
-templ LoginHeaderExtra(language toggles.LanguageSwitchProps) {
-	@ui.Group(ui.GroupProps{Class: "flex shrink-0 items-center gap-2"}) {
 		@toggles.LanguageSwitch(language)
 	}
 }

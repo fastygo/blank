@@ -1,6 +1,6 @@
-# Blank Panel
+# Blank
 
-Private single-user **cabinet** built on [FastyGo Framework](https://github.com/fastygo/framework), [Panel](https://github.com/fastygo/panel), and [UI8Kit](https://github.com/fastygo/ui8kit) `v0.4.0`. This repository is a **cloneable shell**: admin layout (sidebar, mobile sheet, header, language and theme toggles), fixture authentication, and embedded locale JSON. Use it as a neutral starting point for a new cabinet.
+Minimal **Go + templ** app shell on [FastyGo Framework](https://github.com/fastygo/framework) and [github.com/fastygo/templ](https://github.com/fastygo/templ). Sidebar, mobile sheet, header, dark theme, and En/Ru locale switching — nothing else. Use it as a neutral starting point for a new app.
 
 ## Prerequisites
 
@@ -14,68 +14,37 @@ bun install
 go mod download
 bun run build:css
 go tool templ generate ./...
-export SESSION_KEY="replace-with-a-long-random-secret-at-least-32-chars"
 bun run go
 ```
 
-UI8Kit static CSS/JS, theme scripts, and **Google Sans** (`gfonts.css` + `fonts/google-sans/`) are committed under [`web/static/`](web/static/).
+Static assets (Tailwind CSS, theme script, `@ui8kit/aria` dialog bundle) live under [`web/static/`](web/static/).
 
-`bun run go` runs [`scripts/run-server.mjs`](scripts/run-server.mjs): the server always starts with the **repository root as cwd** (correct `web/static`), and **Ctrl+C** is forwarded to the Go process so the port is released.
+`bun run go` runs [`scripts/run-server.mjs`](scripts/run-server.mjs): the server starts with the **repository root as cwd** and **Ctrl+C** is forwarded to the Go process.
 
-Closing a **browser tab does not** stop an HTTP server. Stop the job in the terminal (**Ctrl+C**) or close the terminal panel; if the port stays busy, an old `go` process is still running (see troubleshooting below).
-
-Open [http://127.0.0.1:8080/](http://127.0.0.1:8080/) — you are redirected to `/cabinet` (or to login if not signed in). You can also open [http://127.0.0.1:8080/cabinet/login](http://127.0.0.1:8080/cabinet/login) directly.
-
-### Default operator (fixture)
-
-- **Email:** `test@admin.dash`
-- **Password:** `test`
-
-There is **no SQLite** and no server-side user database; credentials are fixed in code for this autonomous template.
+Open [http://127.0.0.1:8080/](http://127.0.0.1:8080/) — home page with sidebar. Second demo route: [http://127.0.0.1:8080/sample](http://127.0.0.1:8080/sample).
 
 ## Environment
 
 | Variable | Default | Purpose |
 |----------|---------|---------|
 | `APP_BIND` | `127.0.0.1:8080` | HTTP listen address |
-| `APP_STATIC_DIR` | `web/static` when env omitted | Static files under `/static/`. Framework’s built-in default points at a CMS-style folder; this app **forces** `web/static` whenever `APP_STATIC_DIR` is not set in the environment. Use an absolute path if you do not start the server from the repo root. |
-| `SESSION_KEY` | dev-only fallback (logged) | HMAC secret for the session cookie |
+| `APP_STATIC_DIR` | `web/static` when env omitted | Static files under `/static/` |
 | `APP_DEFAULT_LOCALE` | `en` | Default locale |
 | `APP_AVAILABLE_LOCALES` | `en,ru` | Locales for the header switcher (query + cookie) |
 
-Probes: `GET /healthz` and `GET /readyz` are registered in [`cmd/server/main.go`](cmd/server/main.go).
-
-Set `SESSION_KEY` to a long random value before any non-local use.
-
-## Troubleshooting
-
-### `listen tcp ... bind: Only one usage of each socket address`
-
-Another process (often a previous `go run`) is still bound to that port. Stop it or use another port:
-
-```bash
-export APP_BIND=127.0.0.1:8081
-bun run go
-```
-
-On Windows, find and end the listener, for example: `netstat -ano | findstr :8080` then `taskkill /PID <pid> /F`.
-
-### Static files 404
-
-Run from the repo root (or use `bun run go`), run `bun run build:css`, and ensure `web/static` exists. See `APP_STATIC_DIR` in the table above.
+Probes: `GET /healthz` and `GET /readyz` in [`cmd/server/main.go`](cmd/server/main.go).
 
 ## Project layout
 
 | Path | Role |
 |------|------|
-| [`cmd/server/main.go`](cmd/server/main.go) | Composition root: config, locales, health, cabinet feature |
-| [`internal/cabinet/`](internal/cabinet/) | HTTP routes: `/cabinet`, `/cabinet/login`, `/cabinet/logout`, `/cabinet/sample` (placeholder) |
-| [`internal/auth/`](internal/auth/) | Cookie session + fixture login |
-| [`internal/paneldef/`](internal/paneldef/) | `panel.Panel` descriptor (pages, nav metadata) |
+| [`cmd/server/main.go`](cmd/server/main.go) | Composition root: config, locales, health, site feature |
+| [`internal/site/`](internal/site/) | HTTP routes: `/`, `/sample` |
 | [`internal/fixtures/locale/`](internal/fixtures/locale/) | Embedded JSON copy per locale |
-| [`internal/views/`](internal/views/) | `templ` pages, [`layout.templ`](internal/views/layout.templ) (`CabinetLayout` + UI8Kit `Shell`), [`partials/account_menu.templ`](internal/views/partials/account_menu.templ), and [`login_shell.go`](internal/views/login_shell.go) for marketing login shell |
-| [`internal/ui/elements/`](internal/ui/elements/) | Small reusable UI (e.g. `elements/toggles` language control) |
-| [`web/static/`](web/static/) | `app.css` (Tailwind build), `css/ui8kit/*`, `css/gfonts.css`, `fonts/google-sans/*`, `js/theme.js`, `js/ui8kit.js` |
+| [`internal/ui/layout/`](internal/ui/layout/) | Shell, sidebar, header |
+| [`internal/ui/components/`](internal/ui/components/) | Icon, language switch |
+| [`internal/views/`](internal/views/) | `templ` pages and shell glue |
+| [`web/static/`](web/static/) | `app.css`, tokens, fonts, `theme.js`, `ui8kit.js` |
 
 ## Verification
 
@@ -83,19 +52,12 @@ Run from the repo root (or use `bun run go`), run `bun run build:css`, and ensur
 bun run verify
 ```
 
-This runs `templ generate`, Tailwind build, `ui8px lint` (policy under [`.ui8px/policy/`](.ui8px/policy/)), and `go test ./...`.
+Runs: `templ generate` → Tailwind build → `build:js` (dialog-only `@ui8kit/aria`) → `ui8px lint` → `validate:aria` → `go test ./...`.
 
-## Cloning this template for a new cabinet
+## Adding a page
 
-1. Copy the repository (or subtree: `cmd/server`, `internal/cabinet`, `internal/ui`, `internal/views`, `internal/paneldef`, `web/static`, `package.json`, `.ui8px`).
-2. Change the Go module path in `go.mod` and imports.
-3. Extend [`internal/paneldef/panel.go`](internal/paneldef/panel.go) with new `panel.Page` or `panel.Resource` entries; mirror each with a route handler in [`internal/cabinet/feature.go`](internal/cabinet/feature.go).
-4. Add or extend `templ` under [`internal/views/`](internal/views/) (and Tailwind `@source` in [`web/static/css/input.css`](web/static/css/input.css) for new paths).
-5. Replace fixture auth in [`internal/auth/fixture.go`](internal/auth/fixture.go) with your own policy when you outgrow the single-user model.
+1. Add copy to **`fixtures.Locale`** and every **`locale/*.json`** file.
+2. Add a nav item in [`internal/site/feature.go`](internal/site/feature.go) (`siteNav`).
+3. Add `internal/views/<page>.templ` and a route handler in `internal/site/feature.go`.
 
-## Roadmap
-
-- Domain-specific pages and Panel resources wired to your product.
-- Optional persistence or APIs as needed for your cabinet.
-
-The [`.fastygo/`](.fastygo/) directory in some workspaces is reference-only and is **not** imported at runtime; this module builds standalone.
+For auth, panel navigation, and cabinet routes, use the **`dashboard`** branch as a reference.

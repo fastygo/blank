@@ -10,13 +10,11 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/fastygo/blank/internal/platform"
+	"github.com/fastygo/blank/internal/site"
 	"github.com/fastygo/framework/pkg/app"
 	"github.com/fastygo/framework/pkg/web/locale"
 	"github.com/fastygo/framework/pkg/web/security"
-	"github.com/fastygo/blank/internal/auth"
-	"github.com/fastygo/blank/internal/cabinet"
-	"github.com/fastygo/blank/internal/paneldef"
-	"github.com/fastygo/blank/internal/platform"
 )
 
 func main() {
@@ -29,17 +27,7 @@ func main() {
 	logger := newLogger(cfg.LogLevel, cfg.LogFormat)
 	slog.SetDefault(logger)
 
-	p, err := paneldef.BuildPanel()
-	if err != nil {
-		slog.Error("panel", "error", err)
-		os.Exit(1)
-	}
-
-	authn := auth.NewAuthenticator(cfg.SessionKey, auth.Options{
-		SessionSecure: false,
-	})
-
-	feat := cabinet.NewFeature(authn, p, cfg.AvailableLocales, cfg.DefaultLocale)
+	feat := site.NewFeature(cfg.AvailableLocales, cfg.DefaultLocale)
 
 	builder := app.New(cfg.Config).
 		WithLogger(logger).

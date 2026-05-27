@@ -1,7 +1,6 @@
 package layout
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/a-h/templ"
@@ -12,152 +11,7 @@ import (
 const (
 	MobileSheetTriggerID = "ui8kit-mobile-sheet-trigger"
 	MobileSheetPanelID   = "ui8kit-mobile-sheet-panel"
-
-	NavCollapseFullVisible = 5
-	NavCollapseFadeVisible = 3
 )
-
-func navCollapseThreshold() int {
-	return NavCollapseFullVisible + NavCollapseFadeVisible
-}
-
-// GroupNavItems splits flat nav items into section groups (section headers start a new group).
-func GroupNavItems(items []NavItem) []NavSectionGroup {
-	var groups []NavSectionGroup
-	var current NavSectionGroup
-	for _, item := range items {
-		if item.Section {
-			if current.Label != "" || len(current.Items) > 0 {
-				groups = append(groups, current)
-			}
-			current = NavSectionGroup{Label: item.Label}
-			continue
-		}
-		current.Items = append(current.Items, item)
-	}
-	if current.Label != "" || len(current.Items) > 0 {
-		groups = append(groups, current)
-	}
-	return groups
-}
-
-// NavSectionNeedsCollapse reports whether a section should use fade + expand UX.
-func NavSectionNeedsCollapse(items []NavItem) bool {
-	return len(items) > navCollapseThreshold()
-}
-
-// NavSectionExpanded is true when the active page is not among the always-visible links.
-func NavSectionExpanded(active string, items []NavItem) bool {
-	if active == "" || !NavSectionNeedsCollapse(items) {
-		return false
-	}
-	for i, item := range items {
-		if i >= NavCollapseFullVisible && item.Path == active {
-			return true
-		}
-	}
-	return false
-}
-
-// NavSectionCollapseID returns a stable DOM id for a collapsible nav section.
-// Mobile and desktop sidebars render separately; pass mobile=true for the sheet nav.
-func NavSectionCollapseID(label string, mobile bool) string {
-	s := strings.ToLower(strings.TrimSpace(label))
-	if s == "" {
-		if mobile {
-			return "nav-collapse-section-mobile"
-		}
-		return "nav-collapse-section"
-	}
-	var b strings.Builder
-	b.WriteString("nav-collapse-")
-	prevHyphen := false
-	for _, r := range s {
-		if (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') {
-			b.WriteRune(r)
-			prevHyphen = false
-			continue
-		}
-		if !prevHyphen {
-			b.WriteByte('-')
-			prevHyphen = true
-		}
-	}
-	id := strings.Trim(b.String(), "-")
-	if id == "" || id == "nav-collapse" {
-		id = "nav-collapse-section"
-	}
-	if mobile {
-		return id + "-mobile"
-	}
-	return id
-}
-
-func navCollapseOverflowID(sectionID string) string {
-	return sectionID + "-overflow"
-}
-
-func navCollapseRootStackProps(sectionID string, expanded bool) ui.StackProps {
-	return ui.StackProps{
-		Class: "gap-0",
-		Attrs: templ.Attributes{
-			"id":                sectionID,
-			"data-nav-collapse": "",
-			"data-nav-expanded": fmt.Sprintf("%t", expanded),
-		},
-	}
-}
-
-func navCollapseTeaserBoxProps(expanded bool) ui.BoxProps {
-	attrs := templ.Attributes{"data-nav-collapse-teaser": ""}
-	if expanded {
-		attrs["hidden"] = true
-	}
-	return ui.BoxProps{
-		Class: "nav-sidebar-teaser relative w-full",
-		Attrs: attrs,
-	}
-}
-
-func navCollapseTeaserHitBoxProps(sectionID string, expanded bool) ui.BoxProps {
-	return ui.BoxProps{
-		Class: "nav-sidebar-teaser-hit absolute inset-0 z-10 cursor-pointer",
-		Attrs: templ.Attributes{
-			"data-nav-collapse-expand": "",
-			"aria-controls":              navCollapseOverflowID(sectionID),
-			"role":                       "button",
-			"tabindex":                   "0",
-			"aria-expanded":              fmt.Sprintf("%t", expanded),
-			"aria-label":                 "Show more navigation items",
-		},
-	}
-}
-
-func navCollapseTeaserItemClass(fadeIndex int) string {
-	base := "nav-sidebar-teaser-item flex w-full items-center gap-2 rounded-md px-4 py-2 text-sm text-muted-foreground"
-	switch fadeIndex {
-	case 0:
-		return uiutils.Cn(base, "nav-sidebar-teaser-item-0")
-	case 1:
-		return uiutils.Cn(base, "nav-sidebar-teaser-item-1")
-	default:
-		return uiutils.Cn(base, "nav-sidebar-teaser-item-2")
-	}
-}
-
-func navCollapseOverflowStackProps(sectionID string, expanded bool) ui.StackProps {
-	attrs := templ.Attributes{
-		"id":                         navCollapseOverflowID(sectionID),
-		"data-nav-collapse-overflow": "",
-	}
-	if !expanded {
-		attrs["hidden"] = true
-	}
-	return ui.StackProps{
-		Class: "nav-sidebar-overflow gap-0",
-		Attrs: attrs,
-	}
-}
 
 func shellHeaderTitle(props ShellProps) string {
 	if strings.TrimSpace(props.HeaderTitle) != "" {
@@ -180,20 +34,15 @@ func shellLang(value string) string {
 	return value
 }
 
-func shellBodyClass(props ShellProps) string {
-	base := "min-h-screen overflow-x-hidden bg-background font-sans text-foreground"
-	if props.MarketingShell {
-		return base
-	}
-	return uiutils.Cn(base, "max-md:has-[#ui8kit-mobile-sheet-panel:not([hidden])]:overflow-hidden")
+func shellBodyClass(_ ShellProps) string {
+	return uiutils.Cn(
+		"min-h-screen overflow-x-hidden bg-background font-sans text-foreground",
+		"max-md:has-[#ui8kit-mobile-sheet-panel:not([hidden])]:overflow-hidden",
+	)
 }
 
 func shellHasNavigation(props ShellProps) bool {
-	return !props.MarketingShell && len(props.NavItems) > 0
-}
-
-func isExternalNavLink(path string) bool {
-	return strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://")
+	return len(props.NavItems) > 0
 }
 
 func themeToggleLabel(value string) string {
@@ -307,23 +156,15 @@ func mobileSheetCloseButtonProps() ui.ButtonProps {
 	}
 }
 
-func sidebarLinkButtonProps(active string, item NavItem, extraClass string) ui.ButtonProps {
+func sidebarLinkButtonProps(active string, item NavItem) ui.ButtonProps {
 	attrs := templ.Attributes{}
 	if active == item.Path {
 		attrs = uiutils.MergeAttrs(attrs, uiutils.AriaCurrent("page"))
 	}
-	if isExternalNavLink(item.Path) {
-		attrs["target"] = "_blank"
-		attrs["rel"] = "noopener noreferrer"
-	}
-	className := sidebarItemClasses(active, item.Path)
-	if extraClass != "" {
-		className = uiutils.Cn(className, extraClass)
-	}
 	return ui.ButtonProps{
 		Href:    item.Path,
 		Variant: "unstyled",
-		Class:   className,
+		Class:   sidebarItemClasses(active, item.Path),
 		Attrs:   attrs,
 	}
 }

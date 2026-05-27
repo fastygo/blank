@@ -6,19 +6,17 @@ import (
 	"github.com/fastygo/blank/internal/views/partials"
 )
 
-templ CabinetLayout(d LayoutData, body templpkg.Component) {
+templ SiteShell(d LayoutData, body templpkg.Component) {
 	@layout.Shell(layout.ShellProps{
-		Title:             d.DocumentTitle(),
-		HeaderTitle:       d.PageTitle,
-		Lang:              d.Lang,
-		BrandName:         d.Brand,
-		Active:            d.Active,
-		NavItems:          d.NavItems,
-		HeadExtra:         partials.ShellHead(d.Assets.CSS, d.Assets.ThemeJS, d.Assets.AppJS),
-		HeaderTrailing:    partials.HeaderTrailing(d.LanguageSwitch),
-		HeaderAccountMenu: partials.AccountDropdown(d.AccountEmail, d.AccountProfile, d.AccountSignOut, d.AccountMenuLabel),
-		ThemeToggle:       d.Theme,
-		MarketingShell:    false,
+		Title:          d.DocumentTitle(),
+		HeaderTitle:    d.PageTitle,
+		Lang:           d.Lang,
+		BrandName:      d.Brand,
+		Active:         d.Active,
+		NavItems:       d.NavItems,
+		HeadExtra:      partials.ShellHead(d.Assets.CSS, d.Assets.ThemeJS, d.Assets.AppJS),
+		HeaderTrailing: partials.HeaderTrailing(d.LanguageSwitch),
+		ThemeToggle: d.Theme,
 	}) {
 		@body
 	}

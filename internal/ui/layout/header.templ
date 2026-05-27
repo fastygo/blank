@@ -18,26 +18,16 @@ templ Header(props HeaderProps) {
 		}
 		@ui.Title(ui.TitleProps{Order: 1, Class: "min-w-0 flex-1 truncate text-left text-base font-bold tracking-tight"}, props.Title)
 		@ui.Group(ui.GroupProps{Class: "flex shrink-0 items-center gap-2"}) {
-			if props.Extra != nil {
-				@props.Extra
-			}
 			if props.Trailing != nil {
 				@props.Trailing
 			}
-			if props.ThemeToggleComponent != nil {
-				@props.ThemeToggleComponent
-			} else {
-				@ui.Button(themeToggleButtonProps(props.ThemeToggle)) {
-					@icon.Icon(icon.IconProps{
-						Name:  "moon",
-						Size:  "sm",
-						ID:    "theme-toggle-icon",
-						Attrs: templpkg.Attributes{"aria-hidden": "true"},
-					})
-				}
-			}
-			if props.AccountMenu != nil {
-				@props.AccountMenu
+			@ui.Button(themeToggleButtonProps(props.ThemeToggle)) {
+				@icon.Icon(icon.IconProps{
+					Name:  "moon",
+					Size:  "sm",
+					ID:    "theme-toggle-icon",
+					Attrs: templpkg.Attributes{"aria-hidden": "true"},
+				})
 			}
 		}
 	}

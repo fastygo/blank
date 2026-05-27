@@ -12,7 +12,7 @@ type AssetPaths struct {
 	AppJS   string
 }
 
-// LayoutData drives the cabinet shell (sidebar + header).
+// LayoutData drives the app shell (sidebar + header).
 type LayoutData struct {
 	PageTitle      string
 	Lang           string
@@ -22,10 +22,6 @@ type LayoutData struct {
 	Assets         AssetPaths
 	Theme          layout.ThemeToggleProps
 	LanguageSwitch toggles.LanguageSwitchProps
-	AccountEmail     string
-	AccountProfile   string
-	AccountSignOut   string
-	AccountMenuLabel string
 }
 
 // DocumentTitle returns the SEO document title for <title>.
@@ -36,35 +32,19 @@ func (d LayoutData) DocumentTitle() string {
 // FormatDocumentTitle builds "Page · Brand" for the document head.
 func FormatDocumentTitle(pageTitle, brand string) string {
 	if brand == "" {
-		brand = "Blank Panel"
+		brand = "Blank"
 	}
 	return pageTitle + " · " + brand
 }
 
-// LoginPageData is the sign-in screen.
-type LoginPageData struct {
-	Title          string
-	Lang           string
-	Brand          string
-	Subtitle       string
-	Error          string
-	ReturnTo       string
-	Assets         AssetPaths
-	EmailLabel     string
-	PasswordLabel  string
-	SubmitLabel    string
-	Theme          layout.ThemeToggleProps
-	LanguageSwitch toggles.LanguageSwitchProps
-}
-
-// DashboardData is the cabinet home page body.
-type DashboardData struct {
+// HomeData is the home page body inside the shell.
+type HomeData struct {
 	Title       string
 	Description string
 	Body        string
 }
 
-// SampleData is a second stub route for copy-paste onboarding.
+// SampleData is a second stub route for onboarding new pages.
 type SampleData struct {
 	Title       string
 	Description string
