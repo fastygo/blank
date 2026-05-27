@@ -350,6 +350,7 @@ func Shell(props ShellProps) templ.Component {
 					Title:                shellHeaderTitle(props),
 					Extra:                props.HeaderExtra,
 					Trailing:             props.HeaderTrailing,
+					AccountMenu:          props.HeaderAccountMenu,
 					ThemeToggle:          props.ThemeToggle,
 					ThemeToggleComponent: props.ThemeToggleComponent,
 				}).Render(ctx, templ_7745c5c3_Buffer)

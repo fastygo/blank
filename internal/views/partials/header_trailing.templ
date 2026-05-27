@@ -8,16 +8,22 @@ import (
 
 const cabinetLogoutPath = "/cabinet/logout"
 
-// HeaderTrailing renders locale switch plus account sign-out.
-templ HeaderTrailing(language toggles.LanguageSwitchProps, email string, signOutLabel string) {
+// HeaderTrailing renders the locale switch in the header bar.
+templ HeaderTrailing(language toggles.LanguageSwitchProps) {
 	@ui.Group(ui.GroupProps{Class: "flex shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-3"}) {
 		@toggles.LanguageSwitch(language)
-		@account.Menu(account.MenuProps{
-			Email:         email,
-			SignOutLabel:  signOutLabel,
-			SignOutAction: cabinetLogoutPath,
-		})
 	}
+}
+
+// AccountDropdown renders the account menu after the theme toggle.
+templ AccountDropdown(email, profileLabel, signOutLabel, menuLabel string) {
+	@account.Dropdown(account.MenuProps{
+		Email:         email,
+		ProfileLabel:  profileLabel,
+		SignOutLabel:  signOutLabel,
+		SignOutAction: cabinetLogoutPath,
+		MenuLabel:     menuLabel,
+	})
 }
 
 // LoginHeaderExtra renders locale switch on the sign-in shell.

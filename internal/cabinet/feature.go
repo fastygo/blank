@@ -140,8 +140,10 @@ func (f *Feature) layoutData(ctx context.Context, r *http.Request, title, active
 			SwitchToLightLabel: fix.Theme.SwitchToLight,
 		},
 		LanguageSwitch: f.languageSwitch(ctx, r, fix),
-		AccountEmail:   sessionEmail(r, f),
-		AccountSignOut: fix.Account.SignOut,
+		AccountEmail:     sessionEmail(r, f),
+		AccountProfile:   fix.Account.Profile,
+		AccountSignOut:   fix.Account.SignOut,
+		AccountMenuLabel: fix.Account.MenuLabel,
 	}
 }
 

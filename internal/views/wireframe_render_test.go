@@ -32,8 +32,10 @@ func TestCabinetLayout_dashboardRenders(t *testing.T) {
 				{Locale: "ru", Label: "Ru", Href: "/cabinet?lang=ru"},
 			},
 		},
-		AccountEmail:   "test@admin.dash",
-		AccountSignOut: "Sign out",
+		AccountEmail:     "test@admin.dash",
+		AccountProfile:   "Profile",
+		AccountSignOut:   "Sign out",
+		AccountMenuLabel: "Account menu",
 	}
 	body := DashboardPage(DashboardData{Title: "Dashboard", Description: "d", Body: "b"})
 	var buf bytes.Buffer
@@ -55,6 +57,12 @@ func TestCabinetLayout_dashboardRenders(t *testing.T) {
 	}
 	if !strings.Contains(html, `id="theme-toggle-icon"`) {
 		t.Fatal("expected theme toggle icon host")
+	}
+	if !strings.Contains(html, "latty-user") {
+		t.Fatal("expected account menu user trigger")
+	}
+	if !strings.Contains(html, `role="menu"`) {
+		t.Fatal("expected account dropdown panel")
 	}
 }
 

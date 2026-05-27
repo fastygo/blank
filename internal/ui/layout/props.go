@@ -30,6 +30,7 @@ type HeaderProps struct {
 	Title                string
 	Extra                templ.Component
 	Trailing             templ.Component
+	AccountMenu            templ.Component
 	ThemeToggle          ThemeToggleProps
 	ThemeToggleComponent templ.Component
 }
@@ -52,6 +53,7 @@ type ShellProps struct {
 	HeadExtra            templ.Component
 	HeaderExtra          templ.Component
 	HeaderTrailing       templ.Component
+	HeaderAccountMenu    templ.Component
 	ThemeToggle          ThemeToggleProps
 	ThemeToggleComponent templ.Component
 	MarketingShell       bool

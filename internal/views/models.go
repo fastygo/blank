@@ -22,8 +22,10 @@ type LayoutData struct {
 	Assets         AssetPaths
 	Theme          layout.ThemeToggleProps
 	LanguageSwitch toggles.LanguageSwitchProps
-	AccountEmail   string
-	AccountSignOut string
+	AccountEmail     string
+	AccountProfile   string
+	AccountSignOut   string
+	AccountMenuLabel string
 }
 
 // DocumentTitle returns the SEO document title for <title>.

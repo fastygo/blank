@@ -1,0 +1,63 @@
+package account
+
+import (
+	"strings"
+
+	templpkg "github.com/a-h/templ"
+	"github.com/fastygo/blank/internal/ui/components/icon"
+	"github.com/fastygo/templ/ui"
+)
+
+// MenuProps configures the header account dropdown (user, profile stub, sign out).
+type MenuProps struct {
+	Email         string
+	ProfileLabel  string
+	SignOutLabel  string
+	SignOutAction string
+	MenuLabel     string
+}
+
+templ Dropdown(props MenuProps) {
+	if strings.TrimSpace(props.Email) != "" {
+		@ui.Box(ui.BoxProps{Class: "group relative shrink-0"}) {
+			@ui.Button(menuTriggerButtonProps(props.MenuLabel)) {
+				@icon.Icon(icon.IconProps{Name: "user", Size: "sm", Class: "h-4 w-4 shrink-0"})
+			}
+			@ui.Box(ui.BoxProps{
+				Class: "absolute right-0 top-full z-50 mt-1 hidden w-full min-w-full rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-sm group-focus-within:block group-hover:block",
+				Attrs: templpkg.Attributes{"role": "menu"},
+			}) {
+				@ui.Stack(ui.StackProps{Class: "w-full gap-0"}) {
+					@ui.Box(ui.BoxProps{Class: "w-full px-3 py-2", Attrs: templpkg.Attributes{"role": "presentation"}}) {
+						@ui.Text(ui.TextProps{Tag: "span", Class: "text-sm text-muted-foreground"}, props.Email)
+					}
+					@ui.Box(ui.BoxProps{Class: "w-full border-t border-border p-1"}) {
+						@ui.Button(ui.ButtonProps{
+							Type:    "button",
+							Variant: "ghost",
+							Class:   "w-full justify-start",
+						}) {
+							{ menuProfileLabel(props.ProfileLabel) }
+						}
+					}
+					@ui.Box(ui.BoxProps{Class: "w-full border-t border-border p-1"}) {
+						@ui.Form(ui.FormProps{
+							Method: "post",
+							Action: menuSignOutAction(props.SignOutAction),
+							Class:  "w-full gap-0",
+						}) {
+							@ui.Button(ui.ButtonProps{
+								Type:    "submit",
+								Variant: "ghost",
+								Class:   "w-full justify-start gap-2",
+							}) {
+								@icon.Icon(icon.IconProps{Name: "log-out", Size: "sm", Class: "h-4 w-4 shrink-0"})
+								{ menuSignOutLabel(props.SignOutLabel) }
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

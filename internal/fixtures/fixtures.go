@@ -27,7 +27,9 @@ type Locale struct {
 	} `json:"theme"`
 	LanguageToggleLabel string `json:"language_toggle_label"`
 	Account             struct {
-		SignOut string `json:"sign_out"`
+		MenuLabel string `json:"menu_label"`
+		Profile   string `json:"profile"`
+		SignOut   string `json:"sign_out"`
 	} `json:"account"`
 	Dashboard struct {
 		Title       string `json:"title"`
