@@ -1,0 +1,64 @@
+---
+description: Blank — spec-driven agent workflow for plain-language requests
+globs: "**/*"
+alwaysApply: false
+---
+
+# Blank — Spec Driver
+
+Use specs as the driver for non-trivial changes.
+
+The user may describe intent in plain language. The agent is responsible for
+turning that intent into a small implementation spec before editing code.
+
+## Core Workflow
+
+For substantial work, proceed as:
+
+1. Gather local context from existing files and active rules.
+2. Draft a bounded spec from the user's intent.
+3. Validate the spec against Blank and Templ contracts.
+4. Implement only what the spec requires.
+5. Run the relevant verification and report the result.
+
+For tiny mechanical edits, an inline one-sentence spec is enough.
+
+## Spec Inputs
+
+Build the spec from:
+
+- the user's plain-language request;
+- existing Blank rules in `.cursor/rules`;
+- current fixtures, locale data, view models, routes, and tests;
+- Templ machine-readable specs (`*.spec.md`) when choosing primitives or composites;
+- existing implementation patterns before inventing new structure.
+
+## Required Spec Fields
+
+For non-trivial UI or behavior changes, the spec should name:
+
+- intent and affected surface;
+- fixture, locale, and view-model changes;
+- UI structure and component choices;
+- accessibility and interaction requirements;
+- validation commands or render tests;
+- explicit non-goals.
+
+## Validation Checks
+
+Before implementation, check whether the spec requires:
+
+- locale fixture updates for user-visible copy;
+- props-only views/components with no fixture loading in `.templ`;
+- `github.com/fastygo/templ/ui` or `templ/components` instead of raw markup;
+- allowed props, variants, tags, and semantics from Templ `api:` specs;
+- ARIA helpers or `@ui8kit/aria` manifest updates;
+- ui8px validation and Go render tests.
+
+## Boundaries
+
+- The user writes intent; the agent writes the spec.
+- Code is the output of the spec, not the starting point.
+- Keep specs small, local, and reversible.
+- Do not add dependencies or broad abstractions unless the spec justifies them.
+- Do not rewrite unrelated layout, fixture, routing, or validation code.
