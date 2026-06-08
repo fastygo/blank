@@ -41,6 +41,7 @@ Probes: `GET /healthz` and `GET /readyz` in [`cmd/server/main.go`](cmd/server/ma
 | [`cmd/server/main.go`](cmd/server/main.go) | Composition root: config, locales, health, site feature |
 | [`internal/site/`](internal/site/) | HTTP routes: `/`, `/sample` |
 | [`internal/fixtures/locale/`](internal/fixtures/locale/) | Embedded JSON copy per locale |
+| [`internal/ui/`](internal/ui/) | **UI registry** — layout, components, blocks, widgets, variants, utils ([`README`](internal/ui/README.md)) |
 | [`internal/ui/layout/`](internal/ui/layout/) | Shell, header nav, footer, mobile sheet |
 | [`internal/ui/components/`](internal/ui/components/) | Icon, language switch |
 | [`internal/views/`](internal/views/) | `templ` pages and shell glue |

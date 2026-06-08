@@ -1,17 +1,22 @@
 ---
-description: Blank — internal/ui tree, layout vs components vs views
+description: Blank — internal/ui registry tree, layout vs components vs views
 globs: "**/*"
 alwaysApply: false
 ---
 
 # Blank — UI structure
 
-Minimal app shell; no blocks/widgets staging.
+Minimal app shell with the **full `internal/ui` registry tree** for staging reusable UI.
+On-disk index: **`internal/ui/README.md`** (same `registry:*` labels as FastyGoUI).
 
 ```
 internal/ui/
-  layout/       # shell, header nav, footer, mobile sheet, helpers
-  components/   # dumb reusable pieces (icon, toggles)
+  layout/       # registry:layout — shell, header, footer, mobile sheet
+  components/   # registry:components — icon, toggles, …
+  blocks/       # registry:blocks — dashboard/, marketing/, docs/ (staging)
+  widgets/      # registry:widgets — UI + behavior (staging)
+  variants/     # registry:variants — wireframe utility maps
+  utils/        # registry:utils — app helpers on templ/utils
 internal/views/
   *.templ       # route pages (home hero, sample, …)
   partials/     # shell head assets, header trailing glue
@@ -24,10 +29,11 @@ internal/fixtures/
 
 | Path | Role |
 |------|------|
-| `internal/ui/layout` | Header nav (desktop center), mobile sheet, footer, theme toggle |
+| `internal/ui/layout` | App chrome; stays in app after extraction |
 | `internal/ui/components` | Props-only UI; no HTTP or fetch |
+| `internal/ui/blocks/<group>` | Section organisms → future `fastygo/blocks` |
+| `internal/ui/widgets` | Behavior shells → future `fastygo/widgets` |
 | `internal/views` | Compose layout + resolved fixture strings |
-| `internal/site` | HTTP routes and layout data assembly |
 
 **views** receive resolved strings/structs only — no `fixtures.LoadLocale` inside `.templ`.
 
