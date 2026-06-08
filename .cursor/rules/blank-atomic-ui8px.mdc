@@ -1,6 +1,7 @@
 ---
 description: Blank — templ/ui composition, ui8px policy, no raw HTML, no custom CSS classes
-alwaysApply: true
+globs: "**/*"
+alwaysApply: false
 ---
 
 # Blank — composition & ui8px

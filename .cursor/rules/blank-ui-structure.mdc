@@ -1,6 +1,7 @@
 ---
 description: Blank — internal/ui tree, layout vs components vs views
-alwaysApply: true
+globs: "**/*"
+alwaysApply: false
 ---
 
 # Blank — UI structure

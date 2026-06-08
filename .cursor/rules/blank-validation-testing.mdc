@@ -1,6 +1,7 @@
 ---
 description: Blank — verify pipeline, ui8px, aria, Go render tests
-alwaysApply: true
+globs: "**/*"
+alwaysApply: false
 ---
 
 # Validation & testing (Blank)

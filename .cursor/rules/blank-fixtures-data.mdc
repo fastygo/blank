@@ -1,6 +1,7 @@
 ---
 description: Blank — fixtures, locale JSON, view models
-alwaysApply: true
+globs: "**/*"
+alwaysApply: false
 ---
 
 # Data & fixtures (Blank)

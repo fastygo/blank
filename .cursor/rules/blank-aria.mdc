@@ -1,6 +1,7 @@
 ---
 description: Blank — static ARIA (templ/utils) + @ui8kit/aria client patterns
-alwaysApply: true
+globs: "**/*"
+alwaysApply: false
 ---
 
 # ARIA (Blank)
