@@ -44,6 +44,21 @@ For non-trivial UI or behavior changes, the spec should name:
 - validation commands or render tests;
 - explicit non-goals.
 
+## Persistent Specs
+
+For non-trivial feature work, save the agent-authored spec under
+`.project/specs/` so future chats can recover the decision context.
+
+- Use `.project/specs/active.md` for the current active implementation spec.
+- Use `.project/specs/<feature-slug>.md` for durable feature specs.
+- Use `.project/specs/archive/` for superseded or completed spec snapshots.
+- Create `.project/specs/` when the first persistent spec is needed.
+- Do not create persistent specs for tiny mechanical edits.
+
+Persistent specs should include intent, assumptions, affected surfaces, fixture
+and locale changes, UI/component structure, accessibility requirements,
+validation plan, acceptance criteria, and completion notes.
+
 ## Validation Checks
 
 Before implementation, check whether the spec requires:
