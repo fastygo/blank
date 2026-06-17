@@ -42,6 +42,10 @@ templ boxTag(p BoxProps) {
 			<nav class={ p.Class } { p.Attrs... }>{ children... }</nav>
 		case "figure":
 			<figure class={ p.Class } { p.Attrs... }>{ children... }</figure>
+		case "search":
+			<search class={ p.Class } { p.Attrs... }>{ children... }</search>
+		case "hgroup":
+			<hgroup class={ p.Class } { p.Attrs... }>{ children... }</hgroup>
 		default:
 			<div class={ p.Class } { p.Attrs... }>{ children... }</div>
 	}

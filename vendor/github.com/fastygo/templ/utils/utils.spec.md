@@ -65,7 +65,8 @@ exports:
     - name: AlertAttrs
       role: alert-static-aria
     - name: BreadcrumbRootAttrs
-      role: breadcrumb-nav-aria
+      role: breadcrumb-nav-explicit-attrs
+      signature: BreadcrumbRootAttrs(ariaLabel, dataUI8Kit string, attrs templ.Attributes) templ.Attributes
     - name: BreadcrumbItemAttrs
       role: breadcrumb-item-aria
     - name: TitleTag

@@ -1,0 +1,124 @@
+/**
+ * Link renders a semantic anchor for navigation and prose.
+ * Use Button for actions; use Link for destinations.
+ */
+
+// Copy: components/ui/link/link.templ
+
+package link
+
+import (
+	"strings"
+
+	"github.com/fastygo/templ/utils"
+)
+
+var LinkVariants = uiutils.Variants{
+	Base: "inline-flex items-center gap-1 underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+	Keys: []string{"variant", "size"},
+	Defaults: map[string]string{
+		"variant": "default",
+		"size":    "default",
+	},
+	ByKey: map[string]map[string]string{
+		"variant": {
+			"default":  "text-primary hover:underline",
+			"muted":    "text-muted-foreground hover:text-foreground hover:underline",
+			"nav":      "text-foreground hover:text-primary",
+			"block":    "flex w-full text-foreground hover:text-primary",
+			"external": "text-primary hover:underline",
+			"unstyled": "",
+		},
+		"size": {
+			"sm":      "text-sm",
+			"default": "text-sm",
+			"md":      "text-base",
+			"lg":      "text-lg",
+		},
+	},
+}
+
+// LinkProps configures a native anchor.
+type LinkProps struct {
+	Variant     string
+	Size        string
+	Class       string
+	Href        string
+	Target      string
+	Rel         string
+	Download    string
+	External    bool
+	Disabled    bool
+	AriaCurrent string
+	AriaLabel   string
+	ID          string
+	Role        string
+	TabIndex    string
+	Attrs       templ.Attributes
+}
+
+func LinkClasses(p LinkProps) string {
+	state := ""
+	if p.Disabled {
+		state = "pointer-events-none opacity-50"
+	}
+	return uiutils.Compose(LinkVariants, map[string]string{
+		"variant": p.Variant,
+		"size":    p.Size,
+	}, state, p.Class)
+}
+
+func linkTarget(p LinkProps) string {
+	if strings.TrimSpace(p.Target) != "" {
+		return p.Target
+	}
+	if p.External {
+		return "_blank"
+	}
+	return ""
+}
+
+func linkRel(p LinkProps) string {
+	if strings.TrimSpace(p.Rel) != "" {
+		return p.Rel
+	}
+	if p.External || linkTarget(p) == "_blank" {
+		return "noopener noreferrer"
+	}
+	return ""
+}
+
+func linkAttrs(p LinkProps) templ.Attributes {
+	attrs := uiutils.ControlAttrs(p.ID, p.Role, p.TabIndex, p.AriaLabel, p.Attrs)
+	if strings.TrimSpace(p.AriaCurrent) != "" {
+		attrs["aria-current"] = p.AriaCurrent
+	}
+	if p.Disabled {
+		attrs["aria-disabled"] = "true"
+		attrs["tabindex"] = "-1"
+	}
+	return attrs
+}
+
+// Link renders a semantic anchor element.
+templ Link(p LinkProps) {
+	<a
+		href={ templ.SafeURL(p.Href) }
+		class={ LinkClasses(p) }
+		if p.ID != "" {
+			id={ p.ID }
+		}
+		if linkTarget(p) != "" {
+			target={ linkTarget(p) }
+		}
+		if linkRel(p) != "" {
+			rel={ linkRel(p) }
+		}
+		if p.Download != "" {
+			download={ p.Download }
+		}
+		{ linkAttrs(p)... }
+	>
+		{ children... }
+	</a>
+}

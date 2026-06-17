@@ -9,7 +9,7 @@ api:
   Tag:
     role: layout-tag
     type: string
-    enum: [div, section, article, aside, header, footer, main, nav, figure]
+    enum: [div, section, article, aside, header, footer, main, nav, figure, search, hgroup]
     allow-list-source: utils.tags.TagGroupLayout
     default: div
   Class:

@@ -47,11 +47,11 @@ func IsAllowedTag(tag string, group TagGroup) bool {
 	t := strings.TrimSpace(strings.ToLower(tag))
 	switch group {
 	case TagGroupLayout:
-		return oneOf(t, "div", "section", "article", "aside", "header", "footer", "main", "nav", "figure")
+		return oneOf(t, "div", "section", "article", "aside", "header", "footer", "main", "nav", "figure", "search", "hgroup")
 	case TagGroupBlockText:
 		return oneOf(t, "p", "blockquote", "figcaption", "address", "pre")
 	case TagGroupInline:
-		return oneOf(t, "span", "em", "strong", "small", "abbr", "cite", "code", "kbd", "mark", "time", "data", "var", "samp", "sub", "sup", "b", "i", "u", "s", "q", "dfn", "bdo", "bdi")
+		return oneOf(t, "span", "em", "strong", "small", "abbr", "cite", "code", "kbd", "mark", "time", "data", "var", "samp", "sub", "sup", "b", "i", "u", "s", "q", "dfn", "bdo", "bdi", "ins", "del")
 	case TagGroupHeading:
 		return oneOf(t, "h1", "h2", "h3", "h4", "h5", "h6")
 	case TagGroupList:
@@ -83,7 +83,7 @@ func IsAllowedTag(tag string, group TagGroup) bool {
 	case TagGroupGroup:
 		return IsAllowedTag(t, TagGroupLayout) || oneOf(t, "fieldset")
 	case TagGroupText:
-		return IsAllowedTag(t, TagGroupBlockText) || oneOf(t, "span", "small", "time", "em", "strong", "cite", "abbr", "code", "mark")
+		return IsAllowedTag(t, TagGroupBlockText) || IsAllowedTag(t, TagGroupInline)
 	case TagGroupContainer:
 		return oneOf(t, "div", "main", "section")
 	default:

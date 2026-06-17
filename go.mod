@@ -4,8 +4,8 @@ go 1.25.0
 
 require (
 	github.com/a-h/templ v0.3.1001
-	github.com/fastygo/framework v0.0.0-20260428133456-8a8901eca249
-	github.com/fastygo/templ v0.0.0-20260525054632-8580b9d11d84
+	github.com/fastygo/framework v0.0.0-20260610113457-ec230ff92487
+	github.com/fastygo/templ v0.1.2
 )
 
 require (

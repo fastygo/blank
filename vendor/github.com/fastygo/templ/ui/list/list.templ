@@ -6,6 +6,8 @@
 
 package list
 
+import "github.com/fastygo/templ/utils"
+
 // List renders a list container (ul, ol, dl, or menu).
 templ List(p ListProps) {
 	switch listTag(p.Tag) {
@@ -30,7 +32,18 @@ templ List(p ListProps) {
 
 // ListItem renders one li with optional value attribute.
 templ ListItem(p ListItemProps) {
-	<li class={ p.Class } { listItemMergedAttrs(p)... }>
-		{ children... }
-	</li>
+	switch uiutils.ResolveTag(p.Tag, "li", uiutils.TagGroupListItem) {
+		case "dt":
+			<dt class={ p.Class } { listItemMergedAttrs(p)... }>
+				{ children... }
+			</dt>
+		case "dd":
+			<dd class={ p.Class } { listItemMergedAttrs(p)... }>
+				{ children... }
+			</dd>
+		default:
+			<li class={ p.Class } { listItemMergedAttrs(p)... }>
+				{ children... }
+			</li>
+	}
 }

@@ -7,19 +7,24 @@ facade: github.com/fastygo/templ/ui
 templ: Grid
 parts:
   - templ: Grid
-    props: [Class]
+    props: [Class, Cols]
   - templ: GridCol
-    props: [Class]
+    props: [Class, Span, Start, End, Order]
     slot: column
 api:
+  Cols:
+    role: column-count
+    type: string
+    enum: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1-2, 1-3, 1-4]
+    default: 1
   Class:
     role: style-extension
     type: string
 showcase:
   - id: layout.two-col
-    props: { Class: "grid-cols-2 gap-4" }
+    props: { Cols: "2", Class: "gap-4" }
   - id: layout.three-col
-    props: { Class: "grid-cols-3 gap-4" }
+    props: { Cols: "3", Class: "gap-4" }
 semantics:
   root: div
   role: none

@@ -6,20 +6,68 @@
 
 package grid
 
-import "github.com/fastygo/templ/utils"
+import (
+	"strconv"
+	"strings"
+
+	"github.com/fastygo/templ/utils"
+)
 
 // GridProps configures the grid container classes.
 type GridProps struct {
 	Class string
+	Cols  string
 }
 
 // GridColProps configures a single grid cell or track child.
 type GridColProps struct {
 	Class string
+	Span  int
+	Start int
+	End   int
+	Order int
 }
 
 func GridClasses(p GridProps) string {
-	return uiutils.Cn("grid", p.Class)
+	return uiutils.Cn("grid", gridColsClass(p.Cols), p.Class)
+}
+
+func GridColClasses(p GridColProps) string {
+	return uiutils.Cn(gridColClass(p.Span, p.Start, p.End, p.Order), p.Class)
+}
+
+func gridColsClass(cols string) string {
+	switch strings.TrimSpace(cols) {
+	case "", "1":
+		return "grid-cols-1"
+	case "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12":
+		return "grid-cols-" + strings.TrimSpace(cols)
+	case "1-2":
+		return "grid-cols-1 md:grid-cols-2"
+	case "1-3":
+		return "grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
+	case "1-4":
+		return "grid-cols-1 md:grid-cols-2 xl:grid-cols-4"
+	default:
+		return cols
+	}
+}
+
+func gridColClass(span, start, end, order int) string {
+	parts := []string{}
+	if span > 0 {
+		parts = append(parts, "col-span-"+strconv.Itoa(span))
+	}
+	if start > 0 {
+		parts = append(parts, "col-start-"+strconv.Itoa(start))
+	}
+	if end > 0 {
+		parts = append(parts, "col-end-"+strconv.Itoa(end))
+	}
+	if order > 0 {
+		parts = append(parts, "order-"+strconv.Itoa(order))
+	}
+	return uiutils.Cn(parts...)
 }
 
 // Grid renders a display:grid container.
@@ -31,7 +79,7 @@ templ Grid(p GridProps) {
 
 // GridCol renders one grid column child.
 templ GridCol(p GridColProps) {
-	<div class={ p.Class }>
+	<div class={ GridColClasses(p) }>
 		{ children... }
 	</div>
 }

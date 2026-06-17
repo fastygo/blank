@@ -9,7 +9,7 @@ api:
   Tag:
     role: group-tag
     type: string
-    enum: [div, section, article, aside, header, footer, main, nav, figure, fieldset]
+    enum: [div, section, article, aside, header, footer, main, nav, figure, search, hgroup, fieldset]
     allow-list-source: utils.tags.TagGroupGroup
     default: div
   Class:

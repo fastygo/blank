@@ -47,6 +47,10 @@ templ blockTag(p BlockProps) {
 			<nav class={ p.Class } { blockAttrs(p)... }>{ children... }</nav>
 		case "figure":
 			<figure class={ p.Class } { blockAttrs(p)... }>{ children... }</figure>
+		case "search":
+			<search class={ p.Class } { blockAttrs(p)... }>{ children... }</search>
+		case "hgroup":
+			<hgroup class={ p.Class } { blockAttrs(p)... }>{ children... }</hgroup>
 		default:
 			<div class={ p.Class } { blockAttrs(p)... }>{ children... }</div>
 	}

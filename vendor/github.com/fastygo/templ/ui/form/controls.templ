@@ -1,0 +1,275 @@
+/**
+ * Form controls covers fieldset, legend, datalist, output, meter, and progress.
+ */
+
+// Copy: components/ui/form/controls.templ
+
+package form
+
+import "github.com/fastygo/templ/utils"
+
+var FieldsetVariants = uiutils.Variants{
+	Base: "grid gap-4",
+	Keys: []string{"variant", "size"},
+	Defaults: map[string]string{"variant": "default", "size": "default"},
+	ByKey: map[string]map[string]string{
+		"variant": {
+			"default":  "",
+			"card":     "rounded-md border border-border p-4",
+			"inline":   "flex flex-wrap items-start gap-3",
+			"unstyled": "",
+		},
+		"size": {
+			"sm":      "gap-2",
+			"default": "gap-4",
+			"lg":      "gap-6",
+		},
+	},
+}
+
+var LegendVariants = uiutils.Variants{
+	Base: "text-sm font-medium",
+	Keys: []string{"variant", "size"},
+	Defaults: map[string]string{"variant": "default", "size": "default"},
+	ByKey: map[string]map[string]string{
+		"variant": {
+			"default":  "",
+			"muted":    "text-muted-foreground",
+			"unstyled": "",
+		},
+		"size": {
+			"sm":      "text-xs",
+			"default": "text-sm",
+			"lg":      "text-base",
+		},
+	},
+}
+
+var MeterVariants = uiutils.Variants{
+	Base: "h-2 w-full",
+	Keys: []string{"variant", "size"},
+	Defaults: map[string]string{"variant": "default", "size": "default"},
+	ByKey: map[string]map[string]string{
+		"variant": {
+			"default":  "accent-primary",
+			"muted":    "accent-muted-foreground",
+			"unstyled": "",
+		},
+		"size": {
+			"sm":      "h-1",
+			"default": "h-2",
+			"lg":      "h-3",
+		},
+	},
+}
+
+var ProgressVariants = uiutils.Variants{
+	Base: "h-2 w-full",
+	Keys: []string{"variant", "size"},
+	Defaults: map[string]string{"variant": "default", "size": "default"},
+	ByKey: map[string]map[string]string{
+		"variant": {
+			"default":  "accent-primary",
+			"muted":    "accent-muted-foreground",
+			"unstyled": "",
+		},
+		"size": {
+			"sm":      "h-1",
+			"default": "h-2",
+			"lg":      "h-3",
+		},
+	},
+}
+
+// FieldsetProps configures a fieldset group.
+type FieldsetProps struct {
+	Variant  string
+	Size     string
+	Class    string
+	Name     string
+	Form     string
+	Disabled bool
+	Attrs    templ.Attributes
+}
+
+// LegendProps configures a legend.
+type LegendProps struct {
+	Variant string
+	Size    string
+	Class   string
+	Attrs   templ.Attributes
+}
+
+// DataListProps configures datalist.
+type DataListProps struct {
+	ID    string
+	Class string
+	Attrs templ.Attributes
+}
+
+// DataOptionProps configures option inside datalist.
+type DataOptionProps struct {
+	Value string
+	Label string
+	Attrs templ.Attributes
+}
+
+// OutputProps configures output.
+type OutputProps struct {
+	ID    string
+	Class string
+	Name  string
+	For   string
+	Value string
+	Attrs templ.Attributes
+}
+
+// MeterProps configures meter.
+type MeterProps struct {
+	Variant string
+	Size    string
+	ID      string
+	Class   string
+	Value   string
+	Min     string
+	Max     string
+	Low     string
+	High    string
+	Optimum string
+	Attrs   templ.Attributes
+}
+
+// ProgressProps configures progress.
+type ProgressProps struct {
+	Variant string
+	Size    string
+	ID      string
+	Class   string
+	Value   string
+	Max     string
+	Attrs   templ.Attributes
+}
+
+func FieldsetClasses(p FieldsetProps) string {
+	return uiutils.Compose(FieldsetVariants, map[string]string{"variant": p.Variant, "size": p.Size}, p.Class)
+}
+
+func LegendClasses(p LegendProps) string {
+	return uiutils.Compose(LegendVariants, map[string]string{"variant": p.Variant, "size": p.Size}, p.Class)
+}
+
+func MeterClasses(p MeterProps) string {
+	return uiutils.Compose(MeterVariants, map[string]string{"variant": p.Variant, "size": p.Size}, p.Class)
+}
+
+func ProgressClasses(p ProgressProps) string {
+	return uiutils.Compose(ProgressVariants, map[string]string{"variant": p.Variant, "size": p.Size}, p.Class)
+}
+
+// Fieldset renders native fieldset.
+templ Fieldset(p FieldsetProps) {
+	<fieldset
+		class={ FieldsetClasses(p) }
+		if p.Name != "" {
+			name={ p.Name }
+		}
+		if p.Form != "" {
+			form={ p.Form }
+		}
+		disabled?={ p.Disabled }
+		{ p.Attrs... }
+	>
+		{ children... }
+	</fieldset>
+}
+
+// Legend renders native legend.
+templ Legend(p LegendProps) {
+	<legend class={ LegendClasses(p) } { p.Attrs... }>
+		{ children... }
+	</legend>
+}
+
+// DataList renders native datalist.
+templ DataList(p DataListProps) {
+	<datalist
+		if p.ID != "" {
+			id={ p.ID }
+		}
+		class={ p.Class }
+		{ p.Attrs... }
+	>
+		{ children... }
+	</datalist>
+}
+
+// DataOption renders an option inside datalist.
+templ DataOption(p DataOptionProps) {
+	<option value={ p.Value } label={ p.Label } { p.Attrs... }></option>
+}
+
+// Output renders native output.
+templ Output(p OutputProps) {
+	<output
+		if p.ID != "" {
+			id={ p.ID }
+		}
+		class={ p.Class }
+		name={ p.Name }
+		if p.For != "" {
+			for={ p.For }
+		}
+		{ p.Attrs... }
+	>
+		{ p.Value }
+		{ children... }
+	</output>
+}
+
+// Meter renders native meter.
+templ Meter(p MeterProps) {
+	<meter
+		if p.ID != "" {
+			id={ p.ID }
+		}
+		class={ MeterClasses(p) }
+		value={ p.Value }
+		if p.Min != "" {
+			min={ p.Min }
+		}
+		if p.Max != "" {
+			max={ p.Max }
+		}
+		if p.Low != "" {
+			low={ p.Low }
+		}
+		if p.High != "" {
+			high={ p.High }
+		}
+		if p.Optimum != "" {
+			optimum={ p.Optimum }
+		}
+		{ p.Attrs... }
+	>
+		{ children... }
+	</meter>
+}
+
+// Progress renders native progress.
+templ Progress(p ProgressProps) {
+	<progress
+		if p.ID != "" {
+			id={ p.ID }
+		}
+		class={ ProgressClasses(p) }
+		if p.Value != "" {
+			value={ p.Value }
+		}
+		if p.Max != "" {
+			max={ p.Max }
+		}
+		{ p.Attrs... }
+	>
+		{ children... }
+	</progress>
+}

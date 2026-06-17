@@ -12,40 +12,73 @@ import "github.com/fastygo/templ/utils"
 // TextProps configures typography element and classes.
 type TextProps struct {
 	Class string
-	// Tag — p, span, small, code, blockquote, …; defaults to p
+	// Tag — p, span, small, code, kbd, blockquote, ins, del, …; defaults to p
 	Tag   string
+	Attrs templ.Attributes
 }
 
 // Text renders plain copy in the chosen semantic tag.
 templ Text(p TextProps, value string) {
 	switch uiutils.ResolveTag(p.Tag, "p", uiutils.TagGroupText) {
 		case "span":
-			<span class={ p.Class }>{ value }</span>
+			<span class={ p.Class } { p.Attrs... }>{ value }</span>
 		case "small":
-			<small class={ p.Class }>{ value }</small>
+			<small class={ p.Class } { p.Attrs... }>{ value }</small>
 		case "time":
-			<time class={ p.Class }>{ value }</time>
+			<time class={ p.Class } { p.Attrs... }>{ value }</time>
 		case "em":
-			<em class={ p.Class }>{ value }</em>
+			<em class={ p.Class } { p.Attrs... }>{ value }</em>
 		case "strong":
-			<strong class={ p.Class }>{ value }</strong>
+			<strong class={ p.Class } { p.Attrs... }>{ value }</strong>
 		case "blockquote":
-			<blockquote class={ p.Class }>{ value }</blockquote>
+			<blockquote class={ p.Class } { p.Attrs... }>{ value }</blockquote>
 		case "figcaption":
-			<figcaption class={ p.Class }>{ value }</figcaption>
+			<figcaption class={ p.Class } { p.Attrs... }>{ value }</figcaption>
 		case "cite":
-			<cite class={ p.Class }>{ value }</cite>
+			<cite class={ p.Class } { p.Attrs... }>{ value }</cite>
 		case "abbr":
-			<abbr class={ p.Class }>{ value }</abbr>
+			<abbr class={ p.Class } { p.Attrs... }>{ value }</abbr>
 		case "address":
-			<address class={ p.Class }>{ value }</address>
+			<address class={ p.Class } { p.Attrs... }>{ value }</address>
 		case "pre":
-			<pre class={ p.Class }>{ value }</pre>
+			<pre class={ p.Class } { p.Attrs... }>{ value }</pre>
 		case "code":
-			<code class={ p.Class }>{ value }</code>
+			<code class={ p.Class } { p.Attrs... }>{ value }</code>
 		case "mark":
-			<mark class={ p.Class }>{ value }</mark>
+			<mark class={ p.Class } { p.Attrs... }>{ value }</mark>
+		case "data":
+			<data class={ p.Class } { p.Attrs... }>{ value }</data>
+		case "var":
+			<var class={ p.Class } { p.Attrs... }>{ value }</var>
+		case "samp":
+			<samp class={ p.Class } { p.Attrs... }>{ value }</samp>
+		case "kbd":
+			<kbd class={ p.Class } { p.Attrs... }>{ value }</kbd>
+		case "sub":
+			<sub class={ p.Class } { p.Attrs... }>{ value }</sub>
+		case "sup":
+			<sup class={ p.Class } { p.Attrs... }>{ value }</sup>
+		case "b":
+			<b class={ p.Class } { p.Attrs... }>{ value }</b>
+		case "i":
+			<i class={ p.Class } { p.Attrs... }>{ value }</i>
+		case "u":
+			<u class={ p.Class } { p.Attrs... }>{ value }</u>
+		case "s":
+			<s class={ p.Class } { p.Attrs... }>{ value }</s>
+		case "q":
+			<q class={ p.Class } { p.Attrs... }>{ value }</q>
+		case "dfn":
+			<dfn class={ p.Class } { p.Attrs... }>{ value }</dfn>
+		case "bdo":
+			<bdo class={ p.Class } { p.Attrs... }>{ value }</bdo>
+		case "bdi":
+			<bdi class={ p.Class } { p.Attrs... }>{ value }</bdi>
+		case "ins":
+			<ins class={ p.Class } { p.Attrs... }>{ value }</ins>
+		case "del":
+			<del class={ p.Class } { p.Attrs... }>{ value }</del>
 		default:
-			<p class={ p.Class }>{ value }</p>
+			<p class={ p.Class } { p.Attrs... }>{ value }</p>
 	}
 }

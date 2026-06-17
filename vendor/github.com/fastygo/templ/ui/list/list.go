@@ -22,6 +22,8 @@ type ListProps struct {
 // ListItemProps configures one list row.
 type ListItemProps struct {
 	Class string
+	// Tag — li, dt, or dd; defaults to li
+	Tag string
 	// Value — optional li value for ordered contexts
 	Value int
 	Attrs templ.Attributes
@@ -32,7 +34,7 @@ func listTag(tag string) string {
 }
 
 func listItemAttrs(p ListItemProps) templ.Attributes {
-	if p.Value <= 0 {
+	if p.Value <= 0 || uiutils.ResolveTag(p.Tag, "li", uiutils.TagGroupListItem) != "li" {
 		return templ.Attributes{}
 	}
 	return templ.Attributes{"value": strconv.Itoa(p.Value)}

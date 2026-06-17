@@ -5,6 +5,15 @@ kind: input
 package: github.com/fastygo/templ/ui/select
 facade: github.com/fastygo/templ/ui
 templ: Select
+parts:
+  - templ: Select
+    props: [Variant, Size, Class, Name, Value, Disabled, Required, Options, ID, Role, TabIndex, AriaLabel, Attrs]
+  - templ: SelectOption
+    props: [Value, Label, Selected, Disabled, Attrs]
+    slot: option
+  - templ: OptGroup
+    props: [Class, Label, Disabled, Attrs]
+    slot: option-group
 api:
   Variant:
     role: appearance
@@ -27,6 +36,12 @@ api:
   Options:
     role: choices
     type: "[]Option"
+  Option:
+    role: slot-choice
+    type: OptionProps
+  OptGroup:
+    role: grouped-choices
+    type: OptGroupProps
   Disabled:
     role: state
     type: bool
@@ -49,6 +64,7 @@ showcase:
         - { Value: a, Label: Option A }
 semantics:
   root: select
+  option-root: option | optgroup
   role: combobox
   behavior: interactive
 

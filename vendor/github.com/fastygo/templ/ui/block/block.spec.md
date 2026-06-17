@@ -9,7 +9,7 @@ api:
   Tag:
     role: landmark-tag
     type: string
-    enum: [div, main, header, section, footer, nav, article, aside, figure]
+    enum: [div, main, header, section, footer, nav, article, aside, figure, search, hgroup]
     default: div
     allow-list-source: utils.tags.TagGroupLayout
   Class:

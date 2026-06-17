@@ -18,7 +18,7 @@ exports:
       role: tag-validator
 tag-groups:
   - name: TagGroupLayout
-    allows: [div, section, article, aside, header, footer, main, nav, figure]
+    allows: [div, section, article, aside, header, footer, main, nav, figure, search, hgroup]
     used-by: [ui.block, ui.box]
   - name: TagGroupStack
     allows: [layout tags, ul, ol]
@@ -30,7 +30,7 @@ tag-groups:
     allows: [ul, ol, dl, menu]
     used-by: [ui.list]
   - name: TagGroupText
-    allows: [p, span, small, code, blockquote, em, strong, time, cite, abbr, mark, address, pre, figcaption]
+    allows: [p, blockquote, figcaption, address, pre, span, em, strong, small, abbr, cite, code, kbd, mark, time, data, var, samp, sub, sup, b, i, u, s, q, dfn, bdo, bdi, ins, del]
     used-by: [ui.text]
   - name: TagGroupContainer
     allows: [div, main, section]

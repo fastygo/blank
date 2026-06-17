@@ -9,7 +9,7 @@ parts:
   - templ: List
     props: [Class, Tag, Attrs]
   - templ: ListItem
-    props: [Class, Value, Attrs]
+    props: [Class, Tag, Value, Attrs]
     slot: item
 api:
   Tag:
@@ -22,6 +22,12 @@ api:
     role: ordered-value
     type: int
     applies-to: ListItem
+  ItemTag:
+    role: item-tag
+    type: string
+    enum: [li, dt, dd]
+    allow-list-source: utils.tags.TagGroupListItem
+    default: li
 showcase:
   - id: tag.ul
     props: { Tag: ul, Class: "gap-2" }
@@ -29,7 +35,7 @@ showcase:
     props: { Tag: ol, Class: "list-decimal pl-4" }
 semantics:
   root: ul | ol | dl | menu
-  item-root: li
+  item-root: li | dt | dd
   behavior: static
 
 ---
