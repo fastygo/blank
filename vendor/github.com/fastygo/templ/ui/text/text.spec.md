@@ -9,7 +9,7 @@ api:
   Tag:
     role: prose-tag
     type: string
-    enum: [p, span, small, code, blockquote, em, strong, time, cite, abbr, mark, address, pre, figcaption]
+    enum: [p, blockquote, figcaption, address, pre, span, em, strong, small, abbr, cite, code, kbd, mark, time, data, var, samp, sub, sup, b, i, u, s, q, dfn, bdo, bdi, ins, del]
     allow-list-source: utils.tags.TagGroupText
     default: p
   Class:
@@ -19,6 +19,9 @@ api:
     role: copy
     type: string
     position: argument
+  Attrs:
+    role: html-attrs
+    type: templ.Attributes
 showcase:
   - id: tag.p
     props: { Tag: p }

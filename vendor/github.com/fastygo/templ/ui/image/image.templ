@@ -1,0 +1,209 @@
+/**
+ * Image renders accessible img, picture, and source primitives.
+ * Use Decorative for purely visual images so alt stays empty.
+ */
+
+// Copy: components/ui/image/image.templ
+
+package image
+
+import (
+	"strings"
+
+	"github.com/fastygo/templ/utils"
+)
+
+var ImageVariants = uiutils.Variants{
+	Base: "block max-w-full",
+	Keys: []string{"variant", "size", "fit", "position", "aspect"},
+	Defaults: map[string]string{
+		"variant":  "default",
+		"size":     "auto",
+		"fit":      "cover",
+		"position": "center",
+		"aspect":   "auto",
+	},
+	ByKey: map[string]map[string]string{
+		"variant": {
+			"default":   "",
+			"rounded":   "rounded-md",
+			"avatar":    "rounded-full",
+			"thumbnail": "rounded-md border border-border",
+			"logo":      "object-contain",
+			"unstyled":  "",
+		},
+		"size": {
+			"auto":    "",
+			"default": "",
+			"xs":      "h-6 w-6",
+			"sm":      "h-8 w-8",
+			"md":      "h-12 w-12",
+			"lg":      "h-16 w-16",
+			"xl":      "h-24 w-24",
+			"full":    "h-full w-full",
+		},
+		"fit": {
+			"contain":    "object-contain",
+			"cover":      "object-cover",
+			"fill":       "object-fill",
+			"none":       "object-none",
+			"scale-down": "object-scale-down",
+		},
+		"position": {
+			"bottom":       "object-bottom",
+			"center":       "object-center",
+			"left":         "object-left",
+			"right":        "object-right",
+			"top":          "object-top",
+			"left-bottom":  "object-left-bottom",
+			"left-top":     "object-left-top",
+			"right-bottom": "object-right-bottom",
+			"right-top":    "object-right-top",
+		},
+		"aspect": {
+			"auto":   "aspect-auto",
+			"square": "aspect-square",
+			"video":  "aspect-video",
+		},
+	},
+}
+
+// ImageProps configures a native img element.
+type ImageProps struct {
+	Variant       string
+	Size          string
+	Class         string
+	Src           string
+	SrcSet        string
+	Sizes         string
+	Alt           string
+	Width         string
+	Height        string
+	Fit           string
+	Position      string
+	Aspect        string
+	Loading       string
+	Decoding      string
+	FetchPriority string
+	Decorative    bool
+	ID            string
+	Attrs         templ.Attributes
+}
+
+// PictureProps configures a picture wrapper.
+type PictureProps struct {
+	Class string
+	Attrs templ.Attributes
+}
+
+// SourceProps configures source for picture, video, or audio.
+type SourceProps struct {
+	SrcSet string
+	Src    string
+	Media  string
+	Type   string
+	Sizes  string
+	Attrs  templ.Attributes
+}
+
+func ImageClasses(p ImageProps) string {
+	return uiutils.Compose(ImageVariants, map[string]string{
+		"variant":  p.Variant,
+		"size":     p.Size,
+		"fit":      p.Fit,
+		"position": p.Position,
+		"aspect":   p.Aspect,
+	}, p.Class)
+}
+
+func imageAlt(p ImageProps) string {
+	if p.Decorative {
+		return ""
+	}
+	return p.Alt
+}
+
+func imageLoading(value string) string {
+	switch strings.TrimSpace(value) {
+	case "eager":
+		return "eager"
+	default:
+		return "lazy"
+	}
+}
+
+func imageDecoding(value string) string {
+	switch strings.TrimSpace(value) {
+	case "sync", "auto":
+		return strings.TrimSpace(value)
+	default:
+		return "async"
+	}
+}
+
+func imageAttrs(p ImageProps) templ.Attributes {
+	attrs := uiutils.MergeAttrs(templ.Attributes{}, p.Attrs)
+	if strings.TrimSpace(p.ID) != "" {
+		attrs["id"] = p.ID
+	}
+	if p.Decorative {
+		attrs["aria-hidden"] = "true"
+	}
+	return attrs
+}
+
+// Image renders an accessible img element.
+templ Image(p ImageProps) {
+	<img
+		src={ p.Src }
+		if p.SrcSet != "" {
+			srcset={ p.SrcSet }
+		}
+		if p.Sizes != "" {
+			sizes={ p.Sizes }
+		}
+		alt={ imageAlt(p) }
+		if p.Width != "" {
+			width={ p.Width }
+		}
+		if p.Height != "" {
+			height={ p.Height }
+		}
+		loading={ imageLoading(p.Loading) }
+		decoding={ imageDecoding(p.Decoding) }
+		if p.FetchPriority != "" {
+			fetchpriority={ p.FetchPriority }
+		}
+		class={ ImageClasses(p) }
+		{ imageAttrs(p)... }
+	/>
+}
+
+// Picture renders a responsive image wrapper.
+templ Picture(p PictureProps) {
+	<picture class={ p.Class } { p.Attrs... }>
+		{ children... }
+	</picture>
+}
+
+// Source renders a source candidate for picture, video, or audio.
+templ Source(p SourceProps) {
+	<source
+		if p.SrcSet != "" {
+			srcset={ p.SrcSet }
+		}
+		if p.Src != "" {
+			src={ p.Src }
+		}
+		if p.Media != "" {
+			media={ p.Media }
+		}
+		if p.Type != "" {
+			type={ p.Type }
+		}
+		if p.Sizes != "" {
+			sizes={ p.Sizes }
+		}
+		{ p.Attrs... }
+	/>
+}

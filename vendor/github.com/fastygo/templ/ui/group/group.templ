@@ -46,6 +46,10 @@ templ groupTag(p GroupProps) {
 			<nav class={ GroupClasses(p) } { p.Attrs... }>{ children... }</nav>
 		case "figure":
 			<figure class={ GroupClasses(p) } { p.Attrs... }>{ children... }</figure>
+		case "search":
+			<search class={ GroupClasses(p) } { p.Attrs... }>{ children... }</search>
+		case "hgroup":
+			<hgroup class={ GroupClasses(p) } { p.Attrs... }>{ children... }</hgroup>
 		case "fieldset":
 			<fieldset class={ GroupClasses(p) } { p.Attrs... }>{ children... }</fieldset>
 		default:

@@ -1,0 +1,98 @@
+/**
+ * Disclosure renders native details and summary elements.
+ */
+
+// Copy: components/ui/disclosure/disclosure.templ
+
+package disclosure
+
+import "github.com/fastygo/templ/utils"
+
+var DisclosureVariants = uiutils.Variants{
+	Base: "group",
+	Keys: []string{"variant", "size"},
+	Defaults: map[string]string{
+		"variant": "default",
+		"size":    "default",
+	},
+	ByKey: map[string]map[string]string{
+		"variant": {
+			"default":  "rounded-md border border-border",
+			"ghost":    "",
+			"card":     "rounded-md border border-border bg-card text-card-foreground",
+			"unstyled": "",
+		},
+		"size": {
+			"sm":      "text-sm",
+			"default": "text-sm",
+			"lg":      "text-base",
+		},
+	},
+}
+
+var SummaryVariants = uiutils.Variants{
+	Base: "flex cursor-pointer list-none items-center justify-between gap-2 [&::-webkit-details-marker]:hidden",
+	Keys: []string{"variant", "size"},
+	Defaults: map[string]string{
+		"variant": "default",
+		"size":    "default",
+	},
+	ByKey: map[string]map[string]string{
+		"variant": {
+			"default":  "px-4 py-3 font-medium",
+			"ghost":    "py-2 font-medium",
+			"card":     "px-4 py-3 font-medium",
+			"unstyled": "",
+		},
+		"size": {
+			"sm":      "text-sm",
+			"default": "text-sm",
+			"lg":      "text-base",
+		},
+	},
+}
+
+// DisclosureProps configures details.
+type DisclosureProps struct {
+	Variant string
+	Size    string
+	Class   string
+	Open    bool
+	Attrs   templ.Attributes
+}
+
+// SummaryProps configures summary.
+type SummaryProps struct {
+	Variant string
+	Size    string
+	Class   string
+	Attrs   templ.Attributes
+}
+
+func DisclosureClasses(p DisclosureProps) string {
+	return uiutils.Compose(DisclosureVariants, map[string]string{
+		"variant": p.Variant,
+		"size":    p.Size,
+	}, p.Class)
+}
+
+func SummaryClasses(p SummaryProps) string {
+	return uiutils.Compose(SummaryVariants, map[string]string{
+		"variant": p.Variant,
+		"size":    p.Size,
+	}, p.Class)
+}
+
+// Disclosure renders native details.
+templ Disclosure(p DisclosureProps) {
+	<details class={ DisclosureClasses(p) } open?={ p.Open } { p.Attrs... }>
+		{ children... }
+	</details>
+}
+
+// Summary renders native summary.
+templ Summary(p SummaryProps) {
+	<summary class={ SummaryClasses(p) } { p.Attrs... }>
+		{ children... }
+	</summary>
+}

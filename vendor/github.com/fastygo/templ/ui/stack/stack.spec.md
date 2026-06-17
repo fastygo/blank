@@ -9,7 +9,7 @@ api:
   Tag:
     role: stack-tag
     type: string
-    enum: [div, nav, section, article, aside, header, footer, main, figure, ul, ol]
+    enum: [div, nav, section, article, aside, header, footer, main, figure, search, hgroup, ul, ol]
     allow-list-source: utils.tags.TagGroupStack
     default: div
   Class:

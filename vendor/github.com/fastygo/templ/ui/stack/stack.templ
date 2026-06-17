@@ -46,6 +46,10 @@ templ stackTag(p StackProps) {
 			<main class={ StackClasses(p) } { p.Attrs... }>{ children... }</main>
 		case "figure":
 			<figure class={ StackClasses(p) } { p.Attrs... }>{ children... }</figure>
+		case "search":
+			<search class={ StackClasses(p) } { p.Attrs... }>{ children... }</search>
+		case "hgroup":
+			<hgroup class={ StackClasses(p) } { p.Attrs... }>{ children... }</hgroup>
 		case "ul":
 			<ul class={ StackClasses(p) } { p.Attrs... }>{ children... }</ul>
 		case "ol":

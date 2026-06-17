@@ -1,0 +1,120 @@
+/**
+ * Icon renders a class-based span, svg use reference, or text fallback.
+ * Decorative icons are hidden from assistive technology by default.
+ */
+
+// Copy: components/ui/icon/icon.templ
+
+package icon
+
+import (
+	"strings"
+
+	"github.com/fastygo/templ/utils"
+)
+
+var IconVariants = uiutils.Variants{
+	Base: "inline-block shrink-0",
+	Keys: []string{"type", "size"},
+	Defaults: map[string]string{
+		"type": "class",
+		"size": "default",
+	},
+	ByKey: map[string]map[string]string{
+		"type": {
+			"class": "",
+			"svg":   "",
+			"text":  "",
+		},
+		"size": {
+			"xs":      "h-3 w-3",
+			"sm":      "h-4 w-4",
+			"default": "h-4 w-4",
+			"md":      "h-5 w-5",
+			"lg":      "h-6 w-6",
+			"xl":      "h-8 w-8",
+		},
+	},
+}
+
+// IconProps configures a reusable icon host.
+type IconProps struct {
+	Name       string
+	Type       string
+	BaseClass  string
+	Prefix     string
+	Size       string
+	Class      string
+	Href       string
+	Title      string
+	AriaLabel  string
+	Decorative bool
+	Attrs      templ.Attributes
+}
+
+func IconClasses(p IconProps) string {
+	base := uiutils.Compose(IconVariants, map[string]string{
+		"type": iconType(p.Type),
+		"size": p.Size,
+	})
+	if iconType(p.Type) == "class" {
+		base = uiutils.Cn(base, iconClassName(p))
+	}
+	return uiutils.Cn(base, p.Class)
+}
+
+func iconType(value string) string {
+	switch strings.TrimSpace(value) {
+	case "svg", "text":
+		return strings.TrimSpace(value)
+	default:
+		return "class"
+	}
+}
+
+func iconClassName(p IconProps) string {
+	name := strings.TrimSpace(p.Name)
+	if name == "" {
+		return strings.TrimSpace(p.BaseClass)
+	}
+	return uiutils.Cn(strings.TrimSpace(p.BaseClass), strings.TrimSpace(p.Prefix)+name)
+}
+
+func iconIsDecorative(p IconProps) bool {
+	return p.Decorative || (strings.TrimSpace(p.Title) == "" && strings.TrimSpace(p.AriaLabel) == "")
+}
+
+func iconAttrs(p IconProps) templ.Attributes {
+	attrs := uiutils.MergeAttrs(templ.Attributes{}, p.Attrs)
+	if iconIsDecorative(p) {
+		attrs["aria-hidden"] = "true"
+		return attrs
+	}
+	attrs["role"] = "img"
+	if strings.TrimSpace(p.AriaLabel) != "" {
+		attrs["aria-label"] = p.AriaLabel
+	}
+	return attrs
+}
+
+// Icon renders a class-based span, svg use, or text fallback host.
+templ Icon(p IconProps) {
+	switch iconType(p.Type) {
+		case "svg":
+			<svg class={ IconClasses(p) } { iconAttrs(p)... }>
+				if p.Title != "" {
+					<title>{ p.Title }</title>
+				}
+				if p.Href != "" {
+					<use href={ p.Href }></use>
+				}
+				{ children... }
+			</svg>
+		case "text":
+			<span class={ IconClasses(p) } { iconAttrs(p)... }>
+				{ children... }
+			</span>
+		default:
+			<span class={ IconClasses(p) } { iconAttrs(p)... }></span>
+	}
+}

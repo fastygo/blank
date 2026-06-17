@@ -1,0 +1,35 @@
+/**
+ * Break renders br or wbr for controlled inline wrapping.
+ */
+
+// Copy: components/ui/linebreak/linebreak.templ
+
+package linebreak
+
+import "strings"
+
+// BreakProps configures a line or word break.
+type BreakProps struct {
+	Type  string
+	Class string
+	Attrs templ.Attributes
+}
+
+func breakType(value string) string {
+	switch strings.TrimSpace(value) {
+	case "wbr", "word":
+		return "wbr"
+	default:
+		return "br"
+	}
+}
+
+// Break renders br by default, or wbr when Type is wbr/word.
+templ Break(p BreakProps) {
+	switch breakType(p.Type) {
+		case "wbr":
+			<wbr class={ p.Class } { p.Attrs... }/>
+		default:
+			<br class={ p.Class } { p.Attrs... }/>
+	}
+}

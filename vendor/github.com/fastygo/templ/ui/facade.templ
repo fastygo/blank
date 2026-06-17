@@ -12,15 +12,22 @@ import (
 	"github.com/fastygo/templ/ui/button"
 	"github.com/fastygo/templ/ui/checkbox"
 	"github.com/fastygo/templ/ui/container"
+	"github.com/fastygo/templ/ui/dialog"
+	"github.com/fastygo/templ/ui/disclosure"
 	"github.com/fastygo/templ/ui/form"
 	"github.com/fastygo/templ/ui/switch"
 	"github.com/fastygo/templ/ui/grid"
 	"github.com/fastygo/templ/ui/group"
+	"github.com/fastygo/templ/ui/icon"
+	"github.com/fastygo/templ/ui/image"
 	"github.com/fastygo/templ/ui/input"
 	"github.com/fastygo/templ/ui/label"
+	"github.com/fastygo/templ/ui/linebreak"
+	"github.com/fastygo/templ/ui/link"
 	"github.com/fastygo/templ/ui/list"
 	"github.com/fastygo/templ/ui/radio"
 	"github.com/fastygo/templ/ui/select"
+	"github.com/fastygo/templ/ui/separator"
 	"github.com/fastygo/templ/ui/stack"
 	"github.com/fastygo/templ/ui/table"
 	"github.com/fastygo/templ/ui/text"
@@ -70,6 +77,58 @@ templ GridCol(p GridColProps) {
 	}
 }
 
+templ Icon(p IconProps) {
+	@icon.Icon(p) {
+		{ children... }
+	}
+}
+
+templ Image(p ImageProps) {
+	@image.Image(p)
+}
+
+templ Picture(p PictureProps) {
+	@image.Picture(p) {
+		{ children... }
+	}
+}
+
+templ Source(p SourceProps) {
+	@image.Source(p)
+}
+
+templ Link(p LinkProps) {
+	@link.Link(p) {
+		{ children... }
+	}
+}
+
+templ Separator(p SeparatorProps) {
+	@separator.Separator(p)
+}
+
+templ Disclosure(p DisclosureProps) {
+	@disclosure.Disclosure(p) {
+		{ children... }
+	}
+}
+
+templ Summary(p SummaryProps) {
+	@disclosure.Summary(p) {
+		{ children... }
+	}
+}
+
+templ Dialog(p DialogProps) {
+	@dialog.Dialog(p) {
+		{ children... }
+	}
+}
+
+templ Break(p BreakProps) {
+	@linebreak.Break(p)
+}
+
 templ Text(p TextProps, value string) {
 	@text.Text(p, value)
 }
@@ -99,7 +158,21 @@ templ Textarea(p TextareaProps) {
 }
 
 templ Select(p SelectProps) {
-	@selectfield.Select(p)
+	@selectfield.Select(p) {
+		{ children... }
+	}
+}
+
+templ SelectOption(p OptionProps) {
+	@selectfield.SelectOption(p) {
+		{ children... }
+	}
+}
+
+templ OptGroup(p OptGroupProps) {
+	@selectfield.OptGroup(p) {
+		{ children... }
+	}
 }
 
 templ Checkbox(p CheckboxProps) {
@@ -138,6 +211,46 @@ templ FormDescription(p FormDescriptionProps, value string) {
 
 templ FormMessage(p FormMessageProps, value string) {
 	@form.FormMessage(p, value)
+}
+
+templ Fieldset(p FieldsetProps) {
+	@form.Fieldset(p) {
+		{ children... }
+	}
+}
+
+templ Legend(p LegendProps) {
+	@form.Legend(p) {
+		{ children... }
+	}
+}
+
+templ DataList(p DataListProps) {
+	@form.DataList(p) {
+		{ children... }
+	}
+}
+
+templ DataOption(p DataOptionProps) {
+	@form.DataOption(p)
+}
+
+templ Output(p OutputProps) {
+	@form.Output(p) {
+		{ children... }
+	}
+}
+
+templ Meter(p MeterProps) {
+	@form.Meter(p) {
+		{ children... }
+	}
+}
+
+templ Progress(p ProgressProps) {
+	@form.Progress(p) {
+		{ children... }
+	}
 }
 
 templ List(p ListProps) {

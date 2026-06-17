@@ -14,6 +14,23 @@ type Option struct {
 	Label string
 }
 
+// OptionProps configures a slot-based option.
+type OptionProps struct {
+	Value    string
+	Label    string
+	Selected bool
+	Disabled bool
+	Attrs    templ.Attributes
+}
+
+// OptGroupProps configures a native optgroup.
+type OptGroupProps struct {
+	Class    string
+	Label    string
+	Disabled bool
+	Attrs    templ.Attributes
+}
+
 // SelectProps configures a native select element.
 type SelectProps struct {
 	Variant   string
@@ -51,5 +68,20 @@ templ Select(p SelectProps) {
 		for _, opt := range p.Options {
 			<option value={ opt.Value } selected?={ opt.Value == p.Value }>{ opt.Label }</option>
 		}
+		{ children... }
 	</select>
+}
+
+// SelectOption renders an option for custom Select children.
+templ SelectOption(p OptionProps) {
+	<option value={ p.Value } label={ p.Label } selected?={ p.Selected } disabled?={ p.Disabled } { p.Attrs... }>
+		{ children... }
+	</option>
+}
+
+// OptGroup renders a native optgroup around option children.
+templ OptGroup(p OptGroupProps) {
+	<optgroup class={ p.Class } label={ p.Label } disabled?={ p.Disabled } { p.Attrs... }>
+		{ children... }
+	</optgroup>
 }

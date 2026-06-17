@@ -1,0 +1,85 @@
+/**
+ * Dialog renders a native dialog root with optional behavior hook.
+ */
+
+// Copy: components/ui/dialog/dialog.templ
+
+package dialog
+
+import (
+	"strings"
+
+	"github.com/fastygo/templ/utils"
+)
+
+var DialogVariants = uiutils.Variants{
+	Base: "m-auto rounded-lg border border-border bg-background text-foreground shadow-lg backdrop:bg-background/80",
+	Keys: []string{"variant", "size"},
+	Defaults: map[string]string{
+		"variant": "default",
+		"size":    "default",
+	},
+	ByKey: map[string]map[string]string{
+		"variant": {
+			"default":  "",
+			"card":     "bg-card text-card-foreground",
+			"sheet":    "min-h-screen rounded-none",
+			"unstyled": "",
+		},
+		"size": {
+			"sm":      "w-full max-w-sm",
+			"default": "w-full max-w-lg",
+			"lg":      "w-full max-w-2xl",
+			"xl":      "w-full max-w-4xl",
+			"full":    "h-full w-full max-w-none",
+		},
+	},
+}
+
+// DialogProps configures native dialog.
+type DialogProps struct {
+	Variant          string
+	Size             string
+	Class            string
+	ID               string
+	Open             bool
+	DataUI8Kit       string
+	AriaLabel        string
+	AriaLabelledBy   string
+	AriaDescribedBy  string
+	Attrs            templ.Attributes
+}
+
+func DialogClasses(p DialogProps) string {
+	return uiutils.Compose(DialogVariants, map[string]string{
+		"variant": p.Variant,
+		"size":    p.Size,
+	}, p.Class)
+}
+
+func dialogAttrs(p DialogProps) templ.Attributes {
+	attrs := uiutils.MergeAttrs(templ.Attributes{}, p.Attrs)
+	if strings.TrimSpace(p.ID) != "" {
+		attrs["id"] = p.ID
+	}
+	if strings.TrimSpace(p.DataUI8Kit) != "" {
+		attrs["data-ui8kit"] = p.DataUI8Kit
+	}
+	if strings.TrimSpace(p.AriaLabel) != "" {
+		attrs["aria-label"] = p.AriaLabel
+	}
+	if strings.TrimSpace(p.AriaLabelledBy) != "" {
+		attrs["aria-labelledby"] = p.AriaLabelledBy
+	}
+	if strings.TrimSpace(p.AriaDescribedBy) != "" {
+		attrs["aria-describedby"] = p.AriaDescribedBy
+	}
+	return attrs
+}
+
+// Dialog renders native dialog.
+templ Dialog(p DialogProps) {
+	<dialog class={ DialogClasses(p) } open?={ p.Open } { dialogAttrs(p)... }>
+		{ children... }
+	</dialog>
+}

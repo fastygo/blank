@@ -157,8 +157,8 @@ func AriaHasPopup(kind string) templ.Attributes {
 
 // Form control class recipes (shared by input, textarea, select, checkbox, radio, switch).
 var InputChrome = Variants{
-	Base: "w-full rounded-md border px-3 py-2 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-	Keys: []string{"variant"},
+	Base:     "w-full rounded-md border px-3 py-2 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+	Keys:     []string{"variant"},
 	Defaults: map[string]string{"variant": ""},
 	ByKey: map[string]map[string]string{
 		"variant": {
@@ -187,8 +187,8 @@ var InputSize = Variants{
 }
 
 var ControlChrome = Variants{
-	Base: "rounded border border-primary text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-	Keys: []string{"variant"},
+	Base:     "rounded border border-primary text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+	Keys:     []string{"variant"},
 	Defaults: map[string]string{"variant": ""},
 	ByKey: map[string]map[string]string{
 		"variant": {
@@ -232,8 +232,8 @@ func ControlClasses(variant, size string, extra ...string) string {
 
 // CardVariants is the card surface recipe.
 var CardVariants = Variants{
-	Base: "rounded-md border border-border bg-card text-card-foreground shadow-sm",
-	Keys: []string{"variant"},
+	Base:     "rounded-md border border-border bg-card text-card-foreground shadow-sm",
+	Keys:     []string{"variant"},
 	Defaults: map[string]string{"variant": ""},
 	ByKey: map[string]map[string]string{
 		"variant": {
@@ -257,8 +257,8 @@ func CardClasses(variant, extra string) string {
 
 // AlertVariants is the alert surface recipe.
 var AlertVariants = Variants{
-	Base: "rounded-lg border px-4 py-3 shadow-sm outline-none ring-offset-background gap-6",
-	Keys: []string{"variant"},
+	Base:     "rounded-lg border px-4 py-3 shadow-sm outline-none ring-offset-background gap-6",
+	Keys:     []string{"variant"},
 	Defaults: map[string]string{"variant": ""},
 	ByKey: map[string]map[string]string{
 		"variant": {
@@ -284,12 +284,16 @@ func AlertAttrs() templ.Attributes {
 	)
 }
 
-// BreadcrumbRootAttrs returns nav root attrs.
-func BreadcrumbRootAttrs() templ.Attributes {
-	return templ.Attributes{
-		"data-ui8kit": "breadcrumb",
-		"aria-label":  "Breadcrumb",
+// BreadcrumbRootAttrs returns nav root attrs from explicit props.
+func BreadcrumbRootAttrs(ariaLabel, dataUI8Kit string, attrs templ.Attributes) templ.Attributes {
+	out := MergeAttrs(templ.Attributes{}, attrs)
+	if strings.TrimSpace(ariaLabel) != "" {
+		out["aria-label"] = ariaLabel
 	}
+	if strings.TrimSpace(dataUI8Kit) != "" {
+		out["data-ui8kit"] = dataUI8Kit
+	}
+	return out
 }
 
 // BreadcrumbItemAttrs returns per-item attrs.
