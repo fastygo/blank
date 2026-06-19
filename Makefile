@@ -1,4 +1,4 @@
-.PHONY: help tidy css generate build verify run clean deploy install
+.PHONY: help tidy css js generate build verify run clean deploy install
 
 APP_NAME := blank
 BIN_DIR := bin
@@ -10,13 +10,14 @@ help:
 	@echo ""
 	@echo "  tidy       Update go.mod/go.sum and refresh vendor/"
 	@echo "  css        Build minified Tailwind CSS (bun)"
+	@echo "  js         Build ui8kit JS bundle (bun)"
 	@echo "  generate   Run templ code generation"
-	@echo "  build      Production build: generate + css + go build -mod=vendor"
-	@echo "  verify     Full check: templ, css, ui8px lint, go test"
-	@echo "  run        Start dev server via bun script (with signal handling)"
+	@echo "  build      Production build: generate + css + js + go build -mod=vendor"
+	@echo "  verify     Full check: templ, css, js, ui8px lint, go test"
+	@echo "  run        Start dev server with watch (bun run dev)"
 	@echo "  install    Install bun dependencies"
 	@echo "  clean      Remove build artifacts (bin/)"
-	@echo "  deploy     Full production pipeline (tidy + generate + css + build)"
+	@echo "  deploy     Full production pipeline (tidy + generate + css + js + build)"
 	@echo ""
 	@echo "Server deploy example:"
 	@echo "  git pull && make deploy"
@@ -32,15 +33,18 @@ tidy:
 css:
 	bun run build:css
 
+js:
+	bun run build:js
+
 # Generate Go code from .templ files.
 # Must run before building if templates changed.
 generate:
-	go tool templ generate ./...
+	bun run templ
 
 # Production binary build.
 # Uses vendor/ for reproducible offline builds.
 # Strips debug info with -ldflags="-s -w".
-build: generate css
+build: generate css js
 	@mkdir -p $(BIN_DIR)
 	go build -mod=vendor -ldflags="-s -w" -o $(BINARY) ./cmd/server
 
@@ -48,9 +52,9 @@ build: generate css
 verify:
 	bun run verify
 
-# Start development server (uses scripts/run-server.mjs for proper signals).
+# Start development server (CSS + templ watch, signal handling).
 run:
-	bun run go
+	bun run dev
 
 # Install bun dependencies (run once after clone or package.json changes).
 install:
@@ -61,17 +65,9 @@ clean:
 	rm -rf $(BIN_DIR)/*
 
 # Production deploy pipeline.
-# Intended to be run on the server right after `git pull`.
-# Example workflow on production:
-#   git pull origin main
-#   make deploy
-#   sudo systemctl restart $(APP_NAME)
-#
-# This target keeps vendor/, generated code, and CSS in sync without network access
-# (assuming vendor/ was committed or Go modules cache is warm).
-deploy: tidy generate css build
+deploy: tidy generate css js build
 	@echo ""
-	@echo "✅ Deploy build finished."
+	@echo "Deploy build finished."
 	@echo "   Binary ready: $(BINARY)"
 	@echo ""
 	@echo "Next steps on server:"

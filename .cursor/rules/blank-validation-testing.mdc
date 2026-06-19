@@ -12,7 +12,7 @@ alwaysApply: false
 bun run verify
 ```
 
-Runs: **`templ generate`** → **`build:css`** → **`lint:ui8px`** → **`validate:aria`** → **`go test ./...`**
+Runs: **`templ generate`** → **`build:css`** → **`build:js`** → **`lint:ui8px`** → **`validate:aria`** → **`go test ./...`**
 
 ## Go render tests
 

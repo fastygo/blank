@@ -12,16 +12,31 @@ Minimal **Go + templ** app shell on [FastyGo Framework](https://github.com/fasty
 ```bash
 bun install
 go mod download
-bun run build:css
-go tool templ generate ./...
-bun run go
+bun run dev
 ```
+
+Open [http://127.0.0.1:8080/](http://127.0.0.1:8080/) — hero welcome page. Second demo route: [http://127.0.0.1:8080/sample](http://127.0.0.1:8080/sample).
+
+`bun run dev` runs [`scripts/dev.mjs`](scripts/dev.mjs): initial templ/CSS/JS build, Tailwind and templ watchers, then the Go server. **Ctrl+C** stops all child processes.
 
 Static assets (Tailwind CSS, theme script, `@ui8kit/aria` dialog bundle) live under [`web/static/`](web/static/).
 
-`bun run go` runs [`scripts/run-server.mjs`](scripts/run-server.mjs): the server starts with the **repository root as cwd** and **Ctrl+C** is forwarded to the Go process.
+Dev tooling is configured in [`fastygo.config.mjs`](fastygo.config.mjs) (Vite-like central config).
 
-Open [http://127.0.0.1:8080/](http://127.0.0.1:8080/) — hero welcome page. Second demo route: [http://127.0.0.1:8080/sample](http://127.0.0.1:8080/sample).
+## Scripts
+
+| Command | Purpose |
+|---------|---------|
+| `bun run dev` | Dev server with CSS + templ watch |
+| `bun run start` | One-shot build + `go run` (no watch) |
+| `bun run preview` | Same as `start` |
+| `bun run build` | Production assets + `go build -o blank` |
+| `bun run verify` | Full CI-style check |
+| `bun run go` | Alias for `dev` |
+
+## For React developers
+
+See [`docs/for-react-devs.md`](docs/for-react-devs.md) for a Vite-to-Blank mental model and dev workflow.
 
 ## Environment
 
@@ -32,13 +47,15 @@ Open [http://127.0.0.1:8080/](http://127.0.0.1:8080/) — hero welcome page. Sec
 | `APP_DEFAULT_LOCALE` | `en` | Default locale |
 | `APP_AVAILABLE_LOCALES` | `en,ru` | Locales for the header switcher (query + cookie) |
 
-Probes: `GET /healthz` and `GET /readyz` in [`cmd/server/main.go`](cmd/server/main.go).
+Probes: `GET /healthz` and `GET /readyz`.
 
 ## Project layout
 
 | Path | Role |
 |------|------|
-| [`cmd/server/main.go`](cmd/server/main.go) | Composition root: config, locales, health, site feature |
+| [`fastygo.config.mjs`](fastygo.config.mjs) | Dev/build tooling config (server, templ, css, js, ui8px) |
+| [`cmd/server/main.go`](cmd/server/main.go) | Composition root entry |
+| [`internal/serverapp/`](internal/serverapp/) | Framework wiring (locales, security, site feature) |
 | [`internal/site/`](internal/site/) | HTTP routes: `/`, `/sample` |
 | [`internal/fixtures/locale/`](internal/fixtures/locale/) | Embedded JSON copy per locale |
 | [`internal/ui/`](internal/ui/) | **UI registry** — layout, components, blocks, widgets, variants, utils ([`README`](internal/ui/README.md)) |
@@ -53,7 +70,7 @@ Probes: `GET /healthz` and `GET /readyz` in [`cmd/server/main.go`](cmd/server/ma
 bun run verify
 ```
 
-Runs: `templ generate` → Tailwind build → `build:js` (dialog-only `@ui8kit/aria`) → `ui8px lint` → `validate:aria` → `go test ./...`.
+Runs: `templ generate` → Tailwind build → `build:js` → `ui8px lint` → `validate:aria` → `go test ./...`.
 
 ## Adding a page
 

@@ -9,16 +9,15 @@
  * or close the whole terminal panel so the process tree exits.
  */
 import { spawn } from "node:child_process";
-import { fileURLToPath } from "node:url";
-import path from "node:path";
+import { loadConfig, root, serverEnv } from "./load-config.mjs";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const root = path.resolve(__dirname, "..");
+const config = await loadConfig();
+const env = serverEnv(config);
 
 const child = spawn("go", ["run", "./cmd/server"], {
   cwd: root,
   stdio: "inherit",
-  env: { ...process.env },
+  env,
   windowsHide: true,
 });
 

@@ -6,16 +6,21 @@
     "@ui8kit/aria": "^0.1.0"
   },
   "scripts": {
-    "build:css": "tailwindcss -i ./web/static/css/input.css -o ./web/static/css/app.css --minify",
-    "build:js": "bun build scripts/ui8kit-entry.mjs --outfile web/static/js/ui8kit.js --minify",
-    "lint:ui8px": "ui8px lint internal/views internal/ui web/static/css/input.css web/static/css/latty-icons.css --ignore .fastygo",
-    "validate:aria": "ui8px validate aria internal/views internal/ui --manifest web/static/js/manifest.json --ignore .fastygo",
-    "templ": "go tool templ generate ./...",
-    "verify": "go tool templ generate ./... && bun run build:css && bun run build:js && bun run lint:ui8px && bun run validate:aria && go test ./...",
-    "build": "go build -o blank ./cmd/server",
-    "go": "node scripts/run-server.mjs"
+    "dev": "node scripts/dev.mjs",
+    "start": "node scripts/start.mjs",
+    "preview": "node scripts/start.mjs",
+    "build": "node scripts/build.mjs",
+    "build:css": "node scripts/build-css.mjs",
+    "build:js": "node scripts/build-js.mjs",
+    "watch:css": "node scripts/watch-css.mjs",
+    "templ": "node scripts/templ-generate.mjs",
+    "lint:ui8px": "node scripts/lint-ui8px.mjs",
+    "validate:aria": "node scripts/validate-aria.mjs",
+    "verify": "node scripts/verify.mjs",
+    "go": "bun run dev"
   },
   "devDependencies": {
+    "@parcel/watcher": "^2.5.6",
     "@tailwindcss/cli": "^4.2.1",
     "tailwindcss": "^4.2.1",
     "ui8px": "0.2.4"

@@ -8,6 +8,7 @@
         "@ui8kit/aria": "^0.1.0",
       },
       "devDependencies": {
+        "@parcel/watcher": "^2.5.6",
         "@tailwindcss/cli": "^4.2.1",
         "tailwindcss": "^4.2.1",
         "ui8px": "0.2.4",
