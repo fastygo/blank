@@ -25,4 +25,9 @@ export interface FastyGoConfig {
       manifest: string;
     };
   };
+  devOverlay: {
+    enabledEnv: string;
+    entry: string;
+    output: string;
+  };
 }

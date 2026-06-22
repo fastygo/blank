@@ -12,6 +12,7 @@
     "build": "node scripts/build.mjs",
     "build:css": "node scripts/build-css.mjs",
     "build:js": "node scripts/build-js.mjs",
+    "build:dev-overlay": "node scripts/build-dev-overlay.mjs",
     "watch:css": "node scripts/watch-css.mjs",
     "templ": "node scripts/templ-generate.mjs",
     "lint:ui8px": "node scripts/lint-ui8px.mjs",

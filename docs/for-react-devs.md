@@ -17,6 +17,7 @@ Blank is a **server-rendered BFF frontend**: HTML is composed on the Go server w
 | React props | Go structs passed into `@Component(props)` |
 | i18n JSON / CMS strings | [`internal/fixtures/locale/`](../internal/fixtures/locale/) |
 | Client interactivity (dialog, sheet) | [`@ui8kit/aria`](../web/static/js/ui8kit.js) + `data-ui8kit` hooks |
+| React DevTools-like status panel | Dev overlay (`APP_DEV_OVERLAY=1`) with Health / Assets / Request tabs |
 
 ## Dev loop
 
@@ -41,6 +42,16 @@ scripts/dev.mjs
 ```
 
 Logs are prefixed with `[fastygo]` (similar to Vite’s `[vite]`).
+
+## Dev overlay
+
+With `APP_DEV_OVERLAY=1` (enabled in [`fastygo.config.mjs`](../fastygo.config.mjs) for local dev), Blank injects a floating widget at SSR time. It does not modify `internal/views/**`.
+
+- **Health:** browser probes for `/healthz` and `/readyz`
+- **Assets:** server reports static file age; stale CSS hints `bun run watch:css`
+- **Request:** shows `X-Request-ID`, current path, and document locale
+
+Click **Hide overlay** to opt out via cookie and reload. After reload, View Source and Network should show no overlay assets.
 
 ## Adding a page (checklist)
 

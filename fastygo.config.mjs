@@ -7,6 +7,7 @@ export default {
     env: {
       APP_BIND: "127.0.0.1:8080",
       APP_STATIC_DIR: "web/static",
+      APP_DEV_OVERLAY: "1",
     },
   },
   templ: {
@@ -31,6 +32,11 @@ export default {
       },
     ],
     manifest: "web/static/js/manifest.json",
+  },
+  devOverlay: {
+    enabledEnv: "APP_DEV_OVERLAY",
+    entry: "scripts/dev-overlay-entry.ts",
+    output: "internal/devoverlay/static/overlay.js",
   },
   ui8px: {
     lint: [

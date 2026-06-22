@@ -1,10 +1,13 @@
 package serverapp
 
 import (
+	"context"
 	"log/slog"
+	"net/http"
 	"os"
 	"strings"
 
+	"github.com/fastygo/blank/internal/devoverlay"
 	"github.com/fastygo/blank/internal/platform"
 	"github.com/fastygo/blank/internal/site"
 	"github.com/fastygo/framework/pkg/app"
@@ -12,8 +15,15 @@ import (
 	"github.com/fastygo/framework/pkg/web/security"
 )
 
+// Application is the Blank composition root with optional dev overlay wiring.
+type Application struct {
+	app     *app.App
+	overlay devoverlay.Config
+	handler http.Handler
+}
+
 // New builds the assembled HTTP application.
-func New() (*app.App, error) {
+func New() (*Application, error) {
 	cfg, err := platform.Load()
 	if err != nil {
 		return nil, err
@@ -23,8 +33,7 @@ func New() (*app.App, error) {
 	slog.SetDefault(logger)
 
 	feat := site.NewFeature(cfg.AvailableLocales, cfg.DefaultLocale)
-
-	return app.New(cfg.Config).
+	application := app.New(cfg.Config).
 		WithLogger(logger).
 		WithSecurity(security.LoadConfig()).
 		WithLocales(app.LocalesConfig{
@@ -39,7 +48,30 @@ func New() (*app.App, error) {
 		}).
 		WithHealthEndpoints("/healthz", "/readyz").
 		WithFeature(feat).
-		Build(), nil
+		Build()
+
+	overlayCfg := devoverlay.Load(cfg.Config)
+	handler := application.Handler()
+	if overlayCfg.Enabled {
+		slog.Info("devoverlay:enabled", "bind", overlayCfg.Bind, "routes", devoverlay.RoutePrefix)
+		handler = devoverlay.Wrap(handler, overlayCfg)
+	} else {
+		slog.Info("devoverlay:disabled", "env", devoverlay.EnvEnabled)
+	}
+
+	return &Application{
+		app:     application,
+		overlay: overlayCfg,
+		handler: handler,
+	}, nil
+}
+
+// Run starts the HTTP server and blocks until ctx is cancelled or the server exits.
+func (a *Application) Run(ctx context.Context) error {
+	if !a.overlay.Enabled {
+		return a.app.Run(ctx)
+	}
+	return runWithHandler(ctx, a.app, a.handler)
 }
 
 func newLogger(level, format string) *slog.Logger {

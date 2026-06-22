@@ -8,6 +8,9 @@ const env = serverEnv(config);
 await runCmd("node", ["scripts/templ-generate.mjs"], { env });
 await runCmd("node", ["scripts/build-css.mjs"], { env });
 await runCmd("node", ["scripts/build-js.mjs"], { env });
+if (env.APP_DEV_OVERLAY === "1") {
+  await runCmd("node", ["scripts/build-dev-overlay.mjs"], { env, label: "build:dev-overlay" });
+}
 
 log(`starting server ${serverUrl(config)}`);
 

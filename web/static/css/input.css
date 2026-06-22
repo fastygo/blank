@@ -3,6 +3,9 @@
 @source "../../internal/views/**/*.go";
 @source "../../internal/ui/**/*.templ";
 @source "../../internal/ui/**/*.go";
+@source "../../internal/devoverlay/**/*.templ";
+@source "../../internal/devoverlay/**/*.go";
+@source "../../internal/devoverlay/frontend/**/*.ts";
 @source "../../vendor/github.com/fastygo/templ/ui/**/*.templ";
 @source "../../vendor/github.com/fastygo/templ/ui/**/*_templ.go";
 @source "../../vendor/github.com/fastygo/templ/components/**/*.templ";

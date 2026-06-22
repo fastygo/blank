@@ -17,7 +17,7 @@ bun run dev
 
 Open [http://127.0.0.1:8080/](http://127.0.0.1:8080/) — hero welcome page. Second demo route: [http://127.0.0.1:8080/sample](http://127.0.0.1:8080/sample).
 
-`bun run dev` runs [`scripts/dev.mjs`](scripts/dev.mjs): initial templ/CSS/JS build, Tailwind and templ watchers, then the Go server. **Ctrl+C** stops all child processes.
+`bun run dev` runs [`scripts/dev.mjs`](scripts/dev.mjs): one-shot templ/CSS/JS (+ dev overlay when enabled), then the Go server. For CSS watch, use a second terminal: `bun run watch:css`. **Ctrl+C** stops the server.
 
 Static assets (Tailwind CSS, theme script, `@ui8kit/aria` dialog bundle) live under [`web/static/`](web/static/).
 
@@ -31,6 +31,7 @@ Dev tooling is configured in [`fastygo.config.mjs`](fastygo.config.mjs) (Vite-li
 | `bun run start` | One-shot build + `go run` (no watch) |
 | `bun run preview` | Same as `start` |
 | `bun run build` | Production assets + `go build -o blank` |
+| `bun run build:dev-overlay` | Dev-only overlay bundle (`APP_DEV_OVERLAY=1`) |
 | `bun run verify` | Full CI-style check |
 | `bun run go` | Alias for `dev` |
 
@@ -43,6 +44,7 @@ See [`docs/for-react-devs.md`](docs/for-react-devs.md) for a Vite-to-Blank menta
 | Variable | Default | Purpose |
 |----------|---------|---------|
 | `APP_BIND` | `127.0.0.1:8080` | HTTP listen address |
+| `APP_DEV_OVERLAY` | `1` in local dev via `fastygo.config.mjs` | SSR dev status widget (loopback only) |
 | `APP_STATIC_DIR` | `web/static` when env omitted | Static files under `/static/` |
 | `APP_DEFAULT_LOCALE` | `en` | Default locale |
 | `APP_AVAILABLE_LOCALES` | `en,ru` | Locales for the header switcher (query + cookie) |
@@ -55,7 +57,8 @@ Probes: `GET /healthz` and `GET /readyz`.
 |------|------|
 | [`fastygo.config.mjs`](fastygo.config.mjs) | Dev/build tooling config (server, templ, css, js, ui8px) |
 | [`cmd/server/main.go`](cmd/server/main.go) | Composition root entry |
-| [`internal/serverapp/`](internal/serverapp/) | Framework wiring (locales, security, site feature) |
+| [`internal/serverapp/`](internal/serverapp/) | Framework wiring (locales, security, site feature, dev overlay) |
+| [`internal/devoverlay/`](internal/devoverlay/) | Dev-only SSR overlay (Health, Assets, Request tabs) |
 | [`internal/site/`](internal/site/) | HTTP routes: `/`, `/sample` |
 | [`internal/fixtures/locale/`](internal/fixtures/locale/) | Embedded JSON copy per locale |
 | [`internal/ui/`](internal/ui/) | **UI registry** — layout, components, blocks, widgets, variants, utils ([`README`](internal/ui/README.md)) |
@@ -63,6 +66,18 @@ Probes: `GET /healthz` and `GET /readyz`.
 | [`internal/ui/components/`](internal/ui/components/) | Icon, language switch |
 | [`internal/views/`](internal/views/) | `templ` pages and shell glue |
 | [`web/static/`](web/static/) | `app.css`, tokens, fonts, `theme.js`, `ui8kit.js` |
+
+## Dev overlay
+
+When `APP_DEV_OVERLAY=1` on loopback, Blank injects a small dev widget with three tabs:
+
+- **Health** — `/healthz` and `/readyz` probe status and latency
+- **Assets** — `app.css`, `ui8kit.js`, `theme.js` freshness
+- **Request** — page `X-Request-ID`, path, and `<html lang>`
+
+Use **Hide overlay** to set an opt-out cookie and reload. The next SSR response contains no overlay markup or script tags.
+
+Build the overlay bundle with `bun run build:dev-overlay` (also runs during `bun run dev` when overlay is enabled).
 
 ## Verification
 
