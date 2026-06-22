@@ -22,6 +22,7 @@ type HeaderProps struct {
 	NavItems        []NavItem
 	Active          string
 	ShowMenuTrigger bool
+	Navigation      NavigationProps
 	Trailing        templ.Component
 	ThemeToggle     ThemeToggleProps
 }
@@ -33,6 +34,15 @@ type ThemeToggleProps struct {
 	SwitchToLightLabel string
 }
 
+// NavigationProps configures shell navigation accessible names.
+type NavigationProps struct {
+	BrandHomeSuffix     string
+	MainNavigation      string
+	OpenNavigationMenu  string
+	CloseNavigationMenu string
+	NavigationMenuLabel string
+}
+
 // ShellProps configures the full page shell (header + main + footer).
 type ShellProps struct {
 	Title          string
@@ -41,6 +51,7 @@ type ShellProps struct {
 	Active         string
 	NavItems       []NavItem
 	FooterText     string
+	Navigation     NavigationProps
 	HeadExtra      templ.Component
 	HeaderTrailing templ.Component
 	ThemeToggle    ThemeToggleProps

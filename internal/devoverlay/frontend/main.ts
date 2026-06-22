@@ -5,10 +5,11 @@ import {
   readPath,
   readRequestId,
 } from "./api";
+import { readPanelI18n } from "./i18n";
 import { assetsPanel } from "./panels/assets";
 import { healthPanel } from "./panels/health";
 import { requestPanel } from "./panels/request";
-import type { DevContext, DevPanel, DevPanelID } from "./types";
+import type { DevContext, DevOverlayPanelI18n, DevPanel, DevPanelID } from "./types";
 
 const panels: DevPanel[] = [healthPanel, assetsPanel, requestPanel];
 
@@ -71,16 +72,22 @@ function bindLauncher(): () => void {
   return () => launcher.removeEventListener("click", toggle);
 }
 
+function requirePanelI18n(): DevOverlayPanelI18n | null {
+  return readPanelI18n();
+}
+
 export function mountDevOverlay(): void {
   const root = document.getElementById("fastygo-dev-overlay-root");
-  if (!root) return;
+  const i18n = requirePanelI18n();
+  if (!root || !i18n) return;
 
   const context: DevContext = {
     requestId: readRequestId(),
     path: readPath(),
-    locale: readLocale(),
-    fetchStatus,
-    disableOverlay,
+    locale: readLocale(i18n.request.locale_missing),
+    i18n,
+    fetchStatus: () => fetchStatus(i18n),
+    disableOverlay: () => disableOverlay(i18n),
   };
 
   const cleanupLauncher = bindLauncher();
@@ -88,7 +95,7 @@ export function mountDevOverlay(): void {
 
   const hide = document.getElementById("fastygo-dev-hide");
   const hideHandler = () => {
-    void disableOverlay();
+    void context.disableOverlay();
   };
   hide?.addEventListener("click", hideHandler);
 

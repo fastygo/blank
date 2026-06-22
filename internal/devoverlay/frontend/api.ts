@@ -1,27 +1,28 @@
-import type { StatusPayload } from "./types";
+import type { DevOverlayPanelI18n, StatusPayload } from "./types";
+import { formatTemplate } from "./i18n";
 
 const statusURL = "/__fastygo/dev/status.json";
 const disableURL = "/__fastygo/dev/disable";
 
-export async function fetchStatus(): Promise<StatusPayload> {
+export async function fetchStatus(i18n: DevOverlayPanelI18n): Promise<StatusPayload> {
   const res = await fetch(statusURL, {
     headers: { Accept: "application/json" },
     cache: "no-store",
   });
   if (!res.ok) {
-    throw new Error(`status.json ${res.status}`);
+    throw new Error(formatTemplate(i18n.errors.status_json_failed, res.status));
   }
   return res.json() as Promise<StatusPayload>;
 }
 
-export async function disableOverlay(): Promise<void> {
+export async function disableOverlay(i18n: DevOverlayPanelI18n): Promise<void> {
   const res = await fetch(disableURL, {
     method: "POST",
     headers: { Accept: "application/json" },
     cache: "no-store",
   });
   if (!res.ok) {
-    throw new Error(`disable ${res.status}`);
+    throw new Error(formatTemplate(i18n.errors.disable_failed, res.status));
   }
   window.location.reload();
 }
@@ -33,8 +34,8 @@ export function readRequestId(): string {
   return script?.dataset.requestId?.trim() ?? "";
 }
 
-export function readLocale(): string {
-  return document.documentElement.lang?.trim() || "(missing)";
+export function readLocale(missingLabel: string): string {
+  return document.documentElement.lang?.trim() || missingLabel;
 }
 
 export function readPath(): string {
@@ -53,7 +54,10 @@ export function formatAge(seconds: number): string {
   return `${Math.floor(seconds / 3600)}h`;
 }
 
-export async function probe(path: string): Promise<{
+export async function probe(
+  path: string,
+  fetchFailedLabel: string,
+): Promise<{
   path: string;
   ok: boolean;
   status: number;
@@ -75,7 +79,7 @@ export async function probe(path: string): Promise<{
       ok: false,
       status: 0,
       latencyMs: Math.round(performance.now() - start),
-      error: err instanceof Error ? err.message : "fetch failed",
+      error: err instanceof Error ? err.message : fetchFailedLabel,
     };
   }
 }

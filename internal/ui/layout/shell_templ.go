@@ -185,7 +185,7 @@ func Shell(props ShellProps) templ.Component {
 							}
 							return nil
 						})
-						templ_7745c5c3_Err = ui.Button(mobileSheetCloseButtonProps()).Render(templ.WithChildren(ctx, templ_7745c5c3_Var10), templ_7745c5c3_Buffer)
+						templ_7745c5c3_Err = ui.Button(mobileSheetCloseButtonProps(props.Navigation)).Render(templ.WithChildren(ctx, templ_7745c5c3_Var10), templ_7745c5c3_Buffer)
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
@@ -247,7 +247,7 @@ func Shell(props ShellProps) templ.Component {
 				}
 				return nil
 			})
-			templ_7745c5c3_Err = ui.Block(mobileSheetRootBlock()).Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = ui.Block(mobileSheetRootBlock(props.Navigation)).Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -269,6 +269,7 @@ func Shell(props ShellProps) templ.Component {
 				NavItems:        props.NavItems,
 				Active:          props.Active,
 				ShowMenuTrigger: shellHasNavigation(props),
+				Navigation:      props.Navigation,
 				Trailing:        props.HeaderTrailing,
 				ThemeToggle:     props.ThemeToggle,
 			}).Render(ctx, templ_7745c5c3_Buffer)

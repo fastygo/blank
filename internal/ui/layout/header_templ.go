@@ -82,7 +82,7 @@ func Header(props HeaderProps) templ.Component {
 					}
 					return nil
 				})
-				templ_7745c5c3_Err = ui.Button(brandLogoButtonProps(props.BrandName)).Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = ui.Button(brandLogoButtonProps(props.BrandName, props.Navigation)).Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -118,7 +118,7 @@ func Header(props HeaderProps) templ.Component {
 				templ_7745c5c3_Err = ui.Group(ui.GroupProps{
 					Tag:   "nav",
 					Class: "col-start-2 hidden items-center justify-center gap-1 justify-self-center md:flex",
-					Attrs: templpkg.Attributes{"aria-label": "Main navigation"},
+					Attrs: templpkg.Attributes{"aria-label": props.Navigation.MainNavigation},
 				}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -200,7 +200,7 @@ func Header(props HeaderProps) templ.Component {
 						}
 						return nil
 					})
-					templ_7745c5c3_Err = ui.Button(headerMenuButtonProps()).Render(templ.WithChildren(ctx, templ_7745c5c3_Var9), templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = ui.Button(headerMenuButtonProps(props.Navigation)).Render(templ.WithChildren(ctx, templ_7745c5c3_Var9), templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}

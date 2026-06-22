@@ -29,10 +29,13 @@ func testConfig(t *testing.T) devoverlay.Config {
 	writeFile(t, filepath.Join(static, "js", "theme.js"), "console.log('theme')")
 
 	return devoverlay.Config{
-		Enabled:    true,
-		Bind:       "127.0.0.1:8080",
-		StaticDir:  static,
-		CookieName: devoverlay.CookieName,
+		Enabled:          true,
+		Bind:             "127.0.0.1:8080",
+		StaticDir:        static,
+		CookieName:       devoverlay.CookieName,
+		DefaultLocale:    "en",
+		AvailableLocales: []string{"en", "ru"},
+		LangCookieName:   "lang",
 		Assets: []devoverlay.AssetConfig{
 			{ID: "app.css", Path: "css/app.css"},
 			{ID: "ui8kit.js", Path: "js/ui8kit.js"},
@@ -45,6 +48,28 @@ func writeFile(t *testing.T, path, content string) {
 	t.Helper()
 	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestInjectMiddlewareUsesRequestLocale(t *testing.T) {
+	cfg := testConfig(t)
+	inner := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		_, _ = io.WriteString(w, `<!DOCTYPE html><html lang="ru"><body><main>Home</main></body></html>`)
+	})
+
+	handler := devoverlay.Wrap(inner, cfg)
+	req := httptest.NewRequest(http.MethodGet, "/?lang=ru", nil)
+	req.Header.Set("Accept", "text/html")
+	rec := httptest.NewRecorder()
+	handler.ServeHTTP(rec, req)
+
+	body := rec.Body.String()
+	if !strings.Contains(body, "Панель разработчика FastyGo") {
+		t.Fatalf("expected russian overlay copy, got: %s", body)
+	}
+	if !strings.Contains(body, "Состояние") {
+		t.Fatalf("expected russian health tab, got: %s", body)
 	}
 }
 
@@ -174,6 +199,7 @@ func TestLoadEnabledOnLoopback(t *testing.T) {
 
 func TestAssetStatusStaleHint(t *testing.T) {
 	cfg := testConfig(t)
+	cfg.DefaultLocale = "en"
 	path := filepath.Join(cfg.StaticDir, "css", "app.css")
 	old := time.Now().Add(-10 * time.Minute)
 	if err := os.Chtimes(path, old, old); err != nil {

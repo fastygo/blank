@@ -12,17 +12,18 @@ function assetBadgeClass(asset: AssetStatus): string {
   return statusBadge.success;
 }
 
-function assetBadgeLabel(asset: AssetStatus): string {
+function assetBadgeLabel(asset: AssetStatus, copy: DevContext["i18n"]["assets"]): string {
   if (!asset.exists) {
-    return "Missing";
+    return copy.missing;
   }
   if (asset.stale) {
-    return "Stale";
+    return copy.stale;
   }
-  return "Present";
+  return copy.present;
 }
 
-function renderAsset(root: HTMLElement, asset: AssetStatus): void {
+function renderAsset(root: HTMLElement, asset: AssetStatus, context: DevContext): void {
+  const copy = context.i18n.assets;
   const row = document.createElement("div");
   row.className = "rounded-md border border-border p-3 flex flex-col gap-1";
 
@@ -33,7 +34,7 @@ function renderAsset(root: HTMLElement, asset: AssetStatus): void {
   name.textContent = asset.id;
   const state = document.createElement("span");
   state.className = assetBadgeClass(asset);
-  state.textContent = assetBadgeLabel(asset);
+  state.textContent = assetBadgeLabel(asset, copy);
   head.append(name, state);
 
   const meta = document.createElement("p");
@@ -41,7 +42,7 @@ function renderAsset(root: HTMLElement, asset: AssetStatus): void {
   if (!asset.exists) {
     meta.textContent = asset.path;
   } else {
-    meta.textContent = `${asset.path} · ${formatBytes(asset.size)} · age ${formatAge(asset.ageSec)}`;
+    meta.textContent = `${asset.path}${copy.separator}${formatBytes(asset.size)}${copy.separator}${copy.age_prefix}${formatAge(asset.ageSec)}`;
   }
 
   row.append(head, meta);
@@ -60,11 +61,12 @@ export const assetsPanel: DevPanel = {
   id: "assets",
   title: "Assets",
   mount(root, context) {
+    const copy = context.i18n.assets;
     root.replaceChildren();
 
     const intro = document.createElement("p");
     intro.className = "text-sm text-muted-foreground";
-    intro.textContent = "Static bundle freshness from the server filesystem.";
+    intro.textContent = copy.intro;
     root.append(intro);
 
     const list = document.createElement("div");
@@ -79,7 +81,7 @@ export const assetsPanel: DevPanel = {
         const payload = await context.fetchStatus();
         if (cancelled) return;
         for (const asset of payload.assets) {
-          renderAsset(list, asset);
+          renderAsset(list, asset, context);
         }
         if (payload.hints?.length) {
           const hints = document.createElement("div");
@@ -90,7 +92,7 @@ export const assetsPanel: DevPanel = {
       } catch (err) {
         const error = document.createElement("p");
         error.className = "text-sm text-destructive";
-        error.textContent = err instanceof Error ? err.message : "Failed to load assets";
+        error.textContent = err instanceof Error ? err.message : copy.load_failed;
         list.append(error);
       }
     }

@@ -20,6 +20,7 @@ type LayoutData struct {
 	FooterText     string
 	Active         string
 	NavItems       []layout.NavItem
+	Navigation     layout.NavigationProps
 	Assets         AssetPaths
 	Theme          layout.ThemeToggleProps
 	LanguageSwitch toggles.LanguageSwitchProps

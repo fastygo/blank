@@ -25,7 +25,18 @@ func TestSiteShell_homeRenders(t *testing.T) {
 			ThemeJS: "/static/js/theme.js",
 			AppJS:   "/static/js/ui8kit.js",
 		},
-		Theme: layout.ThemeToggleProps{},
+		Navigation: layout.NavigationProps{
+			BrandHomeSuffix:     " home",
+			MainNavigation:      "Main navigation",
+			OpenNavigationMenu:  "Open navigation menu",
+			CloseNavigationMenu: "Close navigation menu",
+			NavigationMenuLabel: "Navigation menu",
+		},
+		Theme: layout.ThemeToggleProps{
+			Label:              "Theme",
+			SwitchToDarkLabel:  "Switch to dark",
+			SwitchToLightLabel: "Switch to light",
+		},
 		LanguageSwitch: toggles.LanguageSwitchProps{
 			AriaLabel: "Language",
 			Items: []toggles.LanguageSwitchItem{

@@ -2,14 +2,14 @@ package ui
 
 import "github.com/fastygo/templ/ui"
 
-templ Host(requestID string) {
+templ Host(props HostProps) {
 	<div id="fastygo-dev-overlay-root" class="fixed bottom-4 right-4 z-[9999]">
 		@ui.Button(ui.ButtonProps{
 			ID:        "fastygo-dev-launcher",
 			Type:      "button",
 			Variant:   "ghost",
 			Size:      "icon",
-			AriaLabel: "Open FastyGo dev overlay",
+			AriaLabel: props.Copy.LauncherAriaLabel,
 			Class:     "rounded-full",
 			Attrs: templ.Attributes{
 				"aria-controls": "fastygo-dev-panel",
@@ -24,41 +24,41 @@ templ Host(requestID string) {
 			Attrs: templ.Attributes{
 				"id":         "fastygo-dev-panel",
 				"role":       "region",
-				"aria-label": "FastyGo dev overlay",
+				"aria-label": props.Copy.PanelAriaLabel,
 			},
 		}) {
 			@ui.Stack(ui.StackProps{Class: "gap-4 w-full"}) {
-				@ui.Title(ui.TitleProps{Order: 2}, "FastyGo Dev")
-				@ui.Text(ui.TextProps{Tag: "small", Class: "text-muted-foreground"}, "Server status for local development.")
+				@ui.Title(ui.TitleProps{Order: 2}, props.Copy.Title)
+				@ui.Text(ui.TextProps{Tag: "small", Class: "text-muted-foreground"}, props.Copy.Subtitle)
 				@ui.Box(ui.BoxProps{
 					Tag:   "div",
 					Class: "flex flex-wrap gap-2",
 					Attrs: templ.Attributes{
 						"role":       "tablist",
-						"aria-label": "FastyGo dev panels",
+						"aria-label": props.Copy.TablistAriaLabel,
 					},
 				}) {
-					@tabButton("health", "Health", true)
-					@tabButton("assets", "Assets", false)
-					@tabButton("request", "Request", false)
+					@tabButton("health", props.Copy.Tabs.Health, true)
+					@tabButton("assets", props.Copy.Tabs.Assets, false)
+					@tabButton("request", props.Copy.Tabs.Request, false)
 				}
-				@tabPanel("health", "Health", true)
-				@tabPanel("assets", "Assets", false)
-				@tabPanel("request", "Request", false)
+				@tabPanel("health", props.Copy.Tabs.Health, props.Copy.LoadingTab, true)
+				@tabPanel("assets", props.Copy.Tabs.Assets, props.Copy.LoadingTab, false)
+				@tabPanel("request", props.Copy.Tabs.Request, props.Copy.LoadingTab, false)
 				@ui.Separator(ui.SeparatorProps{Decorative: true})
 				@ui.Button(ui.ButtonProps{
 					ID:        "fastygo-dev-hide",
 					Type:      "button",
 					Variant:   "outline",
 					Size:      "sm",
-					AriaLabel: "Hide dev overlay",
+					AriaLabel: props.Copy.HideButtonAriaLabel,
 				}) {
-					Hide overlay
+					{ props.Copy.HideButtonLabel }
 				}
 			}
 		}
 	</div>
-	<script defer src="/__fastygo/dev/overlay.js" data-request-id={ requestID }></script>
+	<script defer src="/__fastygo/dev/overlay.js" data-request-id={ props.RequestID } data-i18n={ props.PanelJSON }></script>
 }
 
 templ cogIcon() {
@@ -106,13 +106,13 @@ templ tabButton(id string, label string, selected bool) {
 	}
 }
 
-templ tabPanel(id string, label string, selected bool) {
+templ tabPanel(id string, label string, loadingTemplate string, selected bool) {
 	@ui.Box(ui.BoxProps{
 		Tag:   "section",
 		Class: "gap-3",
 		Attrs: tabPanelAttrs(id, label, selected),
 	}) {
-		@ui.Text(ui.TextProps{Tag: "small", Class: "text-muted-foreground"}, "Loading "+ label + "…")
+		@ui.Text(ui.TextProps{Tag: "small", Class: "text-muted-foreground"}, loadingTabText(loadingTemplate, label))
 		<div id={ "fastygo-dev-panel-" + id } class="flex flex-col gap-2"></div>
 	}
 }

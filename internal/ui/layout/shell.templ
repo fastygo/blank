@@ -18,14 +18,14 @@ templ Shell(props ShellProps) {
 		</head>
 		<body class={ shellBodyClass(props) }>
 			if shellHasNavigation(props) {
-				@ui.Block(mobileSheetRootBlock()) {
+				@ui.Block(mobileSheetRootBlock(props.Navigation)) {
 					@ui.Box(mobileSheetOverlayBox())
 					@ui.Box(ui.BoxProps{Class: "absolute left-0 top-0 h-full max-h-dvh w-80 max-w-full overflow-y-auto border-r border-border bg-card p-4"}) {
 						@ui.Group(ui.GroupProps{Class: "flex items-center justify-between gap-2"}) {
 							@ui.Box(ui.BoxProps{Attrs: templpkg.Attributes{"id": "ui8kit-mobile-sheet-title"}}) {
 								@ui.Text(ui.TextProps{Tag: "span", Class: "text-sm text-muted-foreground"}, shellBrand(props.BrandName))
 							}
-							@ui.Button(mobileSheetCloseButtonProps()) {
+							@ui.Button(mobileSheetCloseButtonProps(props.Navigation)) {
 								✕
 							}
 						}
@@ -43,6 +43,7 @@ templ Shell(props ShellProps) {
 					NavItems:        props.NavItems,
 					Active:          props.Active,
 					ShowMenuTrigger: shellHasNavigation(props),
+					Navigation:      props.Navigation,
 					Trailing:        props.HeaderTrailing,
 					ThemeToggle:     props.ThemeToggle,
 				})

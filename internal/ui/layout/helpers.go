@@ -1,6 +1,8 @@
 package layout
 
 import (
+	"strings"
+
 	"github.com/a-h/templ"
 	"github.com/fastygo/templ/ui"
 	uiutils "github.com/fastygo/templ/utils"
@@ -37,24 +39,15 @@ func shellHasNavigation(props ShellProps) bool {
 }
 
 func themeToggleLabel(value string) string {
-	if value == "" {
-		return "Toggle theme"
-	}
-	return value
+	return strings.TrimSpace(value)
 }
 
 func themeToggleSwitchToDarkLabel(value string) string {
-	if value == "" {
-		return "Switch to dark theme"
-	}
-	return value
+	return strings.TrimSpace(value)
 }
 
 func themeToggleSwitchToLightLabel(value string) string {
-	if value == "" {
-		return "Switch to light theme"
-	}
-	return value
+	return strings.TrimSpace(value)
 }
 
 func navItemClasses(active, path string, vertical bool) string {
@@ -72,19 +65,19 @@ func navItemClasses(active, path string, vertical bool) string {
 	return uiutils.Cn(base, "text-muted-foreground hover:text-foreground")
 }
 
-func brandLogoButtonProps(brandName string) ui.ButtonProps {
+func brandLogoButtonProps(brandName string, nav NavigationProps) ui.ButtonProps {
 	name := shellBrand(brandName)
 	return ui.ButtonProps{
 		Href:    "/",
 		Variant: "unstyled",
 		Class:   "text-base font-semibold tracking-tight text-foreground transition-colors hover:text-foreground/80",
 		Attrs: uiutils.MergeAttrs(
-			templ.Attributes{"aria-label": name + " home"},
+			templ.Attributes{"aria-label": name + nav.BrandHomeSuffix},
 		),
 	}
 }
 
-func headerMenuButtonProps() ui.ButtonProps {
+func headerMenuButtonProps(nav NavigationProps) ui.ButtonProps {
 	return ui.ButtonProps{
 		ID:      MobileSheetTriggerID,
 		Type:    "button",
@@ -97,7 +90,7 @@ func headerMenuButtonProps() ui.ButtonProps {
 				"data-ui8kit-dialog-open":   true,
 				"data-ui8kit-dialog-target": MobileSheetPanelID,
 			},
-			uiutils.AriaLabel("Open navigation menu"),
+			uiutils.AriaLabel(nav.OpenNavigationMenu),
 			uiutils.AriaHasPopup("dialog"),
 			uiutils.AriaControls(MobileSheetPanelID),
 			uiutils.AriaExpanded(false),
@@ -125,7 +118,7 @@ func themeToggleButtonProps(props ThemeToggleProps) ui.ButtonProps {
 	}
 }
 
-func mobileSheetRootBlock() ui.BlockProps {
+func mobileSheetRootBlock(nav NavigationProps) ui.BlockProps {
 	return ui.BlockProps{
 		ID:    MobileSheetPanelID,
 		Class: "fixed inset-y-0 left-0 z-50 w-full md:hidden",
@@ -134,7 +127,7 @@ func mobileSheetRootBlock() ui.BlockProps {
 			"data-ui8kit-dialog": true,
 			"role":               "dialog",
 			"aria-modal":         "true",
-			"aria-label":         "Navigation menu",
+			"aria-label":         nav.NavigationMenuLabel,
 			"aria-labelledby":    "ui8kit-mobile-sheet-title",
 			"data-state":         "closed",
 			"hidden":             true,
@@ -153,12 +146,12 @@ func mobileSheetOverlayBox() ui.BoxProps {
 	}
 }
 
-func mobileSheetCloseButtonProps() ui.ButtonProps {
+func mobileSheetCloseButtonProps(nav NavigationProps) ui.ButtonProps {
 	return ui.ButtonProps{
 		Type:      "button",
 		Variant:   "unstyled",
 		Class:     "inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-border text-muted-foreground",
-		AriaLabel: "Close navigation menu",
+		AriaLabel: nav.CloseNavigationMenu,
 		Attrs: templ.Attributes{
 			"data-ui8kit-dialog-close":  true,
 			"data-ui8kit-dialog-target": MobileSheetPanelID,

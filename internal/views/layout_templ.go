@@ -60,6 +60,7 @@ func SiteShell(d LayoutData, body templpkg.Component) templ.Component {
 			Active:         d.Active,
 			NavItems:       d.NavItems,
 			FooterText:     d.FooterText,
+			Navigation:     d.Navigation,
 			HeadExtra:      partials.ShellHead(d.Assets.CSS, d.Assets.ThemeJS, d.Assets.AppJS),
 			HeaderTrailing: partials.HeaderTrailing(d.LanguageSwitch),
 			ThemeToggle:    d.Theme,

@@ -4,6 +4,8 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/fastygo/blank/internal/fixtures"
 )
 
 const staleCSSSeconds = 5 * 60
@@ -28,7 +30,7 @@ type StatusPayload struct {
 	Overlay bool          `json:"overlay"`
 }
 
-func collectAssetStatus(cfg Config) StatusPayload {
+func collectAssetStatus(cfg Config, copy fixtures.DevOverlayAssets) StatusPayload {
 	now := time.Now()
 	payload := StatusPayload{
 		Bind:    cfg.Bind,
@@ -44,7 +46,7 @@ func collectAssetStatus(cfg Config) StatusPayload {
 		if err != nil {
 			status.Exists = false
 			if asset.ID == "app.css" {
-				status.Hint = "Missing app.css. Run bun run build:css."
+				status.Hint = copy.MissingCSSHint
 				payload.Hints = append(payload.Hints, status.Hint)
 			}
 			payload.Assets = append(payload.Assets, status)
@@ -56,7 +58,7 @@ func collectAssetStatus(cfg Config) StatusPayload {
 		status.AgeSec = int64(now.Sub(info.ModTime()).Seconds())
 		if asset.ID == "app.css" && status.AgeSec > staleCSSSeconds {
 			status.Stale = true
-			status.Hint = "CSS is stale. Run bun run watch:css in a second terminal."
+			status.Hint = copy.StaleCSSHint
 			payload.Hints = append(payload.Hints, status.Hint)
 		}
 		payload.Assets = append(payload.Assets, status)

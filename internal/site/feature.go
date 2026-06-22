@@ -46,15 +46,7 @@ func (f *Feature) NavItems() []app.NavItem {
 }
 
 func (f *Feature) fixtureLocale(ctx context.Context) fixtures.Locale {
-	code := locale.From(ctx)
-	if code == "" {
-		code = f.defaultLocale
-	}
-	loc, err := fixtures.LoadLocale(code)
-	if err != nil {
-		loc, _ = fixtures.LoadLocale(f.defaultLocale)
-	}
-	return loc
+	return fixtures.Resolve(locale.From(ctx), f.defaultLocale)
 }
 
 func (f *Feature) siteNav(fix fixtures.Locale) []layout.NavItem {
@@ -64,16 +56,25 @@ func (f *Feature) siteNav(fix fixtures.Locale) []layout.NavItem {
 	}
 }
 
+func (f *Feature) navigationProps(fix fixtures.Locale) layout.NavigationProps {
+	return layout.NavigationProps{
+		BrandHomeSuffix:     fix.Layout.BrandHomeSuffix,
+		MainNavigation:      fix.Layout.MainNavigation,
+		OpenNavigationMenu:  fix.Layout.OpenNavigationMenu,
+		CloseNavigationMenu: fix.Layout.CloseNavigationMenu,
+		NavigationMenuLabel: fix.Layout.NavigationMenuLabel,
+	}
+}
+
 func (f *Feature) languageSwitch(ctx context.Context, r *http.Request, fix fixtures.Locale) toggles.LanguageSwitchProps {
 	current := strings.ToLower(strings.TrimSpace(locale.From(ctx)))
 	if current == "" {
 		current = strings.ToLower(strings.TrimSpace(f.defaultLocale))
 	}
-	labels := map[string]string{"en": "En", "ru": "Ru"}
 	var items []toggles.LanguageSwitchItem
 	for _, loc := range f.available {
 		loc = strings.ToLower(strings.TrimSpace(loc))
-		label := labels[loc]
+		label := fix.Language[loc]
 		if label == "" {
 			label = strings.ToUpper(loc)
 		}
@@ -98,6 +99,7 @@ func (f *Feature) layoutData(ctx context.Context, r *http.Request, fix fixtures.
 		FooterText: fix.Footer,
 		Active:     active,
 		NavItems:   f.siteNav(fix),
+		Navigation: f.navigationProps(fix),
 		Assets: views.AssetPaths{
 			CSS:     assetCSS,
 			ThemeJS: assetThemeJS,

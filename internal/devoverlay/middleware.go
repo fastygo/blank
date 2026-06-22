@@ -29,7 +29,7 @@ func (m injectMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	requestID := rec.header.Get("X-Request-ID")
-	body, err := injectOverlay(rec.body.Bytes(), requestID)
+	body, err := injectOverlay(rec.body.Bytes(), r, m.cfg, requestID)
 	if err != nil {
 		writeCaptured(w, rec)
 		return

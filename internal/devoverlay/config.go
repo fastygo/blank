@@ -24,20 +24,26 @@ type AssetConfig struct {
 
 // Config controls dev overlay availability and asset inspection.
 type Config struct {
-	Enabled    bool
-	Bind       string
-	StaticDir  string
-	CookieName string
-	Assets     []AssetConfig
+	Enabled          bool
+	Bind             string
+	StaticDir        string
+	CookieName       string
+	DefaultLocale    string
+	AvailableLocales []string
+	LangCookieName   string
+	Assets           []AssetConfig
 }
 
 // Load resolves overlay config from app config and environment.
 func Load(cfg app.Config) Config {
 	out := Config{
-		Enabled:    parseBoolEnv(EnvEnabled, false),
-		Bind:       cfg.AppBind,
-		StaticDir:  cfg.StaticDir,
-		CookieName: CookieName,
+		Enabled:          parseBoolEnv(EnvEnabled, false),
+		Bind:             cfg.AppBind,
+		StaticDir:        cfg.StaticDir,
+		CookieName:       CookieName,
+		DefaultLocale:    cfg.DefaultLocale,
+		AvailableLocales: cfg.AvailableLocales,
+		LangCookieName:   defaultLangCookieName,
 		Assets: []AssetConfig{
 			{ID: "app.css", Path: "css/app.css"},
 			{ID: "ui8kit.js", Path: "js/ui8kit.js"},
