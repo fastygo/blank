@@ -58,9 +58,10 @@ Probes: `GET /healthz` and `GET /readyz`.
 | [`fastygo.config.mjs`](fastygo.config.mjs) | Dev/build tooling config (server, templ, css, js, ui8px) |
 | [`cmd/server/main.go`](cmd/server/main.go) | Composition root entry |
 | [`internal/serverapp/`](internal/serverapp/) | Framework wiring (locales, security, site feature, dev overlay) |
-| [`internal/devoverlay/`](internal/devoverlay/) | Dev-only SSR overlay (Health, Assets, Request tabs) |
+| [`internal/devoverlay/`](internal/devoverlay/) | Dev-only SSR overlay ([`README`](internal/devoverlay/README.md)) |
+| [`internal/devoverlay/fixtures/locale/`](internal/devoverlay/fixtures/locale/) | Dev overlay copy (separate from site fixtures) |
 | [`internal/site/`](internal/site/) | HTTP routes: `/`, `/sample` |
-| [`internal/fixtures/locale/`](internal/fixtures/locale/) | Embedded JSON copy per locale |
+| [`internal/fixtures/locale/`](internal/fixtures/locale/) | Site shell and page copy per locale |
 | [`internal/ui/`](internal/ui/) | **UI registry** — layout, components, blocks, widgets, variants, utils ([`README`](internal/ui/README.md)) |
 | [`internal/ui/layout/`](internal/ui/layout/) | Shell, header nav, footer, mobile sheet |
 | [`internal/ui/components/`](internal/ui/components/) | Icon, language switch |
@@ -78,6 +79,8 @@ When `APP_DEV_OVERLAY=1` on loopback, Blank injects a small dev widget with thre
 Use **Hide overlay** to set an opt-out cookie and reload. The next SSR response contains no overlay markup or script tags.
 
 Build the overlay bundle with `bun run build:dev-overlay` (also runs during `bun run dev` when overlay is enabled).
+
+Overlay strings live in [`internal/devoverlay/fixtures/locale/`](internal/devoverlay/fixtures/locale/). Portability notes: [`internal/devoverlay/README.md`](internal/devoverlay/README.md).
 
 ## Verification
 

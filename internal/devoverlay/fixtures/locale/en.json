@@ -1,0 +1,51 @@
+{
+  "launcher_aria_label": "Open FastyGo dev overlay",
+  "panel_aria_label": "FastyGo dev overlay",
+  "title": "FastyGo Dev",
+  "subtitle": "Server status for local development.",
+  "tablist_aria_label": "FastyGo dev panels",
+  "hide_button_label": "Hide overlay",
+  "hide_button_aria_label": "Hide dev overlay",
+  "loading_tab": "Loading %s…",
+  "tabs": {
+    "health": "Health",
+    "assets": "Assets",
+    "request": "Request"
+  },
+  "health": {
+    "intro": "Server is up when both probes respond with HTTP 2xx.",
+    "refresh_button": "Refresh probes",
+    "ok_badge": "OK %d",
+    "http_badge": "HTTP %d",
+    "down_label": "Down",
+    "latency_unit": "ms",
+    "separator": " · "
+  },
+  "assets": {
+    "intro": "Static bundle freshness from the server filesystem.",
+    "present": "Present",
+    "missing": "Missing",
+    "stale": "Stale",
+    "age_prefix": "age ",
+    "separator": " · ",
+    "load_failed": "Failed to load assets",
+    "missing_css_hint": "Missing app.css. Run bun run build:css.",
+    "stale_css_hint": "CSS is stale. Run bun run watch:css in a second terminal."
+  },
+  "request": {
+    "intro": "Use the request id to match browser traffic with Go structured logs.",
+    "request_id_label": "Request ID",
+    "path_label": "Path",
+    "locale_label": "Locale",
+    "copy_request_id": "Copy request id",
+    "copied": "Copied",
+    "copy_failed": "Copy failed",
+    "empty_value": "(empty)",
+    "locale_missing": "(missing)"
+  },
+  "errors": {
+    "fetch_failed": "fetch failed",
+    "status_json_failed": "status.json %d",
+    "disable_failed": "disable %d"
+  }
+}

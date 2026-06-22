@@ -3,7 +3,7 @@ package ui
 import (
 	"strings"
 
-	"github.com/fastygo/blank/internal/fixtures"
+	"github.com/fastygo/blank/internal/devoverlay/fixtures"
 )
 
 // NewHostProps builds overlay markup props from resolved fixtures.
@@ -14,7 +14,7 @@ func NewHostProps(requestID string, fix fixtures.Locale) (HostProps, error) {
 	}
 	return HostProps{
 		RequestID: requestID,
-		Copy:      fix.DevOverlay,
+		Copy:      fix,
 		PanelJSON: panelJSON,
 	}, nil
 }

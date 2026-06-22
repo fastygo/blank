@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/fastygo/blank/internal/fixtures"
+	"github.com/fastygo/blank/internal/devoverlay/fixtures"
 )
 
 //go:embed static/overlay.js
@@ -47,7 +47,7 @@ func (s *Service) handleStatusJSON(w http.ResponseWriter, r *http.Request) {
 	setDevHeaders(w)
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	fix := fixtures.Resolve(s.cfg.resolveLocale(r), s.cfg.DefaultLocale)
-	payload := collectAssetStatus(s.cfg, fix.DevOverlay.Assets)
+	payload := collectAssetStatus(s.cfg, fix.Assets)
 	_ = json.NewEncoder(w).Encode(payload)
 }
 

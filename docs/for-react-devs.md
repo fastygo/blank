@@ -15,7 +15,8 @@ Blank is a **server-rendered BFF frontend**: HTML is composed on the Go server w
 | `src/pages/` or `app/routes` | [`internal/views/`](../internal/views/) + routes in [`internal/site/feature.go`](../internal/site/feature.go) |
 | JSX / TSX | `.templ` templates |
 | React props | Go structs passed into `@Component(props)` |
-| i18n JSON / CMS strings | [`internal/fixtures/locale/`](../internal/fixtures/locale/) |
+| i18n JSON / CMS strings (site) | [`internal/fixtures/locale/`](../internal/fixtures/locale/) |
+| Dev overlay i18n | [`internal/devoverlay/fixtures/locale/`](../internal/devoverlay/fixtures/locale/) |
 | Client interactivity (dialog, sheet) | [`@ui8kit/aria`](../web/static/js/ui8kit.js) + `data-ui8kit` hooks |
 | React DevTools-like status panel | Dev overlay (`APP_DEV_OVERLAY=1`) with Health / Assets / Request tabs |
 
@@ -52,6 +53,8 @@ With `APP_DEV_OVERLAY=1` (enabled in [`fastygo.config.mjs`](../fastygo.config.mj
 - **Request:** shows `X-Request-ID`, current path, and document locale
 
 Click **Hide overlay** to opt out via cookie and reload. After reload, View Source and Network should show no overlay assets.
+
+Overlay copy is maintained in [`internal/devoverlay/fixtures/locale/`](../internal/devoverlay/fixtures/locale/) — separate from site fixtures. Locale follows the same `?lang=` / cookie rules as the header switcher.
 
 ## Adding a page (checklist)
 

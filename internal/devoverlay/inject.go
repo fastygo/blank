@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"net/http"
 
+	"github.com/fastygo/blank/internal/devoverlay/fixtures"
 	"github.com/fastygo/blank/internal/devoverlay/ui"
-	"github.com/fastygo/blank/internal/fixtures"
 )
 
 func injectOverlay(html []byte, r *http.Request, cfg Config, requestID string) ([]byte, error) {

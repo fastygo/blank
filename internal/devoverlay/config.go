@@ -14,7 +14,11 @@ const (
 	CookieOff   = "off"
 	CookieOn    = "on"
 	RoutePrefix = "/__fastygo/dev"
+
+	defaultStaleCSSSeconds int64 = 5 * 60
 )
+
+var defaultHealthPaths = []string{"/healthz", "/readyz"}
 
 // AssetConfig describes a static asset tracked by the overlay status API.
 type AssetConfig struct {
@@ -31,6 +35,8 @@ type Config struct {
 	DefaultLocale    string
 	AvailableLocales []string
 	LangCookieName   string
+	HealthPaths      []string
+	StaleCSSSeconds  int64
 	Assets           []AssetConfig
 }
 
@@ -44,6 +50,8 @@ func Load(cfg app.Config) Config {
 		DefaultLocale:    cfg.DefaultLocale,
 		AvailableLocales: cfg.AvailableLocales,
 		LangCookieName:   defaultLangCookieName,
+		HealthPaths:      append([]string(nil), defaultHealthPaths...),
+		StaleCSSSeconds:  defaultStaleCSSSeconds,
 		Assets: []AssetConfig{
 			{ID: "app.css", Path: "css/app.css"},
 			{ID: "ui8kit.js", Path: "js/ui8kit.js"},

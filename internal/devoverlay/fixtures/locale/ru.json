@@ -1,0 +1,51 @@
+{
+  "launcher_aria_label": "Открыть панель разработчика FastyGo",
+  "panel_aria_label": "Панель разработчика FastyGo",
+  "title": "FastyGo Dev",
+  "subtitle": "Статус сервера для локальной разработки.",
+  "tablist_aria_label": "Панели разработчика FastyGo",
+  "hide_button_label": "Скрыть панель",
+  "hide_button_aria_label": "Скрыть панель разработчика",
+  "loading_tab": "Загрузка %s…",
+  "tabs": {
+    "health": "Состояние",
+    "assets": "Ресурсы",
+    "request": "Запрос"
+  },
+  "health": {
+    "intro": "Сервер работает, когда оба проба отвечают HTTP 2xx.",
+    "refresh_button": "Обновить пробы",
+    "ok_badge": "OK %d",
+    "http_badge": "HTTP %d",
+    "down_label": "Недоступен",
+    "latency_unit": "мс",
+    "separator": " · "
+  },
+  "assets": {
+    "intro": "Актуальность статических файлов на диске сервера.",
+    "present": "На месте",
+    "missing": "Отсутствует",
+    "stale": "Устарел",
+    "age_prefix": "возраст ",
+    "separator": " · ",
+    "load_failed": "Не удалось загрузить ресурсы",
+    "missing_css_hint": "Нет app.css. Запустите bun run build:css.",
+    "stale_css_hint": "CSS устарел. Запустите bun run watch:css во втором терминале."
+  },
+  "request": {
+    "intro": "Используйте id запроса для сопоставления браузера и структурированных логов Go.",
+    "request_id_label": "ID запроса",
+    "path_label": "Путь",
+    "locale_label": "Локаль",
+    "copy_request_id": "Копировать id запроса",
+    "copied": "Скопировано",
+    "copy_failed": "Не удалось скопировать",
+    "empty_value": "(пусто)",
+    "locale_missing": "(не задана)"
+  },
+  "errors": {
+    "fetch_failed": "ошибка запроса",
+    "status_json_failed": "status.json %d",
+    "disable_failed": "disable %d"
+  }
+}

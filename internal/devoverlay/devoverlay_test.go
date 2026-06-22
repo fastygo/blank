@@ -36,6 +36,7 @@ func testConfig(t *testing.T) devoverlay.Config {
 		DefaultLocale:    "en",
 		AvailableLocales: []string{"en", "ru"},
 		LangCookieName:   "lang",
+		StaleCSSSeconds:  300,
 		Assets: []devoverlay.AssetConfig{
 			{ID: "app.css", Path: "css/app.css"},
 			{ID: "ui8kit.js", Path: "js/ui8kit.js"},
@@ -194,6 +195,25 @@ func TestLoadEnabledOnLoopback(t *testing.T) {
 	})
 	if !cfg.Enabled {
 		t.Fatal("overlay should enable on loopback")
+	}
+}
+
+func TestStatusJSONLocalizedHint(t *testing.T) {
+	cfg := testConfig(t)
+	path := filepath.Join(cfg.StaticDir, "css", "app.css")
+	old := time.Now().Add(-10 * time.Minute)
+	if err := os.Chtimes(path, old, old); err != nil {
+		t.Fatal(err)
+	}
+
+	handler := devoverlay.Wrap(http.NotFoundHandler(), cfg)
+	req := httptest.NewRequest(http.MethodGet, "/__fastygo/dev/status.json?lang=ru", nil)
+	rec := httptest.NewRecorder()
+	handler.ServeHTTP(rec, req)
+
+	body := rec.Body.String()
+	if !strings.Contains(body, "CSS устарел") {
+		t.Fatalf("expected russian stale css hint, got: %s", body)
 	}
 }
 

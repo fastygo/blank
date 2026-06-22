@@ -8,8 +8,14 @@ alwaysApply: false
 
 ## Two layers
 
-1. **`internal/fixtures/`** — embedded `locale/*.json`, typed **`Locale`** in `fixtures.go`, **`LoadLocale(code)`**.
+1. **`internal/fixtures/`** — embedded `locale/*.json`, typed **`Locale`** in `fixtures.go`, **`LoadLocale(code)`** — **site shell and pages only**.
 2. **Handlers** (`internal/site`) — resolve locale from context, build **`views.LayoutData`** / page structs with **already-translated** strings.
+
+## Dev overlay (separate)
+
+- **`internal/devoverlay/fixtures/`** — own embedded locale JSON for the dev widget; not part of app `fixtures.Locale`.
+- Overlay resolves locale per request in `devoverlay/locale.go` (same cookie/query rules as the site).
+- See [`internal/devoverlay/README.md`](../../internal/devoverlay/README.md).
 
 ## Rules
 
