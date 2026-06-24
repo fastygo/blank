@@ -2,8 +2,8 @@
 
 Durable architecture spec for the Blank refactor aimed at React developers who know **Next App Router** and **shadcn/ui**. This document freezes vocabulary and responsibilities before runtime changes.
 
-**Status:** Block 09 complete — explicit per-route layout in `PageSpec.Layout`.  
-**Next slice:** Block 10 — tooling config cleanup (see [active.md](./active.md)).
+**Status:** Block 10 complete — tooling config documented as dev/build only; refactor checklist done.  
+**Next:** Maintain explicit `PageSpec.Layout` routing; extend registry blocks as needed.
 
 ---
 
@@ -324,4 +324,10 @@ See [next-shadcn-refactor-progress.md](../next-shadcn-refactor-progress.md) for 
 - **Completed:** `views.SidebarAppShell` adapter wraps `sidebarapp.SidebarApp`; `shellProps()` shared with `views.AppShell`.
 - **Explicit routing:** `/` → `Layout: views.AppShell`; `/sample` → `Layout: views.SidebarAppShell` in [`router.go`](../../internal/site/router.go).
 - **No global switch:** Layout choice visible in one line per `PageSpec`.
-- **Next:** Block 10 — tooling config cleanup and final onboarding alignment.
+
+## Block 10 completion notes
+
+- **Completed:** [`fastygo.config.mjs`](../../fastygo.config.mjs) and [`scripts/load-config.d.ts`](../../scripts/load-config.d.ts) documented as tooling-only; no route/layout fields added.
+- **Docs:** [`docs/for-react-devs.md`](../../docs/for-react-devs.md) tooling vs routing table; [`README.md`](../../README.md) clarifies config boundary.
+- **Dev loop:** [`scripts/dev.mjs`](../../scripts/dev.mjs) logs that `.templ` and Go edits require manual regenerate/restart (no HMR).
+- **Refactor:** Blocks 00–10 complete per [next-shadcn-refactor-progress.md](../next-shadcn-refactor-progress.md).

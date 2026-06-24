@@ -1,4 +1,4 @@
-import { loadConfig, resolveFromRoot, serverEnv } from "./load-config.mjs";
+import { loadConfig, serverEnv } from "./load-config.mjs";
 import { log } from "./log.mjs";
 import { runCmd } from "./run-cmd.mjs";
 

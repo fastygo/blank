@@ -53,7 +53,7 @@ If a command cannot be run, report why and what remains unverified.
 - [x] 07. Sidebar/app layout organism is implemented under `internal/ui/blocks` or `internal/ui/widgets` as decided by Block 04.
 - [x] 08. Three sidebar wireframes are documented or showcased as registry artifacts, not runtime engine variants.
 - [x] 09. Runtime router chooses layout organisms explicitly without hiding layout choice in a global switch.
-- [ ] 10. Final docs and tests are aligned for React/shadcn onboarding.
+- [x] 10. Final docs and tests are aligned for React/shadcn onboarding.
 
 ---
 
@@ -599,6 +599,8 @@ Acceptance:
 
 - `fastygo.config.mjs` is clearly documented as tooling config.
 - React developers know what to edit for routes/layouts vs dev/build settings.
+
+**Done:** Commented [`fastygo.config.mjs`](../fastygo.config.mjs) and [`scripts/load-config.d.ts`](../scripts/load-config.d.ts); honest dev-loop notes in [`scripts/dev.mjs`](../scripts/dev.mjs); tooling vs routing table in [`docs/for-react-devs.md`](../docs/for-react-devs.md).
 
 ---
 

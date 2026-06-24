@@ -85,6 +85,21 @@ Architecture details: [`.project/specs/next-shadcn-architecture.md`](../.project
 
 There is **no** `routes.yaml` or codegen yet. Adding a route means editing Go in `router.go`.
 
+## Tooling config vs runtime routing
+
+[`fastygo.config.mjs`](../fastygo.config.mjs) is **dev/build tooling only** (server env, templ generate, Tailwind, JS bundles, ui8px validation). It is analogous to `vite.config.ts`, not to Next route groups or layout files.
+
+| You want to change… | Edit… |
+|---------------------|-------|
+| Route URL, nav entry, page body | [`internal/site/router.go`](../internal/site/router.go) `PageSpec` |
+| Which layout wraps a route | `PageSpec.Layout` — e.g. `views.AppShell`, `views.SidebarAppShell` |
+| Page markup | [`internal/views/*.templ`](../internal/views/) |
+| Copy / i18n | [`internal/fixtures/locale/`](../internal/fixtures/locale/) |
+| Dev server port, static dir, overlay | [`fastygo.config.mjs`](../fastygo.config.mjs) `server.env` |
+| Tailwind input/output, lint paths | `fastygo.config.mjs` `css` / `ui8px` |
+
+Do **not** add routes, layout presets, or `APP_LAYOUT` to config — that would create a second source of truth beside `router.go`.
+
 ## Registry terms (shadcn-like)
 
 Blank separates **runtime wiring** from **copy-pasteable UI artifacts**:

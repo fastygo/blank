@@ -97,6 +97,21 @@ No new sidebar, docs toc, marketing divergence, or visual changes.
 
 ---
 
-## After Block 09
+## Block 10 — Tooling config cleanup
 
-Proceed to Block 10: tooling config cleanup and final React/shadcn onboarding alignment.
+**Goal:** Make `fastygo.config.mjs` honest tooling config without becoming a second route/layout source of truth.
+
+**Delivered:**
+
+- [x] [`fastygo.config.mjs`](../../fastygo.config.mjs) — top comment and section docs; routes/layouts point to `router.go` / `layout.templ`.
+- [x] [`scripts/load-config.d.ts`](../../scripts/load-config.d.ts) — tooling-focused TypeScript comments.
+- [x] [`scripts/dev.mjs`](../../scripts/dev.mjs) — explicit no-watch log for `.templ` and Go.
+- [x] [`docs/for-react-devs.md`](../../docs/for-react-devs.md) and [`README.md`](../../README.md) — tooling vs runtime routing.
+
+**Block 10 complete.** Validation: `bun run templ`, `bun run build:css`, `bun run build:js`, `bun run lint:ui8px`, `bun run validate:aria`, `go test ./...`, `bun run build`.
+
+---
+
+## Refactor complete (Blocks 00–10)
+
+Next-shadcn refactor checklist is complete. Add pages via `PageSpec` in `router.go`; choose layout with `PageSpec.Layout`; keep tooling in `fastygo.config.mjs`.

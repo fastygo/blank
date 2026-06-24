@@ -17,6 +17,7 @@ if (env.APP_DEV_OVERLAY === "1") {
 
 log(`starting server ${serverUrl(config)}`);
 log("for CSS watch run: bun run watch:css (second terminal)");
+log("no .templ or Go file watch — run bun run templ or restart dev after those edits");
 
 const server = spawnCmd("go", ["run", "./cmd/server"], { env });
 

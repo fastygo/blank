@@ -15,13 +15,13 @@ go mod download
 bun run dev
 ```
 
-Open [http://127.0.0.1:8080/](http://127.0.0.1:8080/) — hero welcome page. Second demo route: [http://127.0.0.1:8080/sample](http://127.0.0.1:8080/sample).
+Open [http://127.0.0.1:8080/](http://127.0.0.1:8080/) — hero welcome page (topnav shell). Second demo route: [http://127.0.0.1:8080/sample](http://127.0.0.1:8080/sample) uses the sidebar app route shell (`views.SidebarAppShell`).
 
 `bun run dev` runs [`scripts/dev.mjs`](scripts/dev.mjs): one-shot templ/CSS/JS (+ dev overlay when enabled), then the Go server. For CSS watch, use a second terminal: `bun run watch:css`. After `.templ` edits run `bun run templ`. After Go edits, restart dev (`Ctrl+C`, then `bun run dev`). **Ctrl+C** stops the server.
 
 Static assets (Tailwind CSS, theme script, `@ui8kit/aria` dialog bundle) live under [`web/static/`](web/static/).
 
-Dev tooling is configured in [`fastygo.config.mjs`](fastygo.config.mjs) (Vite-like central config).
+Dev tooling is configured in [`fastygo.config.mjs`](fastygo.config.mjs) — **tooling only** (server env, templ/CSS/JS build, ui8px). Routes and layout adapters live in [`internal/site/router.go`](internal/site/router.go), not in config.
 
 ## Scripts
 
@@ -56,7 +56,7 @@ Probes: `GET /healthz` and `GET /readyz`.
 
 | Path | Role |
 |------|------|
-| [`fastygo.config.mjs`](fastygo.config.mjs) | Dev/build tooling config (server, templ, css, js, ui8px) |
+| [`fastygo.config.mjs`](fastygo.config.mjs) | Dev/build tooling only (server, templ, css, js, ui8px) — not routes or layouts |
 | [`cmd/server/main.go`](cmd/server/main.go) | Composition root entry |
 | [`internal/serverapp/`](internal/serverapp/) | Framework wiring (locales, security, site feature, dev overlay) |
 | [`internal/devoverlay/`](internal/devoverlay/) | Dev-only SSR overlay ([`README`](internal/devoverlay/README.md)) |
