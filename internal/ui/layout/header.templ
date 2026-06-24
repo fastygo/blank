@@ -10,7 +10,7 @@ import (
 templ Header(props HeaderProps) {
 	@ui.Block(ui.BlockProps{
 		Tag: "header",
-		Class: "grid h-15 shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2 border-b border-border px-4 max-md:sticky max-md:top-0 max-md:z-40 max-md:backdrop-blur max-md:bg-background/80",
+		Class: "grid h-15 shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2 border-b border-border px-4 max-md:sticky max-md:top-0 max-md:z-50 max-md:backdrop-blur max-md:bg-background/80",
 	}) {
 		@ui.Box(ui.BoxProps{Class: "col-start-1 justify-self-start"}) {
 			@ui.Button(brandLogoButtonProps(props.BrandName, props.Navigation)) {

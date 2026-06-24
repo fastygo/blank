@@ -15,6 +15,39 @@
 @import "./fonts.css";
 @import "./latty-icons.css";
 
+button, input, select, textarea {
+  @apply cursor-pointer;
+}
+
+@layer components {
+  /*
+   * Mobile nav drawer (ui8kit sheet): closed state must not occupy the viewport hit
+   * target. Do not rely on [hidden] alone for fixed full-screen layers.
+   */
+  [data-ui8kit="sheet"][data-state="closed"],
+  [data-ui8kit="sheet"][hidden] {
+    pointer-events: none;
+    visibility: hidden;
+    z-index: 30;
+    transform: translateX(-100%);
+  }
+
+  [data-ui8kit="sheet"][data-state="open"]:not([hidden]) {
+    pointer-events: auto;
+    visibility: visible;
+    z-index: 50;
+    transform: translateX(0);
+  }
+
+  /* Dev overlay is desktop-only; hard-hide on mobile even if Tailwind variant misses. */
+  @media (max-width: 767px) {
+    #fastygo-dev-overlay-root {
+      display: none !important;
+      pointer-events: none !important;
+    }
+  }
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

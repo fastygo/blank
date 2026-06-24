@@ -79,6 +79,7 @@ func mobileSheetOverlayBox(panelID string) ui.BoxProps {
 	return ui.BoxProps{
 		Class: "absolute inset-0 z-0 cursor-pointer bg-card/50",
 		Attrs: uiutils.MergeAttrs(templ.Attributes{
+			"hidden":                     true,
 			"data-ui8kit-dialog-overlay": true,
 			"data-ui8kit-dialog-close":   true,
 			"data-ui8kit-dialog-target":  panelID,

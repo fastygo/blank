@@ -31,7 +31,7 @@ func Host(props HostProps) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"fastygo-dev-overlay-root\" class=\"fixed bottom-4 right-4 z-[9999]\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"fastygo-dev-overlay-root\" class=\"fixed bottom-4 right-4 z-30 pointer-events-none max-md:hidden\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -59,7 +59,7 @@ func Host(props HostProps) templ.Component {
 			Variant:   "ghost",
 			Size:      "icon",
 			AriaLabel: props.Copy.LauncherAriaLabel,
-			Class:     "rounded-full",
+			Class:     "pointer-events-auto rounded-full",
 			Attrs: templ.Attributes{
 				"aria-controls": "fastygo-dev-panel",
 				"aria-expanded": "false",
@@ -232,7 +232,7 @@ func Host(props HostProps) templ.Component {
 		})
 		templ_7745c5c3_Err = ui.Box(ui.BoxProps{
 			Tag:   "section",
-			Class: "fixed bottom-16 right-4 hidden max-h-[min(80vh,640px)] w-[min(92vw,420px)] overflow-auto rounded-lg border border-border bg-card p-4 text-card-foreground shadow-lg",
+			Class: "pointer-events-auto absolute bottom-full right-0 mb-2 hidden max-h-[min(80vh,640px)] w-[min(92vw,420px)] overflow-auto rounded-lg border border-border bg-card p-4 text-card-foreground shadow-lg",
 			Attrs: templ.Attributes{
 				"id":         "fastygo-dev-panel",
 				"role":       "region",

@@ -39,6 +39,14 @@ func TestMobileSheet_rendersUi8kitContract(t *testing.T) {
 	if !strings.Contains(html, `data-ui8kit-dialog-overlay`) {
 		t.Fatal("expected ui8kit dialog overlay hook")
 	}
+	idx := strings.Index(html, `data-ui8kit-dialog-overlay`)
+	if idx < 0 {
+		t.Fatal("expected overlay marker")
+	}
+	snippet := html[idx:min(len(html), idx+120)]
+	if !strings.Contains(snippet, "hidden") {
+		t.Fatal("expected overlay hidden in closed SSR state")
+	}
 	if !strings.Contains(html, `role="dialog"`) {
 		t.Fatal("expected dialog role")
 	}

@@ -17,17 +17,6 @@ templ Shell(props ShellProps) {
 			}
 		</head>
 		<body class={ shellBodyClass(props) }>
-			if shellHasNavigation(props) {
-				@navigation.MobileSheet(navigation.MobileSheetProps{
-					ID:         MobileSheetPanelID,
-					TitleID:    navigation.MobileSheetTitleID,
-					Title:      shellBrand(props.BrandName),
-					AriaLabel:  props.Navigation.NavigationMenuLabel,
-					CloseLabel: props.Navigation.CloseNavigationMenu,
-					Items:      props.NavItems,
-					Active:     props.Active,
-				})
-			}
 			@ui.Box(ui.BoxProps{Class: "flex min-h-screen w-full flex-col"}) {
 				@Header(HeaderProps{
 					BrandName:       props.BrandName,
@@ -42,6 +31,17 @@ templ Shell(props ShellProps) {
 					{ children... }
 				}
 				@Footer(props.FooterText)
+			}
+			if shellHasNavigation(props) {
+				@navigation.MobileSheet(navigation.MobileSheetProps{
+					ID:         MobileSheetPanelID,
+					TitleID:    navigation.MobileSheetTitleID,
+					Title:      shellBrand(props.BrandName),
+					AriaLabel:  props.Navigation.NavigationMenuLabel,
+					CloseLabel: props.Navigation.CloseNavigationMenu,
+					Items:      props.NavItems,
+					Active:     props.Active,
+				})
 			}
 		</body>
 	</html>

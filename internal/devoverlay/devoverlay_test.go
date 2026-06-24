@@ -92,6 +92,12 @@ func TestInjectMiddlewareInjectsOverlayMarkup(t *testing.T) {
 	if !strings.Contains(body, `id="fastygo-dev-overlay-root"`) {
 		t.Fatalf("expected overlay root, got: %s", body)
 	}
+	if !strings.Contains(body, `pointer-events-none`) {
+		t.Fatalf("expected overlay root to ignore stray pointer hits, got: %s", body)
+	}
+	if !strings.Contains(body, `max-md:hidden`) {
+		t.Fatalf("expected dev overlay hidden on mobile viewports, got: %s", body)
+	}
 	if !strings.Contains(body, `data-request-id="req-test-123"`) {
 		t.Fatalf("expected request id on script, got: %s", body)
 	}

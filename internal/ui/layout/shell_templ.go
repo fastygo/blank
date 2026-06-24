@@ -96,20 +96,6 @@ func Shell(props ShellProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if shellHasNavigation(props) {
-			templ_7745c5c3_Err = navigation.MobileSheet(navigation.MobileSheetProps{
-				ID:         MobileSheetPanelID,
-				TitleID:    navigation.MobileSheetTitleID,
-				Title:      shellBrand(props.BrandName),
-				AriaLabel:  props.Navigation.NavigationMenuLabel,
-				CloseLabel: props.Navigation.CloseNavigationMenu,
-				Items:      props.NavItems,
-				Active:     props.Active,
-			}).Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-		}
 		templ_7745c5c3_Var6 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -173,6 +159,20 @@ func Shell(props ShellProps) templ.Component {
 		templ_7745c5c3_Err = ui.Box(ui.BoxProps{Class: "flex min-h-screen w-full flex-col"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
+		}
+		if shellHasNavigation(props) {
+			templ_7745c5c3_Err = navigation.MobileSheet(navigation.MobileSheetProps{
+				ID:         MobileSheetPanelID,
+				TitleID:    navigation.MobileSheetTitleID,
+				Title:      shellBrand(props.BrandName),
+				AriaLabel:  props.Navigation.NavigationMenuLabel,
+				CloseLabel: props.Navigation.CloseNavigationMenu,
+				Items:      props.NavItems,
+				Active:     props.Active,
+			}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 		}
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</body></html>")
 		if templ_7745c5c3_Err != nil {

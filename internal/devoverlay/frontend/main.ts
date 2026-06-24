@@ -76,10 +76,22 @@ function requirePanelI18n(): DevOverlayPanelI18n | null {
   return readPanelI18n();
 }
 
+function isMobileViewport(): boolean {
+  return window.matchMedia("(max-width: 767px)").matches;
+}
+
 export function mountDevOverlay(): void {
   const root = document.getElementById("fastygo-dev-overlay-root");
+  if (!root) return;
+
+  // Desktop-only widget: remove injected markup on mobile so no fixed layer remains.
+  if (isMobileViewport()) {
+    root.remove();
+    return;
+  }
+
   const i18n = requirePanelI18n();
-  if (!root || !i18n) return;
+  if (!i18n) return;
 
   const context: DevContext = {
     requestId: readRequestId(),

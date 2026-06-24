@@ -3,14 +3,14 @@ package ui
 import "github.com/fastygo/templ/ui"
 
 templ Host(props HostProps) {
-	<div id="fastygo-dev-overlay-root" class="fixed bottom-4 right-4 z-[9999]">
+	<div id="fastygo-dev-overlay-root" class="fixed bottom-4 right-4 z-30 pointer-events-none max-md:hidden">
 		@ui.Button(ui.ButtonProps{
 			ID:        "fastygo-dev-launcher",
 			Type:      "button",
 			Variant:   "ghost",
 			Size:      "icon",
 			AriaLabel: props.Copy.LauncherAriaLabel,
-			Class:     "rounded-full",
+			Class:     "pointer-events-auto rounded-full",
 			Attrs: templ.Attributes{
 				"aria-controls": "fastygo-dev-panel",
 				"aria-expanded": "false",
@@ -19,8 +19,8 @@ templ Host(props HostProps) {
 			@cogIcon()
 		}
 		@ui.Box(ui.BoxProps{
-			Tag:   "section",
-			Class: "fixed bottom-16 right-4 hidden max-h-[min(80vh,640px)] w-[min(92vw,420px)] overflow-auto rounded-lg border border-border bg-card p-4 text-card-foreground shadow-lg",
+			Tag: "section",
+			Class: "pointer-events-auto absolute bottom-full right-0 mb-2 hidden max-h-[min(80vh,640px)] w-[min(92vw,420px)] overflow-auto rounded-lg border border-border bg-card p-4 text-card-foreground shadow-lg",
 			Attrs: templ.Attributes{
 				"id":         "fastygo-dev-panel",
 				"role":       "region",

@@ -205,7 +205,7 @@ func Header(props HeaderProps) templ.Component {
 		})
 		templ_7745c5c3_Err = ui.Block(ui.BlockProps{
 			Tag:   "header",
-			Class: "grid h-15 shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2 border-b border-border px-4 max-md:sticky max-md:top-0 max-md:z-40 max-md:backdrop-blur max-md:bg-background/80",
+			Class: "grid h-15 shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2 border-b border-border px-4 max-md:sticky max-md:top-0 max-md:z-50 max-md:backdrop-blur max-md:bg-background/80",
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
