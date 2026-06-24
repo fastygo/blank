@@ -2,8 +2,8 @@
 
 Durable architecture spec for the Blank refactor aimed at React developers who know **Next App Router** and **shadcn/ui**. This document freezes vocabulary and responsibilities before runtime changes.
 
-**Status:** Block 00 complete — naming and boundaries are frozen.  
-**Next slice:** Block 01 — named route shells (see [active.md](./active.md)).
+**Status:** Block 01 complete — named route shells shipped.  
+**Next slice:** Block 02 — route manifest (update [active.md](./active.md) when starting Block 02).
 
 ---
 

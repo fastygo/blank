@@ -6,12 +6,13 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/a-h/templ"
 	"github.com/fastygo/blank/internal/ui/components/toggles"
 	"github.com/fastygo/blank/internal/ui/layout"
 )
 
-func TestSiteShell_homeRenders(t *testing.T) {
-	d := LayoutData{
+func homeShellLayoutData() LayoutData {
+	return LayoutData{
 		PageTitle:  "Home",
 		Lang:       "en",
 		Brand:      "FastyGo",
@@ -45,16 +46,18 @@ func TestSiteShell_homeRenders(t *testing.T) {
 			},
 		},
 	}
-	body := HomePage(HomeData{
+}
+
+func homeShellBody() templ.Component {
+	return HomePage(HomeData{
 		Welcome:      "Welcome",
 		WelcomeBrand: "to FastyGo",
 		Description:  "Minimal starter.",
 	})
-	var buf bytes.Buffer
-	if err := SiteShell(d, body).Render(context.Background(), &buf); err != nil {
-		t.Fatal(err)
-	}
-	html := buf.String()
+}
+
+func assertHomeShellMarkup(t *testing.T, html string) {
+	t.Helper()
 	if !strings.Contains(strings.ToLower(html), "<!doctype html>") {
 		t.Fatal("expected full document with doctype")
 	}
@@ -82,4 +85,21 @@ func TestSiteShell_homeRenders(t *testing.T) {
 	if !strings.Contains(html, `role="group"`) || !strings.Contains(html, "En") {
 		t.Fatal("expected language switch control")
 	}
+}
+
+func renderShell(t *testing.T, shell func(LayoutData, templ.Component) templ.Component) string {
+	t.Helper()
+	var buf bytes.Buffer
+	if err := shell(homeShellLayoutData(), homeShellBody()).Render(context.Background(), &buf); err != nil {
+		t.Fatal(err)
+	}
+	return buf.String()
+}
+
+func TestAppShell_homeRenders(t *testing.T) {
+	assertHomeShellMarkup(t, renderShell(t, AppShell))
+}
+
+func TestSiteShell_aliasRenders(t *testing.T) {
+	assertHomeShellMarkup(t, renderShell(t, SiteShell))
 }

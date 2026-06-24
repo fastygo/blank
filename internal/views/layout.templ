@@ -6,7 +6,9 @@ import (
 	"github.com/fastygo/blank/internal/views/partials"
 )
 
-templ SiteShell(d LayoutData, body templpkg.Component) {
+// AppShell is the app-zone route layout (topnav today; sidebar preset later).
+// Analogous to app/(app)/layout.tsx in Next App Router.
+templ AppShell(d LayoutData, body templpkg.Component) {
 	@layout.Shell(layout.ShellProps{
 		Title:          d.DocumentTitle(),
 		Lang:           d.Lang,
@@ -21,4 +23,19 @@ templ SiteShell(d LayoutData, body templpkg.Component) {
 	}) {
 		@body
 	}
+}
+
+// MarketingShell is the public/landing route layout. Delegates to AppShell until marketing routes diverge.
+templ MarketingShell(d LayoutData, body templpkg.Component) {
+	@AppShell(d, body)
+}
+
+// DocsShell is the docs route layout. Delegates to AppShell until docs routes exist.
+templ DocsShell(d LayoutData, body templpkg.Component) {
+	@AppShell(d, body)
+}
+
+// SiteShell is a temporary compatibility alias for AppShell. Prefer AppShell in new code.
+templ SiteShell(d LayoutData, body templpkg.Component) {
+	@AppShell(d, body)
 }

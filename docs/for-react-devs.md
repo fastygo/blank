@@ -20,6 +20,24 @@ Blank is a **server-rendered BFF frontend**: HTML is composed on the Go server w
 | Client interactivity (dialog, sheet) | [`@ui8kit/aria`](../web/static/js/ui8kit.js) + `data-ui8kit` hooks |
 | React DevTools-like status panel | Dev overlay (`APP_DEV_OVERLAY=1`) with Health / Assets / Request tabs |
 
+## Routes and layouts
+
+Blank uses **two layout layers**. When docs say “layout”, check which one is meant.
+
+| Next App Router | Blank | Role |
+|-----------------|-------|------|
+| Root document frame | [`internal/ui/layout/shell.templ`](../internal/ui/layout/shell.templ) → `layout.Shell` | **Document shell** — `html`, `head`, `body`, header, footer, mobile sheet, assets |
+| `app/(app)/layout.tsx` | [`internal/views/layout.templ`](../internal/views/layout.templ) → `views.AppShell` | **Route shell** — app zone (topnav today) |
+| `app/(marketing)/layout.tsx` | `views.MarketingShell` | Route shell — landing/marketing (currently same chrome as `AppShell`) |
+| `app/(docs)/layout.tsx` | `views.DocsShell` | Route shell — docs (placeholder until docs routes) |
+| `app/**/page.tsx` | `internal/views/<page>.templ` | Page content only |
+
+**Request flow:** `GET /sample` → handler in [`internal/site/feature.go`](../internal/site/feature.go) → route shell (`AppShell`, …) → page (`SamplePage`).
+
+**Naming:** Prefer `views.AppShell` in new code. `views.SiteShell` is a **temporary alias** to `AppShell` for backward compatibility.
+
+Architecture details: [`.project/specs/next-shadcn-architecture.md`](../.project/specs/next-shadcn-architecture.md).
+
 ## Dev loop
 
 1. **Start once:** `bun install && bun run dev`
@@ -60,7 +78,7 @@ Overlay copy is maintained in [`internal/devoverlay/fixtures/locale/`](../intern
 
 1. Extend [`fixtures.Locale`](../internal/fixtures/fixtures.go) and every file in [`internal/fixtures/locale/`](../internal/fixtures/locale/).
 2. Add a nav item in [`internal/site/feature.go`](../internal/site/feature.go) (`siteNav`).
-3. Create `internal/views/<page>.templ` and register a handler + route in `internal/site/feature.go`.
+3. Create `internal/views/<page>.templ` and register a handler + route in `internal/site/feature.go`. Use `views.AppShell` (or `MarketingShell` / `DocsShell`) when rendering.
 
 See the main [README](../README.md) for details.
 

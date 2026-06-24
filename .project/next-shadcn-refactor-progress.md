@@ -41,7 +41,7 @@ If a command cannot be run, report why and what remains unverified.
 ## Progress Checklist
 
 - [x] 00. Architecture spec and glossary are frozen. → [`.project/specs/next-shadcn-architecture.md`](specs/next-shadcn-architecture.md)
-- [ ] 01. Named route shells exist: `AppShell`, `MarketingShell`, `DocsShell`, with `SiteShell` as temporary alias.
+- [x] 01. Named route shells exist: `AppShell`, `MarketingShell`, `DocsShell`, with `SiteShell` as temporary alias.
 - [ ] 02. `internal/site` is split into route manifest, render helper, nav, and layout data.
 - [ ] 03. React onboarding docs explain route -> shell -> page and the add-page workflow.
 - [ ] 04. `internal/ui/layout/layout.spec.md` defines compound layout parts and enum axes.
@@ -157,6 +157,8 @@ Acceptance:
 - Current pages still render.
 - New code can call `views.AppShell(data, body)`.
 - Existing `views.SiteShell(data, body)` still works during migration.
+
+**Done:** `internal/views/layout.templ`, render tests, [`docs/for-react-devs.md`](../docs/for-react-devs.md).
 
 ---
 

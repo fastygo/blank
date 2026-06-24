@@ -70,11 +70,16 @@ If only docs + templ with no class changes: ui8px lint optional. Full `bun run v
 
 ## Acceptance criteria
 
-- [ ] `views.AppShell`, `MarketingShell`, `DocsShell` exist in `layout.templ`
-- [ ] `views.SiteShell` delegates to `AppShell`
-- [ ] `/` and `/sample` render identically to pre-refactor (manual or existing render test)
-- [ ] Docs explain two layout layers and alias policy
-- [ ] No custom JS added
+- [x] `views.AppShell`, `MarketingShell`, `DocsShell` exist in `layout.templ`
+- [x] `views.SiteShell` delegates to `AppShell`
+- [x] `/` and `/sample` render identically to pre-refactor (manual or existing render test)
+- [x] Docs explain two layout layers and alias policy
+- [x] No custom JS added
+
+## Block 01 completion notes
+
+- **Completed:** Named route shells in `layout.templ`; `TestAppShell_homeRenders` + `TestSiteShell_aliasRenders`; onboarding docs updated.
+- **Validation:** `bun run templ`, `go test ./internal/views/...` — pass.
 
 ## After Block 01
 
