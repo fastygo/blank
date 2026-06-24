@@ -11,12 +11,10 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	templpkg "github.com/a-h/templ"
 	"github.com/fastygo/blank/internal/ui/blocks/dashboard/app_shell"
-	"github.com/fastygo/blank/internal/ui/layout"
-	"github.com/fastygo/blank/internal/views/partials"
+	"github.com/fastygo/blank/internal/ui/blocks/dashboard/sidebar_app"
 )
 
-// AppShell is the app-zone route layout (topnav today; sidebar preset later).
-// Analogous to app/(app)/layout.tsx in Next App Router.
+// AppShell is the app-zone route layout (topnav). Analogous to app/(app)/layout.tsx in Next App Router.
 func AppShell(d LayoutData, body templpkg.Component) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -38,20 +36,7 @@ func AppShell(d LayoutData, body templpkg.Component) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = appshell.AppShell(appshell.Props{
-			Shell: layout.ShellProps{
-				Title:          d.DocumentTitle(),
-				Lang:           d.Lang,
-				BrandName:      d.Brand,
-				Active:         d.Active,
-				NavItems:       d.NavItems,
-				FooterText:     d.FooterText,
-				Navigation:     d.Navigation,
-				HeadExtra:      partials.ShellHead(d.Assets.CSS, d.Assets.ThemeJS, d.Assets.AppJS),
-				HeaderTrailing: partials.HeaderTrailing(d.LanguageSwitch),
-				ThemeToggle:    d.Theme,
-			},
-		}, body).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = appshell.AppShell(appshell.Props{Shell: shellProps(d)}, body).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -59,8 +44,8 @@ func AppShell(d LayoutData, body templpkg.Component) templ.Component {
 	})
 }
 
-// MarketingShell is the public/landing route layout. Delegates to AppShell until marketing routes diverge.
-func MarketingShell(d LayoutData, body templpkg.Component) templ.Component {
+// SidebarAppShell is the sidebar app route layout. Wraps registry block sidebarapp.SidebarApp.
+func SidebarAppShell(d LayoutData, body templpkg.Component) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -81,7 +66,10 @@ func MarketingShell(d LayoutData, body templpkg.Component) templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = AppShell(d, body).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = sidebarapp.SidebarApp(sidebarapp.Props{
+			Shell:   shellProps(d),
+			Sidebar: sidebarapp.SidebarProps{},
+		}, body).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -89,8 +77,8 @@ func MarketingShell(d LayoutData, body templpkg.Component) templ.Component {
 	})
 }
 
-// DocsShell is the docs route layout. Delegates to AppShell until docs routes exist.
-func DocsShell(d LayoutData, body templpkg.Component) templ.Component {
+// MarketingShell is the public/landing route layout. Delegates to AppShell until marketing routes diverge.
+func MarketingShell(d LayoutData, body templpkg.Component) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -119,8 +107,8 @@ func DocsShell(d LayoutData, body templpkg.Component) templ.Component {
 	})
 }
 
-// SiteShell is a temporary compatibility alias for AppShell. Prefer AppShell in new code.
-func SiteShell(d LayoutData, body templpkg.Component) templ.Component {
+// DocsShell is the docs route layout. Delegates to AppShell until docs routes exist.
+func DocsShell(d LayoutData, body templpkg.Component) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -139,6 +127,36 @@ func SiteShell(d LayoutData, body templpkg.Component) templ.Component {
 		templ_7745c5c3_Var4 := templ.GetChildren(ctx)
 		if templ_7745c5c3_Var4 == nil {
 			templ_7745c5c3_Var4 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = AppShell(d, body).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+// SiteShell is a temporary compatibility alias for AppShell. Prefer AppShell in new code.
+func SiteShell(d LayoutData, body templpkg.Component) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var5 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var5 == nil {
+			templ_7745c5c3_Var5 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
 		templ_7745c5c3_Err = AppShell(d, body).Render(ctx, templ_7745c5c3_Buffer)

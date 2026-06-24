@@ -2,8 +2,8 @@
 
 Durable architecture spec for the Blank refactor aimed at React developers who know **Next App Router** and **shadcn/ui**. This document freezes vocabulary and responsibilities before runtime changes.
 
-**Status:** Block 08 complete — sidebar wireframe showcase documented in `sidebar_app/README.md`.  
-**Next slice:** Block 09 — explicit runtime layout selection (see [active.md](./active.md)).
+**Status:** Block 09 complete — explicit per-route layout in `PageSpec.Layout`.  
+**Next slice:** Block 10 — tooling config cleanup (see [active.md](./active.md)).
 
 ---
 
@@ -318,4 +318,10 @@ See [next-shadcn-refactor-progress.md](../next-shadcn-refactor-progress.md) for 
 
 - **Completed:** [`internal/ui/blocks/dashboard/sidebar_app/README.md`](../../internal/ui/blocks/dashboard/sidebar_app/README.md) — region/scopes vocabulary and showcase mappings for `sidebars_full`, `sidebars_main`, `sidebars_header`.
 - **Docs-only:** No new renderable layout forks or router wiring; showcase IDs remain non-runtime names.
-- **Next:** Block 09 — runtime router chooses layout organisms explicitly per route.
+
+## Block 09 completion notes
+
+- **Completed:** `views.SidebarAppShell` adapter wraps `sidebarapp.SidebarApp`; `shellProps()` shared with `views.AppShell`.
+- **Explicit routing:** `/` → `Layout: views.AppShell`; `/sample` → `Layout: views.SidebarAppShell` in [`router.go`](../../internal/site/router.go).
+- **No global switch:** Layout choice visible in one line per `PageSpec`.
+- **Next:** Block 10 — tooling config cleanup and final onboarding alignment.

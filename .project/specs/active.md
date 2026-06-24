@@ -81,6 +81,22 @@ No new sidebar, docs toc, marketing divergence, or visual changes.
 
 ---
 
-## After Block 08
+## Block 09 — Runtime wiring to UI artifacts
 
-Proceed to Block 09: runtime router chooses layout organisms explicitly without a global layout switch.
+**Goal:** Make route specs explicitly choose layout adapters without a global switch.
+
+**Delivered:**
+
+- [x] `internal/views/layout_helpers.go` — shared `shellProps(d LayoutData)`.
+- [x] `views.SidebarAppShell` in `layout.templ` — wraps `sidebarapp.SidebarApp`.
+- [x] `/` uses `Layout: views.AppShell`; `/sample` uses `Layout: views.SidebarAppShell` in `router.go`.
+- [x] `TestSidebarAppShell_sampleRenders`; topnav tests unchanged.
+- [x] [`docs/for-react-devs.md`](../../docs/for-react-devs.md) updated for explicit layout choice.
+
+**Block 09 complete.** Validation: `bun run templ`, `bun run lint:ui8px`, `bun run validate:aria`, `go test ./...`.
+
+---
+
+## After Block 09
+
+Proceed to Block 10: tooling config cleanup and final React/shadcn onboarding alignment.

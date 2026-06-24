@@ -45,7 +45,7 @@ var pages = []PageSpec{
 		Method:  "GET",
 		Pattern: "/sample",
 		Active:  "/sample",
-		Layout:  views.AppShell,
+		Layout:  views.SidebarAppShell,
 		Title:   func(f fixtures.Locale) string { return f.Sample.Title },
 		Body: func(f fixtures.Locale) templ.Component {
 			return views.SamplePage(views.SampleData{

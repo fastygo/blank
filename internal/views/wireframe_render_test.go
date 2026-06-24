@@ -103,3 +103,58 @@ func TestAppShell_homeRenders(t *testing.T) {
 func TestSiteShell_aliasRenders(t *testing.T) {
 	assertHomeShellMarkup(t, renderShell(t, SiteShell))
 }
+
+func sampleShellLayoutData() LayoutData {
+	data := homeShellLayoutData()
+	data.PageTitle = "Sample"
+	data.Active = "/sample"
+	data.NavItems = []layout.NavItem{
+		{Label: "Home", Path: "/", Icon: "home"},
+		{Label: "Sample", Path: "/sample", Icon: "box"},
+	}
+	return data
+}
+
+func sampleShellBody() templ.Component {
+	return SamplePage(SampleData{
+		Title:       "Sample page",
+		Description: "Second route for onboarding.",
+		Body:        "Add routes in router.go.",
+	})
+}
+
+func TestSidebarAppShell_sampleRenders(t *testing.T) {
+	var buf bytes.Buffer
+	if err := SidebarAppShell(sampleShellLayoutData(), sampleShellBody()).Render(context.Background(), &buf); err != nil {
+		t.Fatal(err)
+	}
+	html := buf.String()
+
+	if !strings.Contains(strings.ToLower(html), "<!doctype html>") {
+		t.Fatal("expected full document with doctype")
+	}
+	if !strings.Contains(html, "<title>Sample · FastyGo</title>") {
+		t.Fatal("expected document title")
+	}
+	if !strings.Contains(html, "<aside") {
+		t.Fatal("expected desktop sidebar aside")
+	}
+	if !strings.Contains(html, `aria-label="Main navigation"`) {
+		t.Fatal("expected sidebar aria label from shell navigation props")
+	}
+	if !strings.Contains(html, `aria-current="page"`) {
+		t.Fatal("expected active nav item aria-current")
+	}
+	if !strings.Contains(html, `data-ui8kit="sheet"`) {
+		t.Fatal("expected mobile sheet markup")
+	}
+	if !strings.Contains(html, `id="ui8kit-mobile-sheet-panel"`) {
+		t.Fatal("expected mobile sheet panel id")
+	}
+	if !strings.Contains(html, `id="ui8kit-mobile-sheet-trigger"`) {
+		t.Fatal("expected mobile sheet trigger id")
+	}
+	if !strings.Contains(html, "Sample page") {
+		t.Fatal("expected page body slot")
+	}
+}

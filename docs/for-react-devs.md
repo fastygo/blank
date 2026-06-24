@@ -10,14 +10,15 @@ If you know **Next App Router** and **shadcn/ui**, start here — you do not nee
 route -> PageSpec -> layout data -> route shell -> page body
 ```
 
-Runtime routes live in [`internal/site/router.go`](../internal/site/router.go). Pages live in [`internal/views/`](../internal/views/). Route layout adapters are `AppShell` / `MarketingShell` / `DocsShell` for now. Reusable UI artifacts live in [`internal/ui/`](../internal/ui/). Copy lives in [`internal/fixtures/locale/`](../internal/fixtures/locale/).
+Runtime routes live in [`internal/site/router.go`](../internal/site/router.go). Pages live in [`internal/views/`](../internal/views/). **Choose the route shell in one `PageSpec.Layout` line** — e.g. `views.AppShell`, `views.SidebarAppShell`, `views.MarketingShell`, or `views.DocsShell`. Reusable UI artifacts live in [`internal/ui/`](../internal/ui/). Copy lives in [`internal/fixtures/locale/`](../internal/fixtures/locale/).
 
 ## File map
 
 | Next / React + shadcn | Blank | Role |
 |-----------------------|-------|------|
 | `app/layout.tsx` (document frame) | [`internal/ui/layout/shell.templ`](../internal/ui/layout/shell.templ) → `layout.Shell` | **Document / chrome shell** — `html`, `head`, `body`, header, footer, mobile sheet, assets |
-| `app/(app)/layout.tsx` | [`internal/views/layout.templ`](../internal/views/layout.templ) → `views.AppShell` | **Route shell** — app zone (topnav today) |
+| `app/(app)/layout.tsx` | [`internal/views/layout.templ`](../internal/views/layout.templ) → `views.AppShell` | **Route shell** — topnav app zone (`/` today) |
+| Sidebar app route shell | `views.SidebarAppShell` → [`sidebar_app`](../internal/ui/blocks/dashboard/sidebar_app/) block | **Route shell** — desktop aside + mobile sheet (`/sample` today) |
 | `app/(marketing)/layout.tsx` | `views.MarketingShell` | Route shell — landing/marketing (currently same chrome as `AppShell`) |
 | `app/(docs)/layout.tsx` | `views.DocsShell` | Route shell — docs (placeholder until docs routes) |
 | `app/**/page.tsx` | [`internal/views/*.templ`](../internal/views/) | Page content only |
@@ -30,30 +31,42 @@ Runtime routes live in [`internal/site/router.go`](../internal/site/router.go). 
 
 When docs say “layout”, check which layer is meant. Blank uses **two layout layers**:
 
-1. **Route shell** (`views.AppShell`, …) — analogous to Next route-group `layout.tsx`.
+1. **Route shell** (`views.AppShell`, `views.SidebarAppShell`, …) — analogous to Next route-group `layout.tsx`; chosen in `PageSpec.Layout`.
 2. **Document shell** (`layout.Shell`) — analogous to root document frame only.
 
-Example for `GET /sample`:
+Example for `GET /sample` (sidebar app shell):
 
 ```text
 GET /sample
-  -> PageSpec in internal/site/router.go
+  -> PageSpec in internal/site/router.go (Layout: views.SidebarAppShell)
   -> fixtures.Locale (en/ru)
   -> views.LayoutData (nav, theme, language switch, assets)
-  -> views.AppShell(data, SamplePage(...))
-       -> layout.Shell (document chrome)
+  -> views.SidebarAppShell(data, SamplePage(...))
+       -> sidebarapp.SidebarApp (registry block)
+            -> layout.Shell (document chrome)
   -> web.Render (full HTML response)
+```
+
+Example for `GET /` (topnav app shell):
+
+```text
+GET /
+  -> PageSpec (Layout: views.AppShell)
+  -> views.AppShell(data, HomePage(...))
+       -> appshell.AppShell -> layout.Shell
 ```
 
 ```mermaid
 flowchart LR
   request["GET /sample"] --> pageSpec["router.go PageSpec"]
+  pageSpec --> layoutLine["Layout: views.SidebarAppShell"]
   pageSpec --> locale["fixtures.Locale"]
   locale --> layoutData["views.LayoutData"]
   pageSpec --> body["views.SamplePage"]
-  layoutData --> routeShell["views.AppShell"]
+  layoutData --> routeShell["views.SidebarAppShell"]
   body --> routeShell
-  routeShell --> documentShell["layout.Shell"]
+  routeShell --> registryBlock["sidebarapp.SidebarApp"]
+  registryBlock --> documentShell["layout.Shell"]
 ```
 
 **Naming:** Prefer `views.AppShell` in new code. `views.SiteShell` is a **temporary alias** to `AppShell` for backward compatibility.
@@ -79,10 +92,10 @@ Blank separates **runtime wiring** from **copy-pasteable UI artifacts**:
 | Term | Location | shadcn analogy |
 |------|----------|----------------|
 | **Document / chrome shell** | `internal/ui/layout/*` | App-owned frame (header, footer, mobile sheet host) |
-| **Route shell** | `views.AppShell`, `MarketingShell`, `DocsShell` | Temporary runtime adapter — like choosing which `layout.tsx` wraps a page |
+| **Route shell** | `views.AppShell`, `views.SidebarAppShell`, `MarketingShell`, `DocsShell` | Runtime adapter — one line in `PageSpec.Layout`; wraps registry blocks |
 | **Page** | `internal/views/*.templ` | `page.tsx` content only |
 | **Components** | `internal/ui/components/*` | Small reusable UI; props in, markup out |
-| **Blocks** | `internal/ui/blocks/*` | Section organisms (hero, dashboard panel, …) |
+| **Blocks** | `internal/ui/blocks/*` | Layout organisms and sections (`app_shell`, `sidebar_app`, …) |
 | **Widgets** | `internal/ui/widgets/*` | UI + behavior (fetch, state, orchestration) |
 
 Kit primitives (`Button`, `Stack`, `Card`, `Sheet`, …) come from **`github.com/fastygo/templ`**. App-specific reusable mass accumulates under **`internal/ui/*`** until extraction.
@@ -118,7 +131,7 @@ Add one entry to `pages` in [`internal/site/router.go`](../internal/site/router.
     Method:  "GET",
     Pattern: "/about",
     Active:  "/about",
-    Layout:  views.AppShell, // or MarketingShell / DocsShell
+    Layout:  views.AppShell, // or SidebarAppShell / MarketingShell / DocsShell
     Title:   func(f fixtures.Locale) string { return f.About.Title },
     Body: func(f fixtures.Locale) templ.Component {
         return views.AboutPage(views.AboutData{ ... })

@@ -3,26 +3,19 @@ package views
 import (
 	templpkg "github.com/a-h/templ"
 	"github.com/fastygo/blank/internal/ui/blocks/dashboard/app_shell"
-	"github.com/fastygo/blank/internal/ui/layout"
-	"github.com/fastygo/blank/internal/views/partials"
+	"github.com/fastygo/blank/internal/ui/blocks/dashboard/sidebar_app"
 )
 
-// AppShell is the app-zone route layout (topnav today; sidebar preset later).
-// Analogous to app/(app)/layout.tsx in Next App Router.
+// AppShell is the app-zone route layout (topnav). Analogous to app/(app)/layout.tsx in Next App Router.
 templ AppShell(d LayoutData, body templpkg.Component) {
-	@appshell.AppShell(appshell.Props{
-		Shell: layout.ShellProps{
-			Title:          d.DocumentTitle(),
-			Lang:           d.Lang,
-			BrandName:      d.Brand,
-			Active:         d.Active,
-			NavItems:       d.NavItems,
-			FooterText:     d.FooterText,
-			Navigation:     d.Navigation,
-			HeadExtra:      partials.ShellHead(d.Assets.CSS, d.Assets.ThemeJS, d.Assets.AppJS),
-			HeaderTrailing: partials.HeaderTrailing(d.LanguageSwitch),
-			ThemeToggle:    d.Theme,
-		},
+	@appshell.AppShell(appshell.Props{Shell: shellProps(d)}, body)
+}
+
+// SidebarAppShell is the sidebar app route layout. Wraps registry block sidebarapp.SidebarApp.
+templ SidebarAppShell(d LayoutData, body templpkg.Component) {
+	@sidebarapp.SidebarApp(sidebarapp.Props{
+		Shell:   shellProps(d),
+		Sidebar: sidebarapp.SidebarProps{},
 	}, body)
 }
 

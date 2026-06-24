@@ -52,7 +52,7 @@ If a command cannot be run, report why and what remains unverified.
 - [x] 06. Mobile sheet/nav reusable UI is factored through existing `templ/components` Sheet APIs and `@ui8kit/aria`.
 - [x] 07. Sidebar/app layout organism is implemented under `internal/ui/blocks` or `internal/ui/widgets` as decided by Block 04.
 - [x] 08. Three sidebar wireframes are documented or showcased as registry artifacts, not runtime engine variants.
-- [ ] 09. Runtime router chooses layout organisms explicitly without hiding layout choice in a global switch.
+- [x] 09. Runtime router chooses layout organisms explicitly without hiding layout choice in a global switch.
 - [ ] 10. Final docs and tests are aligned for React/shadcn onboarding.
 
 ---
@@ -556,6 +556,8 @@ Acceptance:
 
 - A route spec clearly shows which layout/UI artifact wraps the page.
 - Sidebar_app behavior is discoverable from `internal/ui` registry files and route wiring.
+
+**Done:** [`internal/views/layout.templ`](../internal/views/layout.templ) adds `views.SidebarAppShell`; [`internal/site/router.go`](../internal/site/router.go) uses `Layout: views.AppShell` for `/` and `Layout: views.SidebarAppShell` for `/sample`; shared `shellProps()` in `layout_helpers.go`.
 
 ---
 
