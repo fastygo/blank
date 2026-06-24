@@ -2,8 +2,8 @@
 
 Durable architecture spec for the Blank refactor aimed at React developers who know **Next App Router** and **shadcn/ui**. This document freezes vocabulary and responsibilities before runtime changes.
 
-**Status:** Block 04 complete — registry boundary for layout artifacts is frozen.  
-**Next slice:** Block 05 — extract topnav shell into registry (see [active.md](./active.md)).
+**Status:** Block 05 complete — topnav app shell extracted to registry artifact.  
+**Next slice:** Block 06 — reusable mobile sheet/nav UI (see [active.md](./active.md)).
 
 ---
 
@@ -154,7 +154,7 @@ If it only renders props → **`components`** or **`blocks`**. If it **fetches**
 
 | Symbol | Role today | Future |
 |--------|------------|--------|
-| `views.AppShell` | Thin adapter → `layout.Shell` + topnav chrome | Delegates to `internal/ui/blocks/dashboard/app_shell` (Block 05+) |
+| `views.AppShell` | Thin adapter → `appshell.AppShell` in `blocks/dashboard/app_shell` | Same adapter; may point at `sidebar_app` later |
 | `views.MarketingShell` | Same as `AppShell` until marketing diverges | Delegates to `blocks/marketing/*` |
 | `views.DocsShell` | Placeholder | Delegates to `blocks/docs/toc_shell` |
 
@@ -166,7 +166,7 @@ If it only renders props → **`components`** or **`blocks`**. If it **fetches**
 
 | Symbol | Status | Meaning |
 |--------|--------|---------|
-| `views.AppShell` | **Temporary adapter** | App-zone route layout adapter (topnav today; delegates to `internal/ui` artifact later). |
+| `views.AppShell` | **Temporary adapter** | App-zone route layout adapter; maps `LayoutData` → `appshell.AppShell` (`blocks/dashboard/app_shell`). |
 | `views.MarketingShell` | **Temporary adapter** | Public/landing layout adapter. |
 | `views.DocsShell` | **Temporary adapter** | Docs layout adapter. |
 | `views.SiteShell` | **Temporary alias** | Delegates to `AppShell` until call sites migrate. |
@@ -297,3 +297,9 @@ See [next-shadcn-refactor-progress.md](../next-shadcn-refactor-progress.md) for 
 - **Folder policy:** Layout organisms under `internal/ui/blocks/<domain>/<organism>`; no `blocks/layout/`; `internal/ui/layout/` stays document/chrome only.
 - **Adapters:** `views.*Shell` remain thin runtime adapters; reusable UI mass moves to registry in Block 05+.
 - **Next:** Block 05 — extract current topnav shell from `views` into registry artifact.
+
+## Block 05 completion notes
+
+- **Completed:** [`internal/ui/blocks/dashboard/app_shell/`](../../internal/ui/blocks/dashboard/app_shell/) — `appshell.AppShell` wraps `layout.Shell`; `views.AppShell` maps `LayoutData` → `layout.ShellProps` and delegates.
+- **No visual change:** Same topnav shell behavior; render tests pass for artifact and `views.AppShell` / `SiteShell`.
+- **Next:** Block 06 — factor reusable mobile sheet/nav UI.

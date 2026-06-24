@@ -25,7 +25,7 @@ internal/ui/
   layout/       # registry:layout — document/chrome shell (stays in app)
   components/   # registry:components — icon, toggles, …
   blocks/       # registry:blocks — section/layout organisms (staging → fastygo/blocks)
-    dashboard/  # e.g. app_shell, sidebar_app
+    dashboard/  # e.g. app_shell (topnav today), sidebar_app
     marketing/  # e.g. topnav_shell, landing_shell
     docs/       # e.g. toc_shell
   widgets/      # registry:widgets — UI + behavior (staging → fastygo/widgets)

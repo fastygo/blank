@@ -1,56 +1,41 @@
-# Active implementation spec — Block 04
+# Active implementation spec — Block 05
 
-**Feature:** Registry boundary for layout artifacts  
+**Feature:** Extract topnav shell into registry artifact  
 **Architecture:** [next-shadcn-architecture.md](./next-shadcn-architecture.md)  
-**Progress block:** Block 04 in [next-shadcn-refactor-progress.md](../next-shadcn-refactor-progress.md)
+**Progress block:** Block 05 in [next-shadcn-refactor-progress.md](../next-shadcn-refactor-progress.md)
 
 ---
 
 ## Intent
 
-Freeze where reusable layout-related UI artifacts live before sidebar/app shell variants are implemented. Separate runtime router wiring from shadcn-like copy-paste registry accumulation.
+Move the current topnav app shell composition from `views/layout.templ` into a reusable `internal/ui` registry artifact while keeping `views.AppShell(data, body)` as a thin runtime adapter.
 
-This slice is **documentation only** — no runtime UI changes, no sidebar implementation.
+No new sidebar, docs toc, marketing divergence, or visual changes.
 
 ---
 
 ## Deliverables
 
-| File | Updates |
-|------|---------|
-| [`next-shadcn-architecture.md`](./next-shadcn-architecture.md) | Registry boundary section, folder convention, route adapter policy |
-| [`internal/ui/README.md`](../../internal/ui/README.md) | Where-does-this-go table, runtime vs registry |
-| [`internal/ui/layout/README.md`](../../internal/ui/layout/README.md) | Permanent app chrome vs layout organisms |
-| [`internal/ui/blocks/README.md`](../../internal/ui/blocks/README.md) | Domain folder convention, layout organisms |
-| [`internal/ui/widgets/README.md`](../../internal/ui/widgets/README.md) | Widgets vs blocks for layout + behavior |
-| [`blank-ui-structure.mdc`](../../.cursor/rules/blank-ui-structure.mdc) | Updated site package layout, add-page flow |
-
----
-
-## Frozen decisions
-
-- **`internal/ui/layout/`** — document/chrome infrastructure only; stays in app.
-- **`internal/ui/blocks/<domain>/<organism>/`** — layout organisms (e.g. `dashboard/sidebar_app`, `docs/toc_shell`, `marketing/topnav_shell`).
-- **No** `internal/ui/blocks/layout/`, `recipes`, `elements`, or `ui/`.
-- **`views.*Shell`** — thin runtime adapters; reusable markup moves to registry in Block 05+.
-- **`internal/site/router.go`** — runtime wiring only; not a registry.
+| Path | Role |
+|------|------|
+| [`internal/ui/blocks/dashboard/app_shell/`](../../internal/ui/blocks/dashboard/app_shell/) | `appshell.AppShell` — props-only block wrapping `layout.Shell` |
+| [`internal/views/layout.templ`](../../internal/views/layout.templ) | `views.AppShell` maps `LayoutData` → `appshell.Props` and delegates |
 
 ---
 
 ## Acceptance criteria
 
-- [x] Future layout work has an explicit registry home under `blocks/<domain>/<organism>/`.
-- [x] Team can distinguish runtime router wiring from copy-paste UI artifacts.
-- [x] `internal/ui/layout` vs `blocks` vs `widgets` vs `components` responsibilities documented.
-- [x] `views.AppShell` policy documented as temporary thin adapter.
-- [x] No sidebar UI implemented.
-- [x] No forbidden folder names introduced.
-- [x] No custom JS guidance beyond `@ui8kit/aria`/Sheet policy.
+- [x] `views.AppShell(data, body)` still works.
+- [x] `MarketingShell`, `DocsShell`, `SiteShell` still delegate to `AppShell`.
+- [x] Current topnav shell discoverable at `internal/ui/blocks/dashboard/app_shell`.
+- [x] Artifact uses `layout.ShellProps`, not `views.LayoutData` (no import cycle).
+- [x] `TestAppShell_homeRenders`, `TestSiteShell_aliasRenders`, and artifact render test pass.
+- [x] No custom JS; no new layout variants.
 
-**Block 04 complete.** Validation: doc review for stale `feature.go` route-registration and forbidden folders.
+**Block 05 complete.** Validation: `bun run templ`, `bun run lint:ui8px`, `go test ./...`.
 
 ---
 
-## After Block 04
+## After Block 05
 
-Proceed to Block 05: extract current topnav shell from `views` into a registry artifact; keep `views.AppShell` as thin adapter.
+Proceed to Block 06: extract reusable mobile sheet/nav UI for future sidebar/docs blocks.

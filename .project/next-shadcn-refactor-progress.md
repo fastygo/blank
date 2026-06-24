@@ -48,7 +48,7 @@ If a command cannot be run, report why and what remains unverified.
 - [x] 02. `internal/site` is split into runtime router manifest, render helper, nav, and layout data.
 - [x] 03. React onboarding docs explain route -> shell -> page and the add-page workflow.
 - [x] 04. Registry boundary is frozen: atoms/molecules/organisms/templates map to `Templ` and `internal/ui/*`.
-- [ ] 05. Current topnav shell is extracted from `views` into the chosen `internal/ui` registry location, with `views.AppShell` as thin adapter.
+- [x] 05. Current topnav shell is extracted from `views` into the chosen `internal/ui` registry location, with `views.AppShell` as thin adapter.
 - [ ] 06. Mobile sheet/nav reusable UI is factored through existing `templ/components` Sheet APIs and `@ui8kit/aria`.
 - [ ] 07. Sidebar/app layout organism is implemented under `internal/ui/blocks` or `internal/ui/widgets` as decided by Block 04.
 - [ ] 08. Three sidebar wireframes are documented or showcased as registry artifacts, not runtime engine variants.
@@ -363,6 +363,8 @@ Acceptance:
 - `views.AppShell(data, body)` still works.
 - Current topnav shell is discoverable as an `internal/ui` registry artifact.
 - Render tests still cover current shell behavior.
+
+**Done:** [`internal/ui/blocks/dashboard/app_shell/`](../internal/ui/blocks/dashboard/app_shell/) (`appshell.AppShell`), [`internal/views/layout.templ`](../internal/views/layout.templ) delegates from `views.AppShell`.
 
 ---
 
