@@ -29,8 +29,6 @@ Dev tooling is configured in [`fastygo.config.mjs`](fastygo.config.mjs) — **to
 |---------|---------|
 | `bun run dev` | One-shot templ/CSS/JS build + Go server |
 | `bun run watch:css` | Tailwind watch (run in a second terminal during dev) |
-| `bun run start` | One-shot build + `go run` (no watch) |
-| `bun run preview` | Same as `start` |
 | `bun run build` | Production assets + `go build -o blank` |
 | `bun run build:dev-overlay` | Dev-only overlay bundle (`APP_DEV_OVERLAY=1`) |
 | `bun run verify` | Full CI-style check |

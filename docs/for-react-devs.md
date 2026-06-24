@@ -280,7 +280,6 @@ Run this before opening a PR or after large markup changes.
 |------|---------|
 | Dev server | `bun run dev` |
 | CSS watch (second terminal) | `bun run watch:css` |
-| One-shot run | `bun run start` |
 | Production binary | `bun run build` → `./blank` |
 | Regenerate templ only | `bun run templ` |
 | CSS one-shot | `bun run build:css` |
