@@ -11,32 +11,42 @@ On-disk index: **`internal/ui/README.md`** (same `registry:*` labels as FastyGoU
 
 ```
 internal/ui/
-  layout/       # registry:layout — shell, header, footer, mobile sheet
+  layout/       # registry:layout — document/chrome shell (stays in app)
   components/   # registry:components — icon, toggles, …
-  blocks/       # registry:blocks — dashboard/, marketing/, docs/ (staging)
+  blocks/       # registry:blocks — dashboard/, marketing/, docs/ (layout organisms)
   widgets/      # registry:widgets — UI + behavior (staging)
   variants/     # registry:variants — wireframe utility maps
   utils/        # registry:utils — app helpers on templ/utils
 internal/views/
   *.templ       # route pages (home hero, sample, …)
+  layout.templ  # thin route shell adapters (AppShell, …)
   partials/     # shell head assets, header trailing glue
   models.go     # LayoutData, page structs
 internal/site/
-  feature.go    # routes, locale wiring, static nav
+  router.go     # PageSpec route manifest
+  render.go     # handlePage, web.Render
+  nav.go        # nav from route specs
+  layout_data.go # LayoutData, language switch, assets
+  feature.go    # Feature wiring only
 internal/fixtures/
   locale/*.json # i18n copy
 ```
 
 | Path | Role |
 |------|------|
-| `internal/ui/layout` | App chrome; stays in app after extraction |
+| `internal/ui/layout` | Document/chrome shell; stays in app — **not** every layout variant |
 | `internal/ui/components` | Props-only UI; no HTTP or fetch |
-| `internal/ui/blocks/<group>` | Section organisms → future `fastygo/blocks` |
+| `internal/ui/blocks/<domain>/` | Section/layout organisms → future `fastygo/blocks` |
 | `internal/ui/widgets` | Behavior shells → future `fastygo/widgets` |
-| `internal/views` | Compose layout + resolved fixture strings |
+| `internal/views` | Pages + thin route adapters; not a registry |
+| `internal/site` | Runtime routing; not a registry |
+
+**Layout organisms:** `blocks/dashboard/sidebar_app`, `blocks/docs/toc_shell`, `blocks/marketing/topnav_shell` — **not** `blocks/layout/`.
+
+**Forbidden folders:** `internal/ui/recipes`, `internal/ui/elements`, `internal/ui/ui/`, `internal/ui/blocks/layout/`.
 
 **views** receive resolved strings/structs only — no `fixtures.LoadLocale` inside `.templ`.
 
-When adding a page: extend `fixtures.Locale` + every `locale/*.json`, add nav in `site/feature.go`, add `internal/views/<page>.templ`, register route in `site/feature.go`.
+When adding a page: extend `fixtures.Locale` + every `locale/*.json`, add `internal/views/<page>.templ`, add one `PageSpec` in `internal/site/router.go`.
 
-For sidebar layout, see git branch **`sidebar`**.
+For sidebar layout history, see git branch **`sidebar`**.

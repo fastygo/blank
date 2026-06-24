@@ -47,7 +47,7 @@ If a command cannot be run, report why and what remains unverified.
 - [x] 01. Named route shells exist: `AppShell`, `MarketingShell`, `DocsShell`, with `SiteShell` as temporary alias.
 - [x] 02. `internal/site` is split into runtime router manifest, render helper, nav, and layout data.
 - [x] 03. React onboarding docs explain route -> shell -> page and the add-page workflow.
-- [ ] 04. Registry boundary is frozen: atoms/molecules/organisms/templates map to `Templ` and `internal/ui/*`.
+- [x] 04. Registry boundary is frozen: atoms/molecules/organisms/templates map to `Templ` and `internal/ui/*`.
 - [ ] 05. Current topnav shell is extracted from `views` into the chosen `internal/ui` registry location, with `views.AppShell` as thin adapter.
 - [ ] 06. Mobile sheet/nav reusable UI is factored through existing `templ/components` Sheet APIs and `@ui8kit/aria`.
 - [ ] 07. Sidebar/app layout organism is implemented under `internal/ui/blocks` or `internal/ui/widgets` as decided by Block 04.
@@ -314,6 +314,10 @@ Acceptance:
 - Future layout work has an explicit registry home.
 - The team can distinguish runtime router wiring from shadcn-like copy-paste UI artifacts.
 
+**Done:** [`.project/specs/next-shadcn-architecture.md`](specs/next-shadcn-architecture.md) (Registry boundary section), [`internal/ui/README.md`](../internal/ui/README.md), subtree READMEs, [`blank-ui-structure.mdc`](../.cursor/rules/blank-ui-structure.mdc).
+
+**Frozen folder policy:** `blocks/<domain>/<organism>/` (e.g. `dashboard/sidebar_app`, `docs/toc_shell`) — **not** `blocks/layout/`.
+
 ---
 
 ## Block 05 — Extract Current Topnav Shell Into Registry Artifact
@@ -432,7 +436,7 @@ Context:
 - Read reusable mobile sheet/nav UI from Block 06.
 
 Design:
-- The sidebar app organism should live under the `internal/ui` location decided in Block 04, for example `internal/ui/blocks/sidebar/app` or `internal/ui/blocks/layout/sidebar_app`.
+- The sidebar app organism should live under the `internal/ui` location frozen in Block 04: `internal/ui/blocks/dashboard/sidebar_app` (or similar under `blocks/<domain>/<organism>/`).
 - It composes existing atoms/molecules (`templ/ui`, `templ/components`) and app components/widgets.
 - It may reuse `internal/ui/layout.Shell` or consume shell/chrome props from the adapter.
 - It supports desktop sidebar + mobile sheet using `@ui8kit/aria`.

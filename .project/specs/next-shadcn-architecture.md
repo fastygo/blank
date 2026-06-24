@@ -2,8 +2,8 @@
 
 Durable architecture spec for the Blank refactor aimed at React developers who know **Next App Router** and **shadcn/ui**. This document freezes vocabulary and responsibilities before runtime changes.
 
-**Status:** Block 03 complete — React onboarding docs updated.  
-**Next slice:** Block 04 — registry boundary for layout artifacts (see [active.md](./active.md)).
+**Status:** Block 04 complete — registry boundary for layout artifacts is frozen.  
+**Next slice:** Block 05 — extract topnav shell into registry (see [active.md](./active.md)).
 
 ---
 
@@ -55,7 +55,7 @@ They should **not** need to read framework internals to add a page, choose a lay
 | `components/ui/*` | primitives | `github.com/fastygo/templ/ui` + `templ/components` |
 | App components | local UI | `internal/ui/components/*` |
 | shadcn blocks | copy-paste | `internal/ui/blocks/*` + Templ examples |
-| Route table | file-based routes | `internal/site/router.go` (target runtime manifest; `routes.go` acceptable if named deliberately; today `feature.go`) |
+| Route table | file-based routes | `internal/site/router.go` |
 | `middleware.ts` | — | `internal/serverapp/app.go` (locales, security) |
 | `messages/*.json` | — | `internal/fixtures/locale/*.json` |
 
@@ -70,7 +70,7 @@ flowchart LR
   end
 
   subgraph site [internal/site]
-    RF["router.go / feature.go"]
+    RF["router.go"]
     LD["layout_data.go"]
   end
 
@@ -93,6 +93,72 @@ flowchart LR
 ```
 
 **Onboarding rule:** React devs touch **`internal/views/*.templ`** and **`fixtures/locale/*.json`** daily; **`internal/site/`** stays thin runtime routing; reusable UI mass lives in **`internal/ui/*`**.
+
+---
+
+## Registry boundary (frozen)
+
+Three concepts must stay separate:
+
+| Concept | Location | shadcn analogy |
+|---------|----------|----------------|
+| **Runtime wiring** | `internal/site/router.go` | Route table — chooses layout adapter + page |
+| **Route shell adapter** | `views.AppShell`, `MarketingShell`, `DocsShell` | Next route-group `layout.tsx` wrapper |
+| **Registry artifact** | `internal/ui/{components,blocks,widgets,…}` | Copy-paste blocks/components you accumulate |
+
+```mermaid
+flowchart LR
+  routeSpec["internal/site/router.go PageSpec"] --> routeAdapter["views.AppShell adapter"]
+  routeAdapter --> uiArtifact["internal/ui/blocks/domain/organism"]
+  routeAdapter --> docShell["internal/ui/layout.Shell"]
+  pageBody["internal/views/Page"] --> routeAdapter
+```
+
+**Rule:** Do not put reusable layout organisms in `internal/site/` or grow `views/layout.templ` into a layout engine. Routes **select** artifacts; artifacts **compose** markup.
+
+### Where layout organisms live
+
+Use **`internal/ui/blocks/<domain>/<organism>`** for props-only, copy-pasteable layout scaffolds (future `github.com/fastygo/blocks` candidates):
+
+| Domain folder | Example organism | Use |
+|---------------|------------------|-----|
+| `blocks/dashboard/` | `app_shell`, `sidebar_app` | App/dashboard shell wireframes |
+| `blocks/docs/` | `toc_shell` | Docs toc + content column |
+| `blocks/marketing/` | `topnav_shell`, `landing_shell` | Public/landing layouts |
+
+**Do not** create `internal/ui/blocks/layout/` — it collides with permanent app chrome in `internal/ui/layout/`.
+
+**Do not** create `internal/ui/recipes`, `internal/ui/elements`, or `internal/ui/ui/`.
+
+### What stays in `internal/ui/layout/` permanently
+
+App-owned **document/chrome infrastructure** only:
+
+- `Shell` — document frame, main slot, mobile sheet host
+- Header, nav, footer — top-level chrome
+- Props/helpers shared by all routes
+
+Sidebar geometry, dashboard grids, and docs toc shells are **blocks** (or **widgets** when behavior is required), not new folders under `layout/`.
+
+### components vs blocks vs widgets
+
+| Layer | When to use | Example |
+|-------|-------------|---------|
+| **`components/`** | Small props-only app UI | `icon/`, `toggles/`, future nav chip |
+| **`blocks/<domain>/`** | Section or layout organism; portable wireframe | `dashboard/sidebar_app` |
+| **`widgets/`** | UI + fetch/state/orchestration | Live data shell, authenticated nav |
+
+If it only renders props → **`components`** or **`blocks`**. If it **fetches** or coordinates side effects → **`widgets`**.
+
+### Route adapters vs registry
+
+| Symbol | Role today | Future |
+|--------|------------|--------|
+| `views.AppShell` | Thin adapter → `layout.Shell` + topnav chrome | Delegates to `internal/ui/blocks/dashboard/app_shell` (Block 05+) |
+| `views.MarketingShell` | Same as `AppShell` until marketing diverges | Delegates to `blocks/marketing/*` |
+| `views.DocsShell` | Placeholder | Delegates to `blocks/docs/toc_shell` |
+
+`views.*Shell` may remain as **named route adapters** even after UI mass moves to `internal/ui/*`. They should not accumulate markup — only wire resolved props into registry artifacts.
 
 ---
 
@@ -127,12 +193,13 @@ flowchart LR
 
 ### `internal/ui/*`
 
-- `layout/`: app-owned document/chrome frame that stays in the app
+- `layout/`: app-owned document/chrome frame — **stays in app**; not a catalog for every layout variant
 - `components/`: small props-only app UI
-- `blocks/`: reusable section/layout organisms with default demo data
+- `blocks/<domain>/`: reusable section/layout organisms with default demo data — use domain folders (`dashboard/`, `docs/`, `marketing/`), not `blocks/layout/`
 - `widgets/`: reusable UI with behavior/data orchestration
 - `variants/` and `utils/`: named class maps and thin helpers
 - Preserves `data-ui8kit-*` / `@ui8kit/aria` contracts where behavior is needed
+- **Not a registry:** `internal/views/` (pages + thin adapters), `internal/site/` (runtime routing)
 
 ### `internal/fixtures/`
 
@@ -223,3 +290,10 @@ See [next-shadcn-refactor-progress.md](../next-shadcn-refactor-progress.md) for 
 - **Completed:** [`docs/for-react-devs.md`](../../docs/for-react-devs.md) and [`README.md`](../../README.md) explain request flow, file map, add-page cookbook, registry terms, and honest dev loop.
 - **No runtime changes:** Documentation-only slice.
 - **Next:** Block 04 — freeze registry boundary for layout artifacts.
+
+## Block 04 completion notes
+
+- **Completed:** Registry boundary frozen in this spec and [`internal/ui/README.md`](../../internal/ui/README.md) subtree.
+- **Folder policy:** Layout organisms under `internal/ui/blocks/<domain>/<organism>`; no `blocks/layout/`; `internal/ui/layout/` stays document/chrome only.
+- **Adapters:** `views.*Shell` remain thin runtime adapters; reusable UI mass moves to registry in Block 05+.
+- **Next:** Block 05 — extract current topnav shell from `views` into registry artifact.

@@ -10,22 +10,24 @@ structure, fill packages incrementally, extract when stable.
 |-------|--------|------|
 | Atoms / helpers | `github.com/fastygo/templ/utils` | Cn, CVA, tags, ARIA |
 | Molecules | `github.com/fastygo/templ/ui` | Button, Stack, Form, Table, … |
-| Kit composites | `github.com/fastygo/templ/components` | Card, Alert, Breadcrumb, … |
-| App registry | **`internal/ui/*`** (this tree) | Shell, blocks, widgets, app components |
+| Kit composites | `github.com/fastygo/templ/components` | Card, Alert, Breadcrumb, Sheet, … |
+| App registry | **`internal/ui/*`** (this tree) | Chrome, blocks, widgets, app components |
 
 **Not Go dependencies during staging:** `github.com/fastygo/blocks`, `github.com/fastygo/widgets`.
 Develop here first; `require` shared modules only after extraction.
+
+**Not part of this registry:** `internal/views/` (pages + thin route adapters), `internal/site/` (runtime route manifest).
 
 ## Tree
 
 ```
 internal/ui/
-  layout/       # registry:layout — shell, header, footer, mobile sheet (stays in app)
-  components/   # registry:components — dumb reusable UI (icon, toggles, …)
-  blocks/       # registry:blocks — section organisms (staging → fastygo/blocks)
-    dashboard/
-    marketing/
-    docs/
+  layout/       # registry:layout — document/chrome shell (stays in app)
+  components/   # registry:components — icon, toggles, …
+  blocks/       # registry:blocks — section/layout organisms (staging → fastygo/blocks)
+    dashboard/  # e.g. app_shell, sidebar_app
+    marketing/  # e.g. topnav_shell, landing_shell
+    docs/       # e.g. toc_shell
   widgets/      # registry:widgets — UI + behavior (staging → fastygo/widgets)
   variants/     # registry:variants — optional wireframe utility maps
   utils/        # registry:utils — thin helpers on templ/utils
@@ -33,22 +35,46 @@ internal/ui/
 
 | Label | Path | Role |
 |--------|------|------|
-| `registry:layout` | `layout/` | App chrome and route frame; **not** extracted to blocks. |
-| `registry:blocks` | `blocks/<group>/` | Section scaffolds + in-package default copy. |
-| `registry:components` | `components/` | Props in, markup out; no HTTP, domain, or fetch. |
-| `registry:widgets` | `widgets/` | Fetch, state, orchestration; composes blocks/components. |
-| `registry:variants` | `variants/` | Named, ui8px-safe utility presets. |
-| `registry:utils` | `utils/` | App-specific helpers; generic logic stays in **templ/utils**. |
+| `registry:layout` | `layout/` | App document/chrome frame; **not** extracted; **not** every layout variant |
+| `registry:blocks` | `blocks/<domain>/` | Section/layout organisms + in-package default copy |
+| `registry:components` | `components/` | Props in, markup out; no HTTP, domain, or fetch |
+| `registry:widgets` | `widgets/` | Fetch, state, orchestration; composes blocks/components |
+| `registry:variants` | `variants/` | Named, ui8px-safe utility presets |
+| `registry:utils` | `utils/` | App-specific helpers; generic logic stays in **templ/utils** |
 
-There is **no** `internal/ui/elements` and **no** `internal/ui/ui/` layer.
+There is **no** `internal/ui/elements`, **no** `internal/ui/ui/`, and **no** `internal/ui/blocks/layout/` (conflicts with `layout/` app chrome).
+
+## Where does this UI go?
+
+| You are building… | Put it in… |
+|-------------------|------------|
+| Document shell, header, footer, mobile sheet host | `layout/` |
+| Small reusable control (icon, toggle) | `components/` |
+| Sidebar app shell, dashboard grid, docs toc layout (props-only wireframe) | `blocks/<domain>/<organism>/` |
+| Shell that fetches or orchestrates API/state | `widgets/` |
+| Route-specific page content | `internal/views/*.templ` |
+| HTTP route + layout choice | `internal/site/router.go` (`PageSpec`) |
+| Thin Next-like route wrapper | `internal/views/*Shell` (adapter only) |
+
+Layout organisms use **domain folders** first: `dashboard/sidebar_app`, `docs/toc_shell`, `marketing/topnav_shell` — not a generic `blocks/layout/` tree.
 
 ## `components` vs `widgets` vs `blocks`
 
-- **`blocks`** — section-level markup + default demo data; portable wireframe.
+- **`blocks`** — section-level or layout-level markup + default demo data; portable wireframe (shadcn block copy-paste).
 - **`components`** — small reusable pieces; props only.
 - **`widgets`** — same UI boundaries plus **behavior** (API, loading, subscriptions).
 
-If it only renders props → **`components`**. If it **fetches** or coordinates side effects → **`widgets`**.
+If it only renders props → **`components`** or **`blocks`**. If it **fetches** or coordinates side effects → **`widgets`**.
+
+## Runtime vs registry (do not collapse)
+
+```text
+internal/site/router.go  →  views.AppShell (adapter)  →  internal/ui/blocks/... + layout.Shell  →  views.Page
+```
+
+- **`internal/site/`** — runtime wiring only; no reusable markup.
+- **`internal/views/*Shell`** — temporary route adapters; should delegate to registry artifacts as they appear.
+- **`internal/ui/*`** — shadcn-like accumulation layer; copy-paste or `require` after extraction.
 
 ## Data (three layers)
 
@@ -61,9 +87,9 @@ If it only renders props → **`components`**. If it **fetches** or coordinates 
 | Stable & generic | Destination |
 |------------------|-------------|
 | Primitive / small composite | `github.com/fastygo/templ` (`ui/` or `components/`) |
-| Section block | `github.com/fastygo/blocks/<group>` |
+| Section / layout block | `github.com/fastygo/blocks/<group>` |
 | Interactive / API shell | `github.com/fastygo/widgets` |
-| App shell | **keep** `internal/ui/layout` |
+| App document/chrome shell | **keep** `internal/ui/layout` |
 
 **Freeze before extract:** stable props, 2+ uses or explicit registry intent, default data in block package, dependencies only on **templ** (+ framework for widgets if needed).
 
@@ -72,6 +98,7 @@ If it only renders props → **`components`**. If it **fetches** or coordinates 
 - **No raw HTML** layout/content tags — use `templ/ui` (+ `templ/components`).
 - Document shell only: `<!DOCTYPE>`, `<html>`, `<head>`, `<body>`, … in `layout/shell.templ` or `views/partials/shell_head.templ`.
 - Tailwind utilities must pass **`Blank/.ui8px/policy`** (`bun run lint:ui8px`).
+- Covered interaction: `@ui8kit/aria` + `templ/components` Sheet with `Behavior: "ui8kit"` — no custom JS for covered patterns.
 
 ## Related docs
 
@@ -81,6 +108,7 @@ If it only renders props → **`components`**. If it **fetches** or coordinates 
 - [`widgets/README.md`](widgets/README.md)
 - [`variants/README.md`](variants/README.md)
 - [`utils/README.md`](utils/README.md)
+- Architecture: [`.project/specs/next-shadcn-architecture.md`](../../.project/specs/next-shadcn-architecture.md)
 - App rules: `@Blank/.cursor/rules/blank-ui-structure.mdc`, `blank-atomic-ui8px.mdc`
 
 ## Source policy
