@@ -11,7 +11,7 @@ Use **`blocks/<domain>/<organism>/`** — not `blocks/layout/` (conflicts with a
 
 | Package | Example organisms | Showcase focus |
 |---------|-------------------|----------------|
-| `dashboard/` | `app_shell`, `sidebar_app` | App/dashboard shell wireframes (`app_shell` = current topnav runtime; `sidebar_app` = desktop aside + mobile sheet) |
+| `dashboard/` | [`app_shell`](dashboard/app_shell/), [`sidebar_app`](dashboard/sidebar_app/) | App/dashboard shell wireframes (`app_shell` = current topnav runtime; `sidebar_app` = desktop aside + mobile sheet; see [sidebar showcase IDs](dashboard/sidebar_app/README.md#showcase-wireframes-block-08)) |
 | `marketing/` | `topnav_shell`, `landing_shell` | Public/landing layouts |
 | `docs/` | `toc_shell` | Docs toc + content column |
 
@@ -25,7 +25,7 @@ Add new **domain** top-level folders only when a new showcase group is needed (e
 | Sidebar grid, dashboard shell, docs toc layout | `blocks/<domain>/<organism>/` |
 | Shell with API fetch / live nav | `widgets/` |
 
-Three sidebar wireframe images (`sidebars_full`, `sidebars_main`, `sidebars_header`) are **showcase ids** for block packages — not runtime names or a layout engine.
+Three sidebar wireframe images (`sidebars_full`, `sidebars_main`, `sidebars_header`) are **showcase ids** documented in [`dashboard/sidebar_app/README.md`](dashboard/sidebar_app/README.md) — not runtime names or a layout engine.
 
 ## Rules
 

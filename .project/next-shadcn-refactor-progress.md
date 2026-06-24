@@ -51,7 +51,7 @@ If a command cannot be run, report why and what remains unverified.
 - [x] 05. Current topnav shell is extracted from `views` into the chosen `internal/ui` registry location, with `views.AppShell` as thin adapter.
 - [x] 06. Mobile sheet/nav reusable UI is factored through existing `templ/components` Sheet APIs and `@ui8kit/aria`.
 - [x] 07. Sidebar/app layout organism is implemented under `internal/ui/blocks` or `internal/ui/widgets` as decided by Block 04.
-- [ ] 08. Three sidebar wireframes are documented or showcased as registry artifacts, not runtime engine variants.
+- [x] 08. Three sidebar wireframes are documented or showcased as registry artifacts, not runtime engine variants.
 - [ ] 09. Runtime router chooses layout organisms explicitly without hiding layout choice in a global switch.
 - [ ] 10. Final docs and tests are aligned for React/shadcn onboarding.
 
@@ -514,6 +514,8 @@ Acceptance:
 
 - The team can point to each image and explain it using regions, scopes, and registry artifacts.
 - Future variants are built by composing/forking registry artifacts, not adding ad hoc shell forks.
+
+**Done:** [`internal/ui/blocks/dashboard/sidebar_app/README.md`](../internal/ui/blocks/dashboard/sidebar_app/README.md) — region vocabulary + showcase mappings for `sidebars_full`, `sidebars_main`, `sidebars_header`; docs-only slice (no new runtime layout variants).
 
 ---
 

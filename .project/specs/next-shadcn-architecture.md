@@ -2,8 +2,8 @@
 
 Durable architecture spec for the Blank refactor aimed at React developers who know **Next App Router** and **shadcn/ui**. This document freezes vocabulary and responsibilities before runtime changes.
 
-**Status:** Block 07 complete — sidebar app organism in `blocks/dashboard/sidebar_app`.  
-**Next slice:** Block 08 — sidebar wireframe showcase artifacts (see [active.md](./active.md)).
+**Status:** Block 08 complete — sidebar wireframe showcase documented in `sidebar_app/README.md`.  
+**Next slice:** Block 09 — explicit runtime layout selection (see [active.md](./active.md)).
 
 ---
 
@@ -313,4 +313,9 @@ See [next-shadcn-refactor-progress.md](../next-shadcn-refactor-progress.md) for 
 
 - **Completed:** [`internal/ui/blocks/dashboard/sidebar_app/`](../../internal/ui/blocks/dashboard/sidebar_app/) — `sidebarapp.SidebarApp` wraps `layout.Shell` with desktop aside + vertical `navigation.Nav`; mobile sheet inherited from shell.
 - **Runtime unchanged:** `views.AppShell` still delegates to `app_shell`; sidebar block is registry-only until Block 09.
-- **Next:** Block 08 — document/showcase three sidebar wireframe geometries.
+
+## Block 08 completion notes
+
+- **Completed:** [`internal/ui/blocks/dashboard/sidebar_app/README.md`](../../internal/ui/blocks/dashboard/sidebar_app/README.md) — region/scopes vocabulary and showcase mappings for `sidebars_full`, `sidebars_main`, `sidebars_header`.
+- **Docs-only:** No new renderable layout forks or router wiring; showcase IDs remain non-runtime names.
+- **Next:** Block 09 — runtime router chooses layout organisms explicitly per route.

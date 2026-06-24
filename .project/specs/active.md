@@ -67,6 +67,20 @@ No new sidebar, docs toc, marketing divergence, or visual changes.
 
 ---
 
-## After Block 07
+## Block 08 — Sidebar wireframe showcase artifacts
 
-Proceed to Block 08: sidebar wireframe showcase artifacts (`sidebars_full`, `sidebars_main`, `sidebars_header`).
+**Goal:** Document the three sidebar geometry wireframes as registry/showcase examples, not runtime engine variants.
+
+**Delivered:**
+
+- [x] [`internal/ui/blocks/dashboard/sidebar_app/README.md`](../../internal/ui/blocks/dashboard/sidebar_app/README.md) — region vocabulary (`shell_full`, `main_column`, `content_row`, `viewport`) and mappings for `sidebars_full`, `sidebars_main`, `sidebars_header`.
+- [x] [`internal/ui/blocks/README.md`](../../internal/ui/blocks/README.md) — links to sidebar showcase documentation.
+- [x] Docs-only slice; no router or view adapter changes.
+
+**Block 08 complete.** Validation: `go test ./internal/ui/blocks/dashboard/... ./internal/views/...`, `go test ./...`.
+
+---
+
+## After Block 08
+
+Proceed to Block 09: runtime router chooses layout organisms explicitly without a global layout switch.
