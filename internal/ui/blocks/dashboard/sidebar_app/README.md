@@ -2,7 +2,7 @@
 
 **Registry artifact** (`sidebarapp.SidebarApp`): document chrome from `layout.Shell` plus a desktop sidebar and main content column. Mobile navigation uses the existing `components/navigation` sheet from the shell header.
 
-This block is **not** selected by current routes. `views.AppShell` still delegates to `app_shell` until Block 09 wires explicit layout choice in the router.
+Runtime wiring: `/sample` uses `views.SidebarAppShell` in [`internal/site/router.go`](../../../../internal/site/router.go). Other routes choose layout explicitly via `PageSpec.Layout` (`views.AppShell`, `views.SidebarAppShell`, …).
 
 ## Block contract (Block 07)
 
@@ -81,7 +81,7 @@ App chrome header spans full width; a secondary page header band sits below it; 
 
 The implemented block is closest to **`layout.sidebar_app`** / a single left aside in the main slot (Block 07). The three showcase IDs above describe **additional geometries** to fork from this artifact or from shared parts (`navigation`, future `AsideRegion` / `ShellBand` composites).
 
-Do **not** wire showcase IDs into `internal/site/router.go` until Block 09 chooses layouts explicitly per route.
+Do **not** wire showcase IDs into `internal/site/router.go` unless the product needs that geometry — choose an existing route shell or fork this block first.
 
 ## How to add a new geometry
 

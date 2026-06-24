@@ -1,6 +1,6 @@
 # Blank
 
-Minimal **Go + templ** app shell on [FastyGo Framework](https://github.com/fastygo/framework) and [github.com/fastygo/templ](https://github.com/fastygo/templ). Top navigation, centered hero welcome, mobile sheet, dark theme, and En/Ru locale switching — nothing else. Use it as a neutral starting point for a new app.
+Minimal **Go + templ** app shell on [FastyGo Framework](https://github.com/fastygo/framework) and [github.com/fastygo/templ](https://github.com/fastygo/templ). Demo routes: topnav home (`/`) and sidebar app sample (`/sample`), with mobile sheet, dark theme, and En/Ru locale switching. Use it as a neutral starting point for a new app.
 
 ## Prerequisites
 
@@ -93,10 +93,9 @@ Runs: `templ generate` → Tailwind build → `build:js` → `ui8px lint` → `v
 
 ## Adding a page
 
-1. Add copy to **`fixtures.Locale`** and every **`locale/*.json`** file.
-2. Add `internal/views/<page>.templ` (and props in `models.go` if needed).
-3. Add one **`PageSpec`** entry in [`internal/site/router.go`](internal/site/router.go) — `Method`, `Pattern`, `Active`, `Layout`, `Title`, `Body`, and optional `Nav`.
+1. Add copy to [`internal/fixtures/fixtures.go`](internal/fixtures/fixtures.go) and every [`internal/fixtures/locale/*.json`](internal/fixtures/locale/) file.
+2. Add `internal/views/<page>.templ` (and props in [`internal/views/models.go`](internal/views/models.go) if needed).
+3. Add one **`PageSpec`** in [`internal/site/router.go`](internal/site/router.go) — choose `Layout: views.AppShell`, `views.SidebarAppShell`, `views.MarketingShell`, or `views.DocsShell`.
+4. Run `bun run verify` before landing the change.
 
 See [`docs/for-react-devs.md`](docs/for-react-devs.md) for the full cookbook (Next/shadcn mental model, request flow, dev loop).
-
-For the previous sidebar layout, use the **`sidebar`** branch as a reference.

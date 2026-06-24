@@ -36,7 +36,7 @@ They should **not** need to read framework internals to add a page, choose a lay
 | Layer | Name in docs | File today | Next analogy |
 |-------|--------------|------------|--------------|
 | 1 | Document shell | `internal/ui/layout/shell.templ` → `layout.Shell` | Root document + providers frame |
-| 2 | Route shell adapter | `internal/views/layout.templ` → `views.SiteShell` (→ `AppShell`) | Temporary route group adapter |
+| 2 | Route shell adapter | `internal/views/layout.templ` → `views.AppShell`, `views.SidebarAppShell`, … | Route group adapter |
 
 **Rule:** When onboarding says “layout”, specify **document shell** vs **route shell**.
 
@@ -169,7 +169,7 @@ If it only renders props → **`components`** or **`blocks`**. If it **fetches**
 | `views.AppShell` | **Temporary adapter** | App-zone route layout adapter; maps `LayoutData` → `appshell.AppShell` (`blocks/dashboard/app_shell`). |
 | `views.MarketingShell` | **Temporary adapter** | Public/landing layout adapter. |
 | `views.DocsShell` | **Temporary adapter** | Docs layout adapter. |
-| `views.SiteShell` | **Temporary alias** | Delegates to `AppShell` until call sites migrate. |
+| `views.SidebarAppShell` | **Temporary adapter** | Sidebar app route layout; maps to `sidebarapp.SidebarApp`. |
 | `layout.Shell` | **Keep** | Document/chrome shell — do not rename to avoid colliding with route shells. |
 
 ---
@@ -252,7 +252,7 @@ Reference implementations: `@Templ/examples/ui/blocks/home/page.templ`, `dashboa
 
 ## One-line onboarding (target README phrase)
 
-> **Runtime routes live in `internal/site/router.go`. Pages live in `internal/views/*.templ`. Route layout adapters are `AppShell` / `MarketingShell` / `DocsShell` for now. Reusable UI artifacts live in `internal/ui/*`. Copy lives in `fixtures/locale/*.json`.**
+> **Runtime routes live in `internal/site/router.go`. Pages live in `internal/views/*.templ`. Route layout adapters are `AppShell`, `SidebarAppShell`, `MarketingShell`, and `DocsShell`. Reusable UI artifacts live in `internal/ui/*`. Copy lives in `fixtures/locale/*.json`.**
 
 Runtime route specs live in `internal/site/router.go`; `feature.go` registers handlers from the manifest.
 
@@ -265,7 +265,7 @@ See [next-shadcn-refactor-progress.md](../next-shadcn-refactor-progress.md) for 
 | Block | Deliverable |
 |-------|-------------|
 | 00 | This spec |
-| 01 | Named route shells + `SiteShell` alias |
+| 01 | Named route shells (`AppShell`, `MarketingShell`, `DocsShell`; `SiteShell` alias removed in Block 11) |
 | 02 | `router.go` + render helper |
 | 03 | React onboarding docs |
 | 04–09 | Registry boundary, UI artifacts, sidebar organism, runtime wiring |
@@ -331,3 +331,9 @@ See [next-shadcn-refactor-progress.md](../next-shadcn-refactor-progress.md) for 
 - **Docs:** [`docs/for-react-devs.md`](../../docs/for-react-devs.md) tooling vs routing table; [`README.md`](../../README.md) clarifies config boundary.
 - **Dev loop:** [`scripts/dev.mjs`](../../scripts/dev.mjs) logs that `.templ` and Go edits require manual regenerate/restart (no HMR).
 - **Refactor:** Blocks 00–10 complete per [next-shadcn-refactor-progress.md](../next-shadcn-refactor-progress.md).
+
+## Block 11 completion notes
+
+- **Completed:** Final doc alignment ([`README.md`](../../README.md), [`docs/for-react-devs.md`](../../docs/for-react-devs.md), sidebar block README); removed `views.SiteShell` alias.
+- **Maintainer checklist:** Documented in [active.md](./active.md) — fixtures → views → `PageSpec` → layout choice → `bun run verify`.
+- **Refactor complete:** Blocks 00–11; ready for normal feature work.

@@ -20,7 +20,7 @@ Ask the agent to produce a bounded implementation plan from that block, then swi
 ## Current Baseline To Re-check In Each Slice
 
 - Runtime route specs live in `internal/site/router.go`; render, nav, and layout data helpers are split across `render.go`, `nav.go`, and `layout_data.go`. `feature.go` keeps feature wiring only.
-- Route layout wrapper currently exists as `views.SiteShell` / `views.AppShell` in `internal/views/layout.templ`; this is a temporary runtime adapter, not the long-term registry home for every layout variant.
+- Route layout adapters live in `internal/views/layout.templ` (`views.AppShell`, `views.SidebarAppShell`, `views.MarketingShell`, `views.DocsShell`); they are thin runtime wiring into `internal/ui` registry artifacts.
 - Document/chrome shell currently exists as `layout.Shell` in `internal/ui/layout/shell.templ`.
 - Mobile navigation currently uses `data-ui8kit` dialog/sheet hooks directly in the shell.
 - `web/static/js/manifest.json` currently includes the `dialog` pattern.
@@ -53,7 +53,8 @@ If a command cannot be run, report why and what remains unverified.
 - [x] 07. Sidebar/app layout organism is implemented under `internal/ui/blocks` or `internal/ui/widgets` as decided by Block 04.
 - [x] 08. Three sidebar wireframes are documented or showcased as registry artifacts, not runtime engine variants.
 - [x] 09. Runtime router chooses layout organisms explicitly without hiding layout choice in a global switch.
-- [x] 10. Final docs and tests are aligned for React/shadcn onboarding.
+- [x] 10. Tooling config is honest: `fastygo.config.mjs` is not a route/layout registry.
+- [x] 11. Final onboarding verification: docs, names, and tests tell the same story; refactor ready for normal feature work.
 
 ---
 
@@ -648,3 +649,4 @@ Acceptance:
 - Docs, code names, and tests tell the same story.
 - The refactor is ready for normal feature work.
 
+**Done:** Updated [`README.md`](../README.md), [`docs/for-react-devs.md`](../docs/for-react-devs.md), and [`sidebar_app/README.md`](../internal/ui/blocks/dashboard/sidebar_app/README.md); removed `views.SiteShell` alias and `TestSiteShell_aliasRenders`; final maintainer checklist in [`.project/specs/active.md`](specs/active.md).

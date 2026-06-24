@@ -69,7 +69,7 @@ flowchart LR
   registryBlock --> documentShell["layout.Shell"]
 ```
 
-**Naming:** Prefer `views.AppShell` in new code. `views.SiteShell` is a **temporary alias** to `AppShell` for backward compatibility.
+**Route shells:** `views.AppShell` (topnav), `views.SidebarAppShell` (desktop aside + mobile sheet), `views.MarketingShell`, `views.DocsShell` — chosen in one `PageSpec.Layout` line in [`router.go`](../internal/site/router.go).
 
 Architecture details: [`.project/specs/next-shadcn-architecture.md`](../.project/specs/next-shadcn-architecture.md).
 
@@ -119,7 +119,17 @@ See [`internal/ui/README.md`](../internal/ui/README.md) for the registry tree.
 
 ## Adding a page (cookbook)
 
-Follow the existing `/sample` route as a template.
+Follow the existing `/sample` route as a template. For a hypothetical `/about` page, touch these files in order:
+
+| Step | File |
+|------|------|
+| Copy struct | [`internal/fixtures/fixtures.go`](../internal/fixtures/fixtures.go) — add `About` to `Locale` |
+| i18n JSON | [`internal/fixtures/locale/en.json`](../internal/fixtures/locale/en.json) and [`ru.json`](../internal/fixtures/locale/ru.json) |
+| Page props | [`internal/views/models.go`](../internal/views/models.go) — `AboutData` |
+| Page markup | `internal/views/about.templ` — content only (no header, footer, nav) |
+| Route + layout | [`internal/site/router.go`](../internal/site/router.go) — one `PageSpec` with `Layout:` |
+
+Sidebar and mobile sheet behavior live in [`internal/ui/blocks/dashboard/sidebar_app/`](../internal/ui/blocks/dashboard/sidebar_app/) and [`internal/ui/components/navigation/`](../internal/ui/components/navigation/); `@ui8kit/aria` is already wired — no custom JS for covered patterns.
 
 ### 1. Add copy to fixtures
 
@@ -163,7 +173,7 @@ Nav is optional: omit `Nav` or return `false` for routes that should not appear 
 
 ```bash
 bun run templ          # after .templ changes
-go test ./...          # optional but recommended
+bun run verify         # before landing the change
 bun run dev            # restart if Go files changed
 ```
 

@@ -1,117 +1,45 @@
-# Active implementation spec — Block 05
+# Active implementation spec — Block 11 (final)
 
-**Feature:** Extract topnav shell into registry artifact  
+**Feature:** Final onboarding verification  
 **Architecture:** [next-shadcn-architecture.md](./next-shadcn-architecture.md)  
-**Progress block:** Block 05 in [next-shadcn-refactor-progress.md](../next-shadcn-refactor-progress.md)
+**Progress block:** Block 11 in [next-shadcn-refactor-progress.md](../next-shadcn-refactor-progress.md)
 
 ---
 
 ## Intent
 
-Move the current topnav app shell composition from `views/layout.templ` into a reusable `internal/ui` registry artifact while keeping `views.AppShell(data, body)` as a thin runtime adapter.
-
-No new sidebar, docs toc, marketing divergence, or visual changes.
+Validate that a React/shadcn developer can understand and extend Blank quickly. No new architecture, routing model, custom JS, or UI behavior in this slice.
 
 ---
 
-## Deliverables
+## Delivered
 
-| Path | Role |
-|------|------|
-| [`internal/ui/blocks/dashboard/app_shell/`](../../internal/ui/blocks/dashboard/app_shell/) | `appshell.AppShell` — props-only block wrapping `layout.Shell` |
-| [`internal/views/layout.templ`](../../internal/views/layout.templ) | `views.AppShell` maps `LayoutData` → `appshell.Props` and delegates |
+- [x] [`README.md`](../../README.md) — topnav home + sidebar sample routes; normal feature work checklist.
+- [x] [`docs/for-react-devs.md`](../../docs/for-react-devs.md) — `/about` cookbook with exact file touchpoints; sidebar/mobile discoverability in `internal/ui`.
+- [x] [`internal/ui/blocks/dashboard/sidebar_app/README.md`](../../internal/ui/blocks/dashboard/sidebar_app/README.md) — `/sample` uses `views.SidebarAppShell`; other routes choose `PageSpec.Layout` explicitly.
+- [x] Removed `views.SiteShell` compatibility alias from [`internal/views/layout.templ`](../../internal/views/layout.templ); removed `TestSiteShell_aliasRenders`.
 
----
-
-## Acceptance criteria
-
-- [x] `views.AppShell(data, body)` still works.
-- [x] `MarketingShell`, `DocsShell`, `SiteShell` still delegate to `AppShell`.
-- [x] Current topnav shell discoverable at `internal/ui/blocks/dashboard/app_shell`.
-- [x] Artifact uses `layout.ShellProps`, not `views.LayoutData` (no import cycle).
-- [x] `TestAppShell_homeRenders`, `TestSiteShell_aliasRenders`, and artifact render test pass.
-- [x] No custom JS; no new layout variants.
-
-**Block 05 complete.** Validation: `bun run templ`, `bun run lint:ui8px`, `go test ./...`.
+**Block 11 complete.** Validation: `bun run templ`, `bun run lint:ui8px`, `bun run validate:aria`, `go test ./...`, `bun run verify`.
 
 ---
 
-## Block 06 — Reusable mobile sheet/nav UI
+## Refactor complete (Blocks 00–11)
 
-**Goal:** Extract mobile navigation sheet and nav rendering into reusable props-only components for topnav, sidebar, and docs blocks.
-
-**Delivered:**
-
-- [x] `internal/ui/components/navigation/` — `Nav`, `MobileSheet`, `MobileSheetTrigger` via `templ/components` Sheet (`Behavior: "ui8kit"`).
-- [x] `layout.Shell` / `layout.Header` consume navigation components; `layout.NavItem` aliases `navigation.Item`.
-- [x] Stable ui8kit IDs preserved (`ui8kit-mobile-sheet-panel`, `-trigger`, `-title`).
-- [x] Focused render tests in `navigation_render_test.go`; shell/view tests still pass.
-- [x] No manifest or JS bundle changes (`dialog` pattern sufficient).
-
-**Block 06 complete.** Validation: `bun run templ`, `bun run lint:ui8px`, `bun run validate:aria`, `go test ./...`.
+Next/shadcn refactor is complete. Use the checklist below for normal feature work.
 
 ---
 
-## Block 07 — Sidebar app layout organism
+## Maintainer checklist (add a page)
 
-**Goal:** Add a reusable sidebar/app shell block under the registry without changing current route layout selection.
+1. Add route copy to [`internal/fixtures/fixtures.go`](../../internal/fixtures/fixtures.go) and **every** [`internal/fixtures/locale/*.json`](../../internal/fixtures/locale/) file.
+2. Add page data/template under [`internal/views/`](../../internal/views/) (`models.go` + `<page>.templ`).
+3. Add one [`PageSpec`](../../internal/site/router.go) in `internal/site/router.go`.
+4. Choose layout in `PageSpec.Layout`:
+   - `views.AppShell` — topnav app zone
+   - `views.SidebarAppShell` — desktop aside + mobile sheet
+   - `views.MarketingShell` — public/landing (currently delegates to `AppShell`)
+   - `views.DocsShell` — docs zone (currently delegates to `AppShell`)
+5. Reuse registry artifacts under [`internal/ui/`](../../internal/ui/) for chrome and sections — **not** `fastygo.config.mjs`.
+6. Run **`bun run verify`** before landing the change.
 
-**Delivered:**
-
-- [x] `internal/ui/blocks/dashboard/sidebar_app/` — `sidebarapp.SidebarApp` with `Props{Shell, Sidebar}`.
-- [x] Desktop aside (`ui.Box` tag `aside`) + vertical `navigation.Nav`; mobile sheet from `layout.Shell`.
-- [x] `DefaultProps()` for tests/showcase; no imports from `views` or `site`.
-- [x] Focused render tests; `app_shell` and route adapters unchanged.
-
-**Block 07 complete.** Validation: `bun run templ`, `bun run lint:ui8px`, `bun run validate:aria`, `go test ./...`.
-
----
-
-## Block 08 — Sidebar wireframe showcase artifacts
-
-**Goal:** Document the three sidebar geometry wireframes as registry/showcase examples, not runtime engine variants.
-
-**Delivered:**
-
-- [x] [`internal/ui/blocks/dashboard/sidebar_app/README.md`](../../internal/ui/blocks/dashboard/sidebar_app/README.md) — region vocabulary (`shell_full`, `main_column`, `content_row`, `viewport`) and mappings for `sidebars_full`, `sidebars_main`, `sidebars_header`.
-- [x] [`internal/ui/blocks/README.md`](../../internal/ui/blocks/README.md) — links to sidebar showcase documentation.
-- [x] Docs-only slice; no router or view adapter changes.
-
-**Block 08 complete.** Validation: `go test ./internal/ui/blocks/dashboard/... ./internal/views/...`, `go test ./...`.
-
----
-
-## Block 09 — Runtime wiring to UI artifacts
-
-**Goal:** Make route specs explicitly choose layout adapters without a global switch.
-
-**Delivered:**
-
-- [x] `internal/views/layout_helpers.go` — shared `shellProps(d LayoutData)`.
-- [x] `views.SidebarAppShell` in `layout.templ` — wraps `sidebarapp.SidebarApp`.
-- [x] `/` uses `Layout: views.AppShell`; `/sample` uses `Layout: views.SidebarAppShell` in `router.go`.
-- [x] `TestSidebarAppShell_sampleRenders`; topnav tests unchanged.
-- [x] [`docs/for-react-devs.md`](../../docs/for-react-devs.md) updated for explicit layout choice.
-
-**Block 09 complete.** Validation: `bun run templ`, `bun run lint:ui8px`, `bun run validate:aria`, `go test ./...`.
-
----
-
-## Block 10 — Tooling config cleanup
-
-**Goal:** Make `fastygo.config.mjs` honest tooling config without becoming a second route/layout source of truth.
-
-**Delivered:**
-
-- [x] [`fastygo.config.mjs`](../../fastygo.config.mjs) — top comment and section docs; routes/layouts point to `router.go` / `layout.templ`.
-- [x] [`scripts/load-config.d.ts`](../../scripts/load-config.d.ts) — tooling-focused TypeScript comments.
-- [x] [`scripts/dev.mjs`](../../scripts/dev.mjs) — explicit no-watch log for `.templ` and Go.
-- [x] [`docs/for-react-devs.md`](../../docs/for-react-devs.md) and [`README.md`](../../README.md) — tooling vs runtime routing.
-
-**Block 10 complete.** Validation: `bun run templ`, `bun run build:css`, `bun run build:js`, `bun run lint:ui8px`, `bun run validate:aria`, `go test ./...`, `bun run build`.
-
----
-
-## Refactor complete (Blocks 00–10)
-
-Next-shadcn refactor checklist is complete. Add pages via `PageSpec` in `router.go`; choose layout with `PageSpec.Layout`; keep tooling in `fastygo.config.mjs`.
+Sidebar and mobile sheet UI: [`internal/ui/blocks/dashboard/sidebar_app/`](../../internal/ui/blocks/dashboard/sidebar_app/) + [`internal/ui/components/navigation/`](../../internal/ui/components/navigation/). `@ui8kit/aria` is already wired for covered patterns.

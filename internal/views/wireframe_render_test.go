@@ -100,10 +100,6 @@ func TestAppShell_homeRenders(t *testing.T) {
 	assertHomeShellMarkup(t, renderShell(t, AppShell))
 }
 
-func TestSiteShell_aliasRenders(t *testing.T) {
-	assertHomeShellMarkup(t, renderShell(t, SiteShell))
-}
-
 func sampleShellLayoutData() LayoutData {
 	data := homeShellLayoutData()
 	data.PageTitle = "Sample"
