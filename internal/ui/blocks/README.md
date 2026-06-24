@@ -11,7 +11,7 @@ Use **`blocks/<domain>/<organism>/`** — not `blocks/layout/` (conflicts with a
 
 | Package | Example organisms | Showcase focus |
 |---------|-------------------|----------------|
-| `dashboard/` | `app_shell`, `sidebar_app` | App/dashboard shell wireframes (`app_shell` = current topnav) |
+| `dashboard/` | `app_shell`, `sidebar_app` | App/dashboard shell wireframes (`app_shell` = current topnav runtime; `sidebar_app` = desktop aside + mobile sheet) |
 | `marketing/` | `topnav_shell`, `landing_shell` | Public/landing layouts |
 | `docs/` | `toc_shell` | Docs toc + content column |
 

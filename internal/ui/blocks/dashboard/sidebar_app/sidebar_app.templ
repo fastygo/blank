@@ -1,0 +1,38 @@
+package sidebarapp
+
+import (
+	templpkg "github.com/a-h/templ"
+	"github.com/fastygo/blank/internal/ui/components/navigation"
+	"github.com/fastygo/blank/internal/ui/layout"
+	"github.com/fastygo/templ/ui"
+)
+
+// SidebarApp is the reusable sidebar app shell block. Composes layout.Shell with desktop aside + main column.
+templ SidebarApp(props Props, body templpkg.Component) {
+	@layout.Shell(props.Shell) {
+		@ui.Box(ui.BoxProps{Class: "flex min-h-0 w-full flex-1 flex-col md:flex-row"}) {
+			@ui.Box(ui.BoxProps{
+				Tag:   "aside",
+				Class: sidebarAsideClass(props.Sidebar.Class),
+				Attrs: sidebarAsideAttrs(props),
+			}) {
+				@ui.Stack(ui.StackProps{Class: "gap-2 p-4"}) {
+					@ui.Text(ui.TextProps{
+						Tag:   "p",
+						Class: "px-2 text-sm font-semibold text-foreground",
+					}, props.sidebarTitle())
+					@ui.Stack(ui.StackProps{Tag: "nav", Class: sidebarNavClass()}) {
+						@navigation.Nav(navigation.NavProps{
+							Items:    props.sidebarItems(),
+							Active:   props.sidebarActive(),
+							Vertical: true,
+						})
+					}
+				}
+			}
+			@ui.Box(ui.BoxProps{Class: "flex min-w-0 flex-1 flex-col"}) {
+				@body
+			}
+		}
+	}
+}

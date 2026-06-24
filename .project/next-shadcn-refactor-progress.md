@@ -50,7 +50,7 @@ If a command cannot be run, report why and what remains unverified.
 - [x] 04. Registry boundary is frozen: atoms/molecules/organisms/templates map to `Templ` and `internal/ui/*`.
 - [x] 05. Current topnav shell is extracted from `views` into the chosen `internal/ui` registry location, with `views.AppShell` as thin adapter.
 - [x] 06. Mobile sheet/nav reusable UI is factored through existing `templ/components` Sheet APIs and `@ui8kit/aria`.
-- [ ] 07. Sidebar/app layout organism is implemented under `internal/ui/blocks` or `internal/ui/widgets` as decided by Block 04.
+- [x] 07. Sidebar/app layout organism is implemented under `internal/ui/blocks` or `internal/ui/widgets` as decided by Block 04.
 - [ ] 08. Three sidebar wireframes are documented or showcased as registry artifacts, not runtime engine variants.
 - [ ] 09. Runtime router chooses layout organisms explicitly without hiding layout choice in a global switch.
 - [ ] 10. Final docs and tests are aligned for React/shadcn onboarding.
@@ -462,6 +462,8 @@ Acceptance:
 
 - Sidebar app organism exists as a reusable `internal/ui` artifact.
 - It is not selected globally and does not replace current routes until Block 09.
+
+**Done:** [`internal/ui/blocks/dashboard/sidebar_app/`](../internal/ui/blocks/dashboard/sidebar_app/) (`sidebarapp.SidebarApp`); composes `layout.Shell` + desktop aside + `components/navigation`; routes still use `app_shell` until Block 09.
 
 ---
 

@@ -52,6 +52,21 @@ No new sidebar, docs toc, marketing divergence, or visual changes.
 
 ---
 
-## After Block 06
+## Block 07 — Sidebar app layout organism
 
-Proceed to Block 07: sidebar/app layout organism under `internal/ui/blocks/dashboard/sidebar_app` (or similar).
+**Goal:** Add a reusable sidebar/app shell block under the registry without changing current route layout selection.
+
+**Delivered:**
+
+- [x] `internal/ui/blocks/dashboard/sidebar_app/` — `sidebarapp.SidebarApp` with `Props{Shell, Sidebar}`.
+- [x] Desktop aside (`ui.Box` tag `aside`) + vertical `navigation.Nav`; mobile sheet from `layout.Shell`.
+- [x] `DefaultProps()` for tests/showcase; no imports from `views` or `site`.
+- [x] Focused render tests; `app_shell` and route adapters unchanged.
+
+**Block 07 complete.** Validation: `bun run templ`, `bun run lint:ui8px`, `bun run validate:aria`, `go test ./...`.
+
+---
+
+## After Block 07
+
+Proceed to Block 08: sidebar wireframe showcase artifacts (`sidebars_full`, `sidebars_main`, `sidebars_header`).

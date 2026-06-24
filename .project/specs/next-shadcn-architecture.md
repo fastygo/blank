@@ -2,8 +2,8 @@
 
 Durable architecture spec for the Blank refactor aimed at React developers who know **Next App Router** and **shadcn/ui**. This document freezes vocabulary and responsibilities before runtime changes.
 
-**Status:** Block 06 complete — reusable mobile nav/sheet UI in `components/navigation`.  
-**Next slice:** Block 07 — sidebar app layout organism (see [active.md](./active.md)).
+**Status:** Block 07 complete — sidebar app organism in `blocks/dashboard/sidebar_app`.  
+**Next slice:** Block 08 — sidebar wireframe showcase artifacts (see [active.md](./active.md)).
 
 ---
 
@@ -308,4 +308,9 @@ See [next-shadcn-refactor-progress.md](../next-shadcn-refactor-progress.md) for 
 - **Completed:** [`internal/ui/components/navigation/`](../../internal/ui/components/navigation/) — props-only `Nav`, `MobileSheet`, `MobileSheetTrigger` using `templ/components` Sheet with `Behavior: "ui8kit"`.
 - **Layout integration:** [`internal/ui/layout/shell.templ`](../../internal/ui/layout/shell.templ) and `header.templ` consume navigation components; `layout.NavItem` / `NavProps` alias navigation types for router and views compatibility.
 - **Stable IDs:** `ui8kit-mobile-sheet-panel`, `ui8kit-mobile-sheet-trigger`, `ui8kit-mobile-sheet-title` preserved with render tests.
-- **Next:** Block 07 — sidebar app layout organism under `internal/ui/blocks/dashboard/sidebar_app` (or similar).
+
+## Block 07 completion notes
+
+- **Completed:** [`internal/ui/blocks/dashboard/sidebar_app/`](../../internal/ui/blocks/dashboard/sidebar_app/) — `sidebarapp.SidebarApp` wraps `layout.Shell` with desktop aside + vertical `navigation.Nav`; mobile sheet inherited from shell.
+- **Runtime unchanged:** `views.AppShell` still delegates to `app_shell`; sidebar block is registry-only until Block 09.
+- **Next:** Block 08 — document/showcase three sidebar wireframe geometries.
