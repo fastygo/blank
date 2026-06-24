@@ -2,8 +2,8 @@
 
 Durable architecture spec for the Blank refactor aimed at React developers who know **Next App Router** and **shadcn/ui**. This document freezes vocabulary and responsibilities before runtime changes.
 
-**Status:** Block 02 complete — runtime router manifest is in place.  
-**Next slice:** Block 03 — React onboarding docs (see [active.md](./active.md)).
+**Status:** Block 03 complete — React onboarding docs updated.  
+**Next slice:** Block 04 — registry boundary for layout artifacts (see [active.md](./active.md)).
 
 ---
 
@@ -217,3 +217,9 @@ See [next-shadcn-refactor-progress.md](../next-shadcn-refactor-progress.md) for 
 - **Completed:** `PageSpec` route manifest in `internal/site/router.go`; `handlePage` in `render.go`; nav derived from specs in `nav.go`; layout data in `layout_data.go`; `feature.go` wiring only.
 - **Layout adapter:** Current routes visibly use `views.AppShell` in route specs.
 - **Next:** Block 03 — update React onboarding docs to reference the route manifest workflow.
+
+## Block 03 completion notes
+
+- **Completed:** [`docs/for-react-devs.md`](../../docs/for-react-devs.md) and [`README.md`](../../README.md) explain request flow, file map, add-page cookbook, registry terms, and honest dev loop.
+- **No runtime changes:** Documentation-only slice.
+- **Next:** Block 04 — freeze registry boundary for layout artifacts.

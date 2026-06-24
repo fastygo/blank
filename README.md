@@ -17,7 +17,7 @@ bun run dev
 
 Open [http://127.0.0.1:8080/](http://127.0.0.1:8080/) — hero welcome page. Second demo route: [http://127.0.0.1:8080/sample](http://127.0.0.1:8080/sample).
 
-`bun run dev` runs [`scripts/dev.mjs`](scripts/dev.mjs): one-shot templ/CSS/JS (+ dev overlay when enabled), then the Go server. For CSS watch, use a second terminal: `bun run watch:css`. **Ctrl+C** stops the server.
+`bun run dev` runs [`scripts/dev.mjs`](scripts/dev.mjs): one-shot templ/CSS/JS (+ dev overlay when enabled), then the Go server. For CSS watch, use a second terminal: `bun run watch:css`. After `.templ` edits run `bun run templ`. After Go edits, restart dev (`Ctrl+C`, then `bun run dev`). **Ctrl+C** stops the server.
 
 Static assets (Tailwind CSS, theme script, `@ui8kit/aria` dialog bundle) live under [`web/static/`](web/static/).
 
@@ -27,7 +27,8 @@ Dev tooling is configured in [`fastygo.config.mjs`](fastygo.config.mjs) (Vite-li
 
 | Command | Purpose |
 |---------|---------|
-| `bun run dev` | Dev server with CSS + templ watch |
+| `bun run dev` | One-shot templ/CSS/JS build + Go server |
+| `bun run watch:css` | Tailwind watch (run in a second terminal during dev) |
 | `bun run start` | One-shot build + `go run` (no watch) |
 | `bun run preview` | Same as `start` |
 | `bun run build` | Production assets + `go build -o blank` |
@@ -60,7 +61,7 @@ Probes: `GET /healthz` and `GET /readyz`.
 | [`internal/serverapp/`](internal/serverapp/) | Framework wiring (locales, security, site feature, dev overlay) |
 | [`internal/devoverlay/`](internal/devoverlay/) | Dev-only SSR overlay ([`README`](internal/devoverlay/README.md)) |
 | [`internal/devoverlay/fixtures/locale/`](internal/devoverlay/fixtures/locale/) | Dev overlay copy (separate from site fixtures) |
-| [`internal/site/`](internal/site/) | HTTP routes: `/`, `/sample` |
+| [`internal/site/`](internal/site/) | Runtime route manifest (`router.go`), render helpers, feature wiring |
 | [`internal/fixtures/locale/`](internal/fixtures/locale/) | Site shell and page copy per locale |
 | [`internal/ui/`](internal/ui/) | **UI registry** — layout, components, blocks, widgets, variants, utils ([`README`](internal/ui/README.md)) |
 | [`internal/ui/layout/`](internal/ui/layout/) | Shell, header nav, footer, mobile sheet |
@@ -93,7 +94,9 @@ Runs: `templ generate` → Tailwind build → `build:js` → `ui8px lint` → `v
 ## Adding a page
 
 1. Add copy to **`fixtures.Locale`** and every **`locale/*.json`** file.
-2. Add a nav item in [`internal/site/feature.go`](internal/site/feature.go) (`siteNav`).
-3. Add `internal/views/<page>.templ` and a route handler in `internal/site/feature.go`.
+2. Add `internal/views/<page>.templ` (and props in `models.go` if needed).
+3. Add one **`PageSpec`** entry in [`internal/site/router.go`](internal/site/router.go) — `Method`, `Pattern`, `Active`, `Layout`, `Title`, `Body`, and optional `Nav`.
+
+See [`docs/for-react-devs.md`](docs/for-react-devs.md) for the full cookbook (Next/shadcn mental model, request flow, dev loop).
 
 For the previous sidebar layout, use the **`sidebar`** branch as a reference.

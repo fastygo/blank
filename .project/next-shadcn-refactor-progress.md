@@ -46,7 +46,7 @@ If a command cannot be run, report why and what remains unverified.
 - [x] 00. Architecture spec and glossary are frozen. → [`.project/specs/next-shadcn-architecture.md`](specs/next-shadcn-architecture.md)
 - [x] 01. Named route shells exist: `AppShell`, `MarketingShell`, `DocsShell`, with `SiteShell` as temporary alias.
 - [x] 02. `internal/site` is split into runtime router manifest, render helper, nav, and layout data.
-- [ ] 03. React onboarding docs explain route -> shell -> page and the add-page workflow.
+- [x] 03. React onboarding docs explain route -> shell -> page and the add-page workflow.
 - [ ] 04. Registry boundary is frozen: atoms/molecules/organisms/templates map to `Templ` and `internal/ui/*`.
 - [ ] 05. Current topnav shell is extracted from `views` into the chosen `internal/ui` registry location, with `views.AppShell` as thin adapter.
 - [ ] 06. Mobile sheet/nav reusable UI is factored through existing `templ/components` Sheet APIs and `@ui8kit/aria`.
@@ -259,6 +259,8 @@ Hard constraints:
 Acceptance:
 
 - A React developer can add a basic page without reading framework internals.
+
+**Done:** [`docs/for-react-devs.md`](../docs/for-react-devs.md), [`README.md`](../README.md).
 
 ---
 
