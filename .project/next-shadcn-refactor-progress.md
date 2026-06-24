@@ -11,19 +11,22 @@ Ask the agent to produce a bounded implementation plan from that block, then swi
 - `fastygo.config.mjs` stays primarily a **Vite-like tooling config**: server env, templ, CSS, JS bundles, validation. It is not the route registry.
 - `go.mod` should stay thin. Do not add `github.com/fastygo/blocks` or `github.com/fastygo/widgets` during Blank showcase/starter work.
 - Runtime routes should first become a readable Go route manifest. `routes.yaml`/codegen is a later DX layer, not the first refactor.
-- Layouts should follow the shadcn pattern: **compound parts + small enum axes + presets/blocks**, not one giant layout engine.
-- Sidebars are **regions** that may be desktop-static and mobile-sheet. They are not separate applications or branches.
+- Layout work should follow the shadcn registry pattern: **copy-pasteable UI artifacts in `internal/ui/*` plus thin runtime wiring**, not one giant layout engine.
+- Do not confuse **runtime app routing** with **registry accumulation**. Blank is a runtime app, but reusable UI mass must still land under `internal/ui/{components,blocks,widgets,layout,variants,utils}`.
+- `internal/ui/layout/` is app-owned chrome/frame that stays in the app. Reusable layout organisms (sidebars, dashboard shells, docs toc shells, etc.) should be considered `blocks` or `widgets`, not hidden branches inside one `views/layout.templ`.
+- Sidebars are reusable UI organisms that may include desktop-static regions and mobile-sheet behavior. They are not separate applications or branches.
 - Custom JS is not allowed for covered interaction patterns. Use `@ui8kit/aria` through existing pattern hooks. Add custom JS only when a required W3C/APG pattern is not covered by `@ui8kit/aria`, and document that exception.
 
 ## Current Baseline To Re-check In Each Slice
 
-- Routes, locale resolution, nav, layout data, and render handlers are currently mixed in `internal/site/feature.go`.
-- Route layout wrapper currently exists as `views.SiteShell` in `internal/views/layout.templ`.
+- Runtime route specs live in `internal/site/router.go`; render, nav, and layout data helpers are split across `render.go`, `nav.go`, and `layout_data.go`. `feature.go` keeps feature wiring only.
+- Route layout wrapper currently exists as `views.SiteShell` / `views.AppShell` in `internal/views/layout.templ`; this is a temporary runtime adapter, not the long-term registry home for every layout variant.
 - Document/chrome shell currently exists as `layout.Shell` in `internal/ui/layout/shell.templ`.
 - Mobile navigation currently uses `data-ui8kit` dialog/sheet hooks directly in the shell.
 - `web/static/js/manifest.json` currently includes the `dialog` pattern.
 - `github.com/fastygo/templ/components` already has `Sheet`, `SheetTrigger`, `SheetOverlay`, `SheetContent`, `SheetHeader`, `SheetTitle`, `SheetClose`.
 - `@Templ/examples/ui/blocks/home` and `dashboard` already demonstrate the desired desktop aside + mobile sheet pairing.
+- `internal/ui/README.md` and FastyGoUI registry policy define the target tree: `layout`, `components`, `blocks`, `widgets`, `variants`, `utils`. Do not introduce parallel `elements`, `ui`, `recipes`, or runtime-only layout catalogs.
 
 ## Validation Defaults
 
@@ -42,14 +45,14 @@ If a command cannot be run, report why and what remains unverified.
 
 - [x] 00. Architecture spec and glossary are frozen. → [`.project/specs/next-shadcn-architecture.md`](specs/next-shadcn-architecture.md)
 - [x] 01. Named route shells exist: `AppShell`, `MarketingShell`, `DocsShell`, with `SiteShell` as temporary alias.
-- [ ] 02. `internal/site` is split into route manifest, render helper, nav, and layout data.
+- [x] 02. `internal/site` is split into runtime router manifest, render helper, nav, and layout data.
 - [ ] 03. React onboarding docs explain route -> shell -> page and the add-page workflow.
-- [ ] 04. `internal/ui/layout/layout.spec.md` defines compound layout parts and enum axes.
-- [ ] 05. Mobile sheet/trigger parts use existing `templ/components` Sheet APIs and `@ui8kit/aria`.
-- [ ] 06. `AsideRegion`, `MainInset`, and `ShellBand` exist as reusable layout parts.
-- [ ] 07. `topnav` and `sidebar_app` presets are implemented.
-- [ ] 08. Three sidebars wireframes are documented or showcased as preset examples, not core runtime names.
-- [ ] 09. Sidebar app preset is wired into `AppShell` without breaking topnav pages.
+- [ ] 04. Registry boundary is frozen: atoms/molecules/organisms/templates map to `Templ` and `internal/ui/*`.
+- [ ] 05. Current topnav shell is extracted from `views` into the chosen `internal/ui` registry location, with `views.AppShell` as thin adapter.
+- [ ] 06. Mobile sheet/nav reusable UI is factored through existing `templ/components` Sheet APIs and `@ui8kit/aria`.
+- [ ] 07. Sidebar/app layout organism is implemented under `internal/ui/blocks` or `internal/ui/widgets` as decided by Block 04.
+- [ ] 08. Three sidebar wireframes are documented or showcased as registry artifacts, not runtime engine variants.
+- [ ] 09. Runtime router chooses layout organisms explicitly without hiding layout choice in a global switch.
 - [ ] 10. Final docs and tests are aligned for React/shadcn onboarding.
 
 ---
@@ -82,8 +85,9 @@ Required plan:
    - route shell / route layout
    - page
    - chrome
-   - layout part
-   - preset
+   - registry artifact
+   - layout organism
+   - runtime adapter
    - block/showcase
 2. Decide exact public names:
    - views.AppShell
@@ -162,16 +166,16 @@ Acceptance:
 
 ---
 
-## Block 02 — Route Manifest And Thin Render Helper
+## Block 02 — Runtime Router Manifest And Thin Render Helper
 
 Copy this block into Plan mode:
 
 ```text
-Refactor @Blank/internal/site from handler-per-page boilerplate into a readable route manifest.
+Refactor @Blank/internal/site from handler-per-page boilerplate into a readable runtime router manifest.
 
 Goal:
 Make adding a page feel like a Next route table:
-- routes live in internal/site/routes.go
+- runtime route specs live in internal/site/router.go (or routes.go if the implementation chooses that name deliberately)
 - page render boilerplate lives in internal/site/render.go
 - nav construction lives in internal/site/nav.go
 - layout data construction lives in internal/site/layout_data.go
@@ -189,16 +193,18 @@ Context:
 
 Desired model:
 - Introduce a small PageSpec or equivalent.
-- PageSpec should include method, pattern, active path, title resolver, shell renderer, body renderer, and optional nav item resolver.
+- PageSpec should include method, pattern, active path, title resolver, explicit layout/render adapter, body renderer, and optional nav item resolver.
+- Do not hide layout choice in `views/layout.templ`. The router should make runtime layout selection visible: route -> layout artifact/adapter -> page body.
 - Feature.Routes should loop over specs and register GET routes.
 - Custom handlers remain possible for future POST/API/auth flows.
 
 Plan should decide:
 1. Exact PageSpec shape.
 2. How to avoid import cycles with views and templ.Component.
-3. How nav items are derived from route specs.
-4. Whether siteNav remains as a helper or is generated from specs.
-5. Which tests/docs must change.
+3. Whether the layout field points to `views.AppShell` temporarily or a typed adapter prepared for future `internal/ui/blocks` / `widgets` layout organisms.
+4. How nav items are derived from route specs.
+5. Whether siteNav remains as a helper or is generated from specs.
+6. Which tests/docs must change.
 
 Hard constraints:
 - No routes.yaml or codegen yet.
@@ -209,7 +215,10 @@ Hard constraints:
 Acceptance:
 
 - New page workflow is: add fixture fields + locale JSON + view + one route spec.
+- Runtime layout choice is visible in the route spec.
 - `/` and `/sample` still render with active nav and localized copy.
+
+**Done:** `internal/site/{feature.go,router.go,render.go,nav.go,layout_data.go}`.
 
 ---
 
@@ -253,99 +262,141 @@ Acceptance:
 
 ---
 
-## Block 04 — Layout Spec For shadcn-like Parts
+## Block 04 — Registry Boundary For Layout Artifacts
 
 Copy this block into Plan mode:
 
 ```text
-Design the @Blank/internal/ui/layout component spec for shadcn-like layout parts.
+Redesign the @Blank layout plan around the internal/ui registry model.
 
 Goal:
-Create or update internal/ui/layout/layout.spec.md as the source of truth for layout parts and enum axes.
+Freeze where reusable layout-related UI artifacts live before adding sidebar/app shell variants.
 
 Context:
+- Read @Blank/.project/specs/next-shadcn-architecture.md
 - Read @Blank/.project/sidebar-like.md
+- Read @Blank/internal/ui/README.md
+- Read @Blank/.cursor/rules/blank-ui-structure.mdc
+- Read @FastyGoUI/.cursor/rules/fastygo-ui-design-system-registry.mdc
 - Read @Blank/internal/ui/layout/shell.templ
-- Read @Blank/internal/ui/layout/props.go
-- Read @Blank/internal/ui/layout/helpers.go
-- Read @Blank/internal/ui/layout/README.md
 - Read @Templ/components/sheet/sheet.spec.md if available in workspace.
 - Read @Templ/.cursor/rules/templ-component-spec.mdc if available.
 
 Required model:
-- Do not make one giant Variant.
-- Define compound parts:
-  - Shell
-  - ShellBand
-  - MainInset
-  - AsideRegion
-  - MobileSheet
-  - SheetTrigger
-  - NavList or SidebarNav
-  - optional PageHeader/AppFooter
-- Define enum axes:
-  - AsideSide: left | right
-  - AsideScope: viewport | content_row | main_column
-  - AsideDesktopMode: static | sticky | hidden
-  - AsideMobileMode: sheet | hidden | inline
-  - Collapsible: none | offcanvas | icon
-  - BandScope: shell_full | main_column | content_row
-  - TriggerPlacement: header_start | header_end | main_start | main_end
+- `github.com/fastygo/templ/ui` = atoms / primitive tags.
+- `github.com/fastygo/templ/components` = molecules / neutral composites.
+- `internal/ui/components/*` = small props-only app components.
+- `internal/ui/blocks/*` = reusable section/layout organisms with in-package defaults, future `fastygo/blocks` candidates.
+- `internal/ui/widgets/*` = organisms with behavior/data orchestration, future `fastygo/widgets` candidates.
+- `internal/ui/layout/*` = app-owned document/chrome frame that stays in the app, not a dumping ground for every copy-paste layout variant.
+- `internal/views/*` = pages and thin runtime adapters only; not a registry.
+- `internal/site/router.go` (or chosen name) = runtime wiring: route -> resolved data -> selected UI artifact/layout adapter -> page.
 
-First implementation should support only:
-- Collapsible: none | offcanvas
-- AsideMobileMode: sheet | hidden
+Plan should decide:
+1. Exact folder convention for layout organisms:
+   - examples: `internal/ui/blocks/layout/topnav`, `internal/ui/blocks/sidebar/app`, `internal/ui/blocks/docs/toc_shell`, or another policy-consistent shape.
+2. What remains in `internal/ui/layout` permanently.
+3. What belongs in `blocks` vs `widgets` vs `components`.
+4. How to describe this in `.project/specs/next-shadcn-architecture.md`.
+5. Whether `views.AppShell` stays as a thin adapter or should later disappear behind route specs.
 
 Hard constraints:
 - This slice may be spec/docs only if that is safer.
-- Do not implement icon-collapse yet.
+- Do not introduce `internal/ui/recipes`, `internal/ui/elements`, or `internal/ui/ui`.
+- Do not implement sidebar UI yet.
 - No custom JS.
-- Any mobile sheet behavior must use @ui8kit/aria via existing Sheet/dialog hooks.
 ```
 
 Acceptance:
 
-- Future layout code has a bounded API contract.
-- The three sidebar images are described as showcase/preset examples, not as the whole architecture.
+- Future layout work has an explicit registry home.
+- The team can distinguish runtime router wiring from shadcn-like copy-paste UI artifacts.
 
 ---
 
-## Block 05 — MobileSheet And SheetTrigger Parts
+## Block 05 — Extract Current Topnav Shell Into Registry Artifact
 
 Copy this block into Plan mode:
 
 ```text
-Extract reusable MobileSheet and SheetTrigger layout parts in @Blank using existing templ/components Sheet APIs.
+Move the current topnav app shell composition out of the central views facade and into the chosen internal/ui registry location.
 
 Goal:
-Stop hand-rolling mobile sheet markup inside layout.Shell. Create reusable layout parts that can be used by topnav, left sidebar, right sidebar, docs toc, etc.
+Make the current app shell a reusable UI artifact, while keeping `views.AppShell` as a thin runtime adapter for compatibility.
+
+Context:
+- Read @Blank/.project/specs/next-shadcn-architecture.md
+- Read @Blank/internal/views/layout.templ
+- Read @Blank/internal/views/models.go
+- Read @Blank/internal/ui/layout/shell.templ
+- Read @Blank/internal/ui/README.md
+- Read the Block 04 registry boundary decision/spec.
+
+Desired result:
+- Current `AppShell` behavior lives in a named UI artifact under `internal/ui/*`, using the folder convention decided in Block 04.
+- `views.AppShell` delegates to that artifact.
+- `MarketingShell`, `DocsShell`, and `SiteShell` remain thin aliases/adapters until they diverge.
+- No new layout variants are introduced in this slice.
+
+Plan should include:
+1. Exact folder and package names.
+2. How to avoid import cycles between `views`, `internal/ui/*`, and view models.
+3. Whether the UI artifact receives `layout.ShellProps`, a small app-shell props struct, or the existing `views.LayoutData`.
+4. Render test updates.
+5. Docs/progress updates.
+6. Validation commands.
+
+Hard constraints:
+- No custom JS.
+- Do not introduce sidebar, docs toc, or marketing divergence yet.
+- Do not change visible layout beyond unavoidable package movement.
+```
+
+Acceptance:
+
+- `views.AppShell(data, body)` still works.
+- Current topnav shell is discoverable as an `internal/ui` registry artifact.
+- Render tests still cover current shell behavior.
+
+---
+
+## Block 06 — Reusable Mobile Sheet And Nav UI
+
+Copy this block into Plan mode:
+
+```text
+Extract reusable mobile sheet and navigation UI for future sidebar/docs blocks.
+
+Goal:
+Stop treating mobile navigation as private shell markup. Create reusable UI under the correct registry directory so topnav, sidebar, docs toc, and other blocks can share it.
 
 Context:
 - Read @Blank/internal/ui/layout/shell.templ
 - Read @Blank/internal/ui/layout/header.templ
-- Read @Blank/internal/ui/layout/helpers.go
 - Read @Blank/internal/ui/layout/props.go
+- Read @Blank/internal/ui/layout/helpers.go
+- Read @Blank/internal/ui/layout/nav.templ
 - Read @Blank/web/static/js/manifest.json
 - Read @Blank/scripts/ui8kit-entry.mjs
 - Read @Templ/components/sheet/sheet.templ if available.
 - Read @Templ/examples/ui/blocks/home/page.templ if available.
 - Read @Templ/examples/ui/blocks/dashboard/page.templ if available.
+- Read the Block 04 registry boundary decision/spec.
 
 Desired result:
-- Introduce MobileSheetProps and SheetTrigger props/helpers inside internal/ui/layout.
-- Use import shape `import cmp "github.com/fastygo/templ/components"` for Sheet parts.
-- Preserve current IDs or migrate carefully with tests:
+- Use existing `templ/components` Sheet APIs with `Behavior: "ui8kit"` where possible.
+- Preserve or deliberately migrate current IDs with tests:
   - ui8kit-mobile-sheet-panel
   - ui8kit-mobile-sheet-trigger
   - ui8kit-mobile-sheet-title
-- Preserve @ui8kit/aria dialog/sheet behavior and manifest expectations.
+- Reusable nav/sheet UI lands under `internal/ui/components`, `blocks`, or `widgets` according to Block 04.
+- `internal/ui/layout.Shell` consumes the reusable UI but remains the app-owned document/chrome frame.
 
 Plan should include:
-1. Exact part names and files.
-2. How current topnav mobile menu maps to the new parts.
+1. Exact component/block/widget boundaries.
+2. How current topnav mobile menu maps to the reusable UI.
 3. ARIA labels and fixture copy requirements.
-4. Render test updates.
-5. Validation commands.
+4. Render test and aria validation plan.
 
 Hard constraints:
 - No custom JS.
@@ -356,44 +407,40 @@ Hard constraints:
 Acceptance:
 
 - Existing topnav mobile menu still works.
-- The same MobileSheet part can later host sidebar nav.
+- The same reusable UI can later host sidebar or docs navigation.
 - `bun run validate:aria` remains green.
 
 ---
 
-## Block 06 — AsideRegion, MainInset, ShellBand
+## Block 07 — Sidebar App Organism
 
 Copy this block into Plan mode:
 
 ```text
-Implement the core shadcn-like layout geometry parts in @Blank.
+Implement the first sidebar app organism in the internal/ui registry.
 
 Goal:
-Add reusable layout parts:
-- ShellBand
-- MainInset
-- AsideRegion
+Create a reusable sidebar/app shell organism, not a runtime-only preset hidden inside `views/layout.templ`.
 
 Context:
-- Read @Blank/internal/ui/layout/layout.spec.md
-- Read @Blank/internal/ui/layout/shell.templ
-- Read @Blank/internal/ui/layout/props.go
-- Read @Blank/internal/ui/layout/helpers.go
-- Read @Blank/internal/ui/layout/nav.templ
-- Read @Blank/internal/ui/layout/header.templ
 - Read @Blank/.project/sidebar-like.md
+- Read @Blank/internal/ui/README.md
+- Read @Blank/internal/ui/layout/shell.templ
+- Read @Blank/internal/ui/layout/header.templ
+- Read reusable mobile sheet/nav UI from Block 06.
 
 Design:
-- AsideRegion is a desktop region that can be left or right.
-- AsideRegion can also declare a mobile sheet, but mobile rendering should use MobileSheet from the previous slice.
-- MainInset is the main column/content wrapper, like shadcn SidebarInset.
-- ShellBand hosts header/footer/subheader in shell_full or main_column scope.
+- The sidebar app organism should live under the `internal/ui` location decided in Block 04, for example `internal/ui/blocks/sidebar/app` or `internal/ui/blocks/layout/sidebar_app`.
+- It composes existing atoms/molecules (`templ/ui`, `templ/components`) and app components/widgets.
+- It may reuse `internal/ui/layout.Shell` or consume shell/chrome props from the adapter.
+- It supports desktop sidebar + mobile sheet using `@ui8kit/aria`.
 
 Plan should decide:
-1. Minimal props for each part.
-2. Which class computations belong in helpers.go.
-3. How to keep current topnav shell working.
-4. How to write or adjust render tests without overfitting class strings.
+1. Exact package/folder name.
+2. Props shape and default/demo data policy.
+3. What belongs inside the block vs extracted component/widget.
+4. How to keep current topnav shell working.
+5. How to write focused render tests without overfitting class strings.
 
 Hard constraints:
 - No icon-collapse behavior yet.
@@ -403,73 +450,27 @@ Hard constraints:
 
 Acceptance:
 
-- Existing topnav can be expressed through the new parts or can coexist while parts are introduced.
-- Parts are generic enough for left/right/sidebar/docs layouts.
+- Sidebar app organism exists as a reusable `internal/ui` artifact.
+- It is not selected globally and does not replace current routes until Block 09.
 
 ---
 
-## Block 07 — Presets: topnav And sidebar_app
+## Block 08 — Sidebar Wireframe Showcase Artifacts
 
 Copy this block into Plan mode:
 
 ```text
-Add first production layout presets to @Blank.
+Document or implement showcase artifacts for the three sidebar wireframes in @Blank.
 
 Goal:
-Implement preset factories for:
-- topnav: current Blank behavior
-- sidebar_app: desktop left sidebar + mobile sheet + main header trigger
-
-Context:
-- Read @Blank/internal/views/layout.templ
-- Read @Blank/internal/views/models.go
-- Read @Blank/internal/ui/layout/props.go
-- Read @Blank/internal/ui/layout/shell.templ
-- Read @Blank/internal/ui/layout/layout.spec.md
-- Read @Blank/internal/site/routes.go if it exists
-- Read @Blank/.project/sidebar-like.md
-
-Design:
-- Presets are Go/templ factory functions, not a global layout engine.
-- `AppShell` chooses one preset.
-- `MarketingShell` remains no-sidebar/topnav/minimal.
-- `DocsShell` can remain a placeholder until docs routes exist.
-- Power users can bypass presets later and assemble ShellProps manually.
-
-Plan should decide:
-1. Where preset factories live.
-2. Whether preset is selected by a typed constant, config value, or direct wrapper function.
-3. How `LayoutData.NavItems` maps into sidebar content and mobile sheet.
-4. Render test coverage for topnav and sidebar_app.
-
-Hard constraints:
-- Do not wire `fastygo.config.mjs` as a runtime layout switch unless the plan includes a clean runtime bridge.
-- No custom JS.
-- Preserve current pages.
-```
-
-Acceptance:
-
-- `topnav` still renders current shell behavior.
-- `sidebar_app` can render a left desktop sidebar and mobile sheet from the same nav data.
-
----
-
-## Block 08 — Sidebar Showcase Presets For Three Wireframes
-
-Copy this block into Plan mode:
-
-```text
-Document or implement showcase presets for the three sidebar wireframes in @Blank.
-
-Goal:
-Represent the three provided sidebar geometry examples as showcase/preset examples, not as the core layout model.
+Represent the three provided sidebar geometry examples as registry/showcase artifacts, not runtime engine variants.
 
 Context:
 - Read @Blank/.project/sidebar-like.md
-- Read @Blank/internal/ui/layout/layout.spec.md
 - Read @Blank/internal/ui/layout/README.md
-- Re-check current layout parts and presets.
+- Read @Blank/internal/ui/README.md
+- Read the Block 04 registry boundary decision/spec.
+- Re-check current sidebar app organism from Block 07.
 
 Wireframes:
 1. sidebars_full:
@@ -488,46 +489,47 @@ Wireframes:
 Plan should decide:
 1. Whether this slice is docs-only or includes renderable examples.
 2. Where showcase examples should live.
-3. How to avoid turning these examples into a layout engine.
+3. How to avoid turning these examples into runtime engine variants.
 4. Validation approach.
 
 Hard constraints:
-- These are examples/presets, not mandatory runtime names.
+- These are examples/showcase artifacts, not mandatory runtime names.
 - No custom JS.
 - No brand polish; wireframe structure only.
 ```
 
 Acceptance:
 
-- The team can point to each image and explain it using parts and scopes.
-- Future variants are built by composing parts, not adding ad hoc shell forks.
+- The team can point to each image and explain it using regions, scopes, and registry artifacts.
+- Future variants are built by composing/forking registry artifacts, not adding ad hoc shell forks.
 
 ---
 
-## Block 09 — AppShell Sidebar Wiring
+## Block 09 — Runtime Wiring To UI Artifacts
 
 Copy this block into Plan mode:
 
 ```text
-Wire sidebar_app into AppShell in @Blank while preserving easy onboarding.
+Wire runtime routes to selected UI artifacts while preserving easy onboarding.
 
 Goal:
-Make AppShell capable of using sidebar_app as the main application layout.
+Make route specs explicitly choose the app/marketing/docs layout artifact or adapter. Do not hide layout choice in one global switch.
 
 Context:
 - Read @Blank/internal/views/layout.templ
 - Read @Blank/internal/views/models.go
-- Read @Blank/internal/site/routes.go
-- Read @Blank/internal/ui/layout/presets.go if it exists
+- Read @Blank/internal/site/router.go or routes.go
 - Read @Blank/internal/ui/layout/shell.templ
+- Read the topnav artifact from Block 05.
+- Read the sidebar app organism from Block 07.
 - Read @Blank/internal/views/wireframe_render_test.go
 - Read @Blank/docs/for-react-devs.md
 
 Plan should decide:
-1. Whether AppShell defaults to topnav or sidebar_app at this milestone.
-2. Whether MarketingShell is used for home and AppShell for sample/dashboard, or both current pages stay under AppShell.
-3. How a React developer will choose route layout in PageSpec.
-4. Required fixture/locale copy for sidebar accessibility labels.
+1. Whether current pages remain topnav or one route demonstrates sidebar_app.
+2. Whether `PageSpec.Layout` points to a view adapter, block renderer, or typed route layout function.
+3. How a React developer will choose route layout in one route spec line.
+4. Required fixture/locale copy for sidebar accessibility labels if sidebar is wired.
 5. Tests and validation.
 
 Hard constraints:
@@ -538,8 +540,8 @@ Hard constraints:
 
 Acceptance:
 
-- A route spec clearly shows `Shell: views.AppShell` or `Shell: views.MarketingShell`.
-- Sidebar_app behavior is discoverable without reading internal shell code.
+- A route spec clearly shows which layout/UI artifact wraps the page.
+- Sidebar_app behavior is discoverable from `internal/ui` registry files and route wiring.
 
 ---
 
@@ -569,7 +571,7 @@ Plan should decide:
 3. Whether dev script should be improved in a separate slice.
 4. What must not go into config:
    - route table
-   - route shell selection
+   - runtime layout artifact selection
    - full layout engine
 
 Hard constraints:
@@ -601,7 +603,7 @@ Context:
 - Read current:
   - internal/site/*
   - internal/views/*
-  - internal/ui/layout/*
+  - internal/ui/*
   - internal/fixtures/*
 
 Verification scenario:
@@ -609,7 +611,7 @@ Verification scenario:
 2. Identify exact files to touch.
 3. Confirm route shell choice is obvious.
 4. Confirm copy/i18n workflow is obvious.
-5. Confirm sidebar/mobile behavior does not require custom JS.
+5. Confirm sidebar/mobile behavior is discoverable in `internal/ui` registry artifacts and does not require custom JS.
 6. Confirm validation commands are documented.
 
 Plan should produce:
