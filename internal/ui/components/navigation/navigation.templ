@@ -1,0 +1,71 @@
+package navigation
+
+import (
+	cmp "github.com/fastygo/templ/components"
+	"github.com/fastygo/templ/ui"
+	"github.com/fastygo/blank/internal/ui/components/icon"
+)
+
+templ Nav(props NavProps) {
+	for _, item := range props.Items {
+		@navLink(props.Active, item, props.Vertical)
+	}
+}
+
+templ navLink(active string, item Item, vertical bool) {
+	@ui.Button(navLinkButtonProps(active, item, vertical)) {
+		if vertical && item.Icon != "" {
+			@icon.Icon(icon.IconProps{Name: item.Icon, Size: "sm"})
+		}
+		@ui.Text(ui.TextProps{Tag: "span", Class: "min-w-0"}, item.Label)
+	}
+}
+
+templ MobileSheet(props MobileSheetProps) {
+	@cmp.Sheet(cmp.SheetProps{
+		ID:             props.panelID(),
+		Side:           "left",
+		Size:           "default",
+		Variant:        "card",
+		Behavior:       "ui8kit",
+		AriaLabel:      props.AriaLabel,
+		AriaLabelledBy: props.titleID(),
+		Class:          mobileSheetPanelClass(),
+	}) {
+		@cmp.SheetOverlay(cmp.SheetOverlayProps{
+			For:      props.panelID(),
+			Behavior: "ui8kit",
+			Class:    "cursor-pointer bg-card/50",
+		})
+		@cmp.SheetContent(cmp.SheetContentProps{Class: "p-4"}) {
+			@cmp.SheetHeader(cmp.SheetHeaderProps{}) {
+				@cmp.SheetTitle(cmp.SheetTitleProps{ID: props.titleID(), Class: "text-sm font-normal text-muted-foreground"}, props.Title)
+				@cmp.SheetClose(cmp.SheetCloseProps{
+					For:       props.panelID(),
+					Behavior:  "ui8kit",
+					Variant:   "unstyled",
+					Class:     "inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-border text-muted-foreground",
+					AriaLabel: props.CloseLabel,
+				}) {
+					✕
+				}
+			}
+			@ui.Stack(ui.StackProps{Tag: "nav", Class: "mt-4 w-full gap-1 p-2"}) {
+				@Nav(NavProps{Items: props.Items, Active: props.Active, Vertical: true})
+			}
+		}
+	}
+}
+
+templ MobileSheetTrigger(props MobileSheetTriggerProps) {
+	@cmp.SheetTrigger(cmp.SheetTriggerProps{
+		ID:        props.triggerID(),
+		For:       props.panelID(),
+		Behavior:  "ui8kit",
+		Variant:   "unstyled",
+		Class:     mobileSheetTriggerClass(props.Class),
+		AriaLabel: props.AriaLabel,
+	}) {
+		@icon.Icon(icon.IconProps{Name: "menu", Size: "sm", Class: "h-4 w-4 shrink-0"})
+	}
+}

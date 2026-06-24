@@ -8,16 +8,16 @@ This folder is **not** a catalog for every sidebar, dashboard, or docs layout va
 
 | Area | Files | Role |
 |------|-------|------|
-| Shell | `shell.templ` | Document frame, main slot, mobile sheet host |
-| Header | `header.templ`, `nav.templ` | Top bar, desktop nav, mobile trigger |
+| Shell | `shell.templ` | Document frame, main slot; hosts `components/navigation` mobile sheet |
+| Header | `header.templ` | Top bar; desktop nav + mobile trigger via `components/navigation` |
 | Footer | `footer.templ` | App footer |
-| Glue | `props.go`, `helpers.go` | Shell props, nav helpers |
+| Glue | `props.go`, `helpers.go` | Shell props, theme/brand helpers; nav types alias `components/navigation` |
 
 ## What belongs here permanently
 
 - `DOCTYPE`, `html`, `head`, `body` document shell
-- Shared header/footer/nav chrome used by all routes
-- Mobile sheet **host** markup and `@ui8kit/aria` hooks
+- Shared header/footer chrome used by all routes
+- Mobile sheet **host** placement in `Shell`; markup lives in `components/navigation`
 - Props/helpers passed from `internal/site/layout_data.go`
 
 ## What does **not** belong here

@@ -1,0 +1,182 @@
+/**
+ * Nav composes labeled navigation lists with active and disabled links.
+ */
+
+// Copy: components/ui/nav/nav.templ
+
+package nav
+
+import (
+	"strings"
+
+	"github.com/fastygo/templ/ui"
+	"github.com/fastygo/templ/utils"
+)
+
+var NavListVariants = uiutils.Variants{
+	Base: "flex",
+	Keys: []string{"orientation", "gap"},
+	Defaults: map[string]string{
+		"orientation": "vertical",
+		"gap":         "default",
+	},
+	ByKey: map[string]map[string]string{
+		"orientation": {
+			"vertical":   "flex-col",
+			"horizontal": "flex-row flex-wrap items-center",
+		},
+		"gap": {
+			"none":    "gap-0",
+			"sm":      "gap-1",
+			"default": "gap-2",
+			"lg":      "gap-3",
+		},
+	},
+}
+
+var NavLinkVariants = uiutils.Variants{
+	Base: "inline-flex min-w-0 items-center gap-2 rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+	Keys: []string{"variant", "size"},
+	Defaults: map[string]string{
+		"variant": "default",
+		"size":    "default",
+	},
+	ByKey: map[string]map[string]string{
+		"variant": {
+			"default":  "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+			"active":   "bg-accent text-accent-foreground",
+			"ghost":    "text-foreground hover:bg-accent hover:text-accent-foreground",
+			"muted":    "text-muted-foreground hover:text-foreground",
+			"unstyled": "",
+		},
+		"size": {
+			"sm":      "px-2 py-1 text-xs",
+			"default": "px-3 py-2 text-sm",
+			"lg":      "px-4 py-2 text-base",
+		},
+	},
+}
+
+// NavProps configures the nav landmark.
+type NavProps struct {
+	Class      string
+	AriaLabel  string
+	DataUI8Kit string
+	Attrs      templ.Attributes
+}
+
+// NavListProps configures the list wrapper.
+type NavListProps struct {
+	Class       string
+	Orientation string
+	Gap         string
+	Attrs       templ.Attributes
+}
+
+// NavItemProps configures one nav row.
+type NavItemProps struct {
+	Class string
+	Attrs templ.Attributes
+}
+
+// NavLinkProps configures one navigation link.
+type NavLinkProps struct {
+	Href        string
+	Variant     string
+	Size        string
+	Class       string
+	Active      bool
+	Disabled    bool
+	AriaCurrent string
+	AriaLabel   string
+	Attrs       templ.Attributes
+}
+
+func NavListClasses(p NavListProps) string {
+	return uiutils.Compose(NavListVariants, map[string]string{
+		"orientation": p.Orientation,
+		"gap":         p.Gap,
+	}, p.Class)
+}
+
+func NavLinkClasses(p NavLinkProps) string {
+	variant := p.Variant
+	if p.Active && strings.TrimSpace(variant) == "" {
+		variant = "active"
+	}
+	state := ""
+	if p.Disabled {
+		state = "pointer-events-none opacity-50"
+	}
+	return uiutils.Compose(NavLinkVariants, map[string]string{
+		"variant": variant,
+		"size":    p.Size,
+	}, state, p.Class)
+}
+
+func navRootAttrs(p NavProps) templ.Attributes {
+	attrs := uiutils.MergeAttrs(templ.Attributes{}, p.Attrs)
+	if strings.TrimSpace(p.AriaLabel) != "" {
+		attrs["aria-label"] = p.AriaLabel
+	}
+	if strings.TrimSpace(p.DataUI8Kit) != "" {
+		attrs["data-ui8kit"] = p.DataUI8Kit
+	}
+	return attrs
+}
+
+func navLinkAttrs(p NavLinkProps) templ.Attributes {
+	attrs := uiutils.MergeAttrs(templ.Attributes{}, p.Attrs)
+	current := strings.TrimSpace(p.AriaCurrent)
+	if p.Active && current == "" {
+		current = "page"
+	}
+	if current != "" {
+		attrs["aria-current"] = current
+	}
+	if p.Disabled {
+		attrs["aria-disabled"] = "true"
+		attrs["tabindex"] = "-1"
+	}
+	return attrs
+}
+
+// Nav renders a navigation landmark.
+templ Nav(p NavProps) {
+	<nav class={ p.Class } { navRootAttrs(p)... }>
+		{ children... }
+	</nav>
+}
+
+// NavList renders the semantic list of nav items.
+templ NavList(p NavListProps) {
+	<ul class={ NavListClasses(p) } { p.Attrs... }>
+		{ children... }
+	</ul>
+}
+
+// NavItem renders one navigation item.
+templ NavItem(p NavItemProps) {
+	<li class={ p.Class } { p.Attrs... }>
+		{ children... }
+	</li>
+}
+
+// NavLink renders a navigation link with active and disabled states.
+templ NavLink(p NavLinkProps) {
+	if p.Disabled || strings.TrimSpace(p.Href) == "" {
+		<span class={ NavLinkClasses(p) } { navLinkAttrs(p)... }>
+			{ children... }
+		</span>
+	} else {
+		@ui.Link(ui.LinkProps{
+			Href:      p.Href,
+			Variant:   "unstyled",
+			Class:     NavLinkClasses(p),
+			AriaLabel: p.AriaLabel,
+			Attrs:     navLinkAttrs(p),
+		}) {
+			{ children... }
+		}
+	}
+}

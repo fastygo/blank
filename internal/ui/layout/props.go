@@ -1,20 +1,17 @@
 package layout
 
-import "github.com/a-h/templ"
+import (
+	"github.com/a-h/templ"
+	"github.com/fastygo/blank/internal/ui/components/navigation"
+)
 
-// NavItem describes a single navigation link.
-type NavItem struct {
-	Path  string
-	Label string
-	Icon  string
-}
+const (
+	MobileSheetTriggerID = navigation.MobileSheetTriggerID
+	MobileSheetPanelID   = navigation.MobileSheetPanelID
+)
 
-// NavProps configures horizontal or vertical navigation links.
-type NavProps struct {
-	Items    []NavItem
-	Active   string
-	Vertical bool
-}
+type NavItem = navigation.Item
+type NavProps = navigation.NavProps
 
 // HeaderProps configures the top header bar.
 type HeaderProps struct {

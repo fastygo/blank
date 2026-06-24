@@ -1,0 +1,127 @@
+/**
+ * Package components re-exports composite registry bricks.
+ * Import cmp "github.com/fastygo/templ/components" and use @cmp.Card, @cmp.Alert.
+ */
+
+package components
+
+import (
+	"github.com/fastygo/templ/components/alert"
+	"github.com/fastygo/templ/components/breadcrumb"
+	"github.com/fastygo/templ/components/card"
+	"github.com/fastygo/templ/components/iconbadge"
+	"github.com/fastygo/templ/components/nav"
+	"github.com/fastygo/templ/components/sheet"
+)
+
+templ Card(p CardProps) {
+	@card.Card(p) {
+		{ children... }
+	}
+}
+
+templ CardHeader(p CardHeaderProps) {
+	@card.CardHeader(p) {
+		{ children... }
+	}
+}
+
+templ CardTitle(p CardTitleProps, value string) {
+	@card.CardTitle(p, value)
+}
+
+templ CardDescription(p CardDescriptionProps, value string) {
+	@card.CardDescription(p, value)
+}
+
+templ CardContent(p CardContentProps) {
+	@card.CardContent(p) {
+		{ children... }
+	}
+}
+
+templ CardFooter(p CardFooterProps) {
+	@card.CardFooter(p) {
+		{ children... }
+	}
+}
+
+templ Alert(p AlertProps) {
+	@alert.Alert(p) {
+		{ children... }
+	}
+}
+
+templ Breadcrumb(p BreadcrumbProps) {
+	@breadcrumb.Breadcrumb(p)
+}
+
+templ Sheet(p SheetProps) {
+	@sheet.Sheet(p) {
+		{ children... }
+	}
+}
+
+templ SheetTrigger(p SheetTriggerProps) {
+	@sheet.SheetTrigger(p) {
+		{ children... }
+	}
+}
+
+templ SheetOverlay(p SheetOverlayProps) {
+	@sheet.SheetOverlay(p)
+}
+
+templ SheetContent(p SheetContentProps) {
+	@sheet.SheetContent(p) {
+		{ children... }
+	}
+}
+
+templ SheetHeader(p SheetHeaderProps) {
+	@sheet.SheetHeader(p) {
+		{ children... }
+	}
+}
+
+templ SheetTitle(p SheetTitleProps, value string) {
+	@sheet.SheetTitle(p, value)
+}
+
+templ SheetDescription(p SheetDescriptionProps, value string) {
+	@sheet.SheetDescription(p, value)
+}
+
+templ SheetClose(p SheetCloseProps) {
+	@sheet.SheetClose(p) {
+		{ children... }
+	}
+}
+
+templ Nav(p NavProps) {
+	@nav.Nav(p) {
+		{ children... }
+	}
+}
+
+templ NavList(p NavListProps) {
+	@nav.NavList(p) {
+		{ children... }
+	}
+}
+
+templ NavItem(p NavItemProps) {
+	@nav.NavItem(p) {
+		{ children... }
+	}
+}
+
+templ NavLink(p NavLinkProps) {
+	@nav.NavLink(p) {
+		{ children... }
+	}
+}
+
+templ IconBadge(p IconBadgeProps) {
+	@iconbadge.IconBadge(p)
+}

@@ -1,0 +1,133 @@
+/**
+ * Card groups related content in one bordered surface.
+ * Card uses header, content, and footer slots.
+ */
+
+// Copy: components/ui/card/card.templ
+
+package card
+
+import (
+	"strings"
+
+	"github.com/fastygo/templ/utils"
+)
+
+// CardProps holds Card root configuration.
+type CardProps struct {
+	// Class adds Tailwind utilities
+	Class   string
+	// Variant sets surface preset: default, raised, kpi, muted, ghost, compact, flat, accent
+	Variant string
+	// Tag overrides root element name
+	Tag     string
+	Attrs   templ.Attributes
+}
+
+// CardHeaderProps holds header slot configuration.
+type CardHeaderProps struct {
+	Class string
+	Attrs templ.Attributes
+}
+
+// CardTitleProps holds title text and heading level.
+type CardTitleProps struct {
+	Class string
+	// Order maps to h1, h2, or h3
+	Order int
+	Attrs templ.Attributes
+}
+
+// CardDescriptionProps holds muted subtitle configuration.
+type CardDescriptionProps struct {
+	Class string
+	Attrs templ.Attributes
+}
+
+// CardContentProps holds main body slot configuration.
+type CardContentProps struct {
+	Class string
+	Attrs templ.Attributes
+}
+
+// CardFooterProps holds footer action slot configuration.
+type CardFooterProps struct {
+	Class string
+	Attrs templ.Attributes
+}
+
+func CardClasses(p CardProps) string {
+	return uiutils.CardClasses(p.Variant, strings.TrimSpace(p.Class))
+}
+
+// Card renders the bordered surface wrapper.
+templ Card(p CardProps) {
+	switch uiutils.ResolveTag(p.Tag, "div", uiutils.TagGroupLayout) {
+		case "section":
+			<section class={ CardClasses(p) } { p.Attrs... }>{ children... }</section>
+		case "article":
+			<article class={ CardClasses(p) } { p.Attrs... }>{ children... }</article>
+		case "aside":
+			<aside class={ CardClasses(p) } { p.Attrs... }>{ children... }</aside>
+		case "header":
+			<header class={ CardClasses(p) } { p.Attrs... }>{ children... }</header>
+		case "footer":
+			<footer class={ CardClasses(p) } { p.Attrs... }>{ children... }</footer>
+		case "main":
+			<main class={ CardClasses(p) } { p.Attrs... }>{ children... }</main>
+		case "nav":
+			<nav class={ CardClasses(p) } { p.Attrs... }>{ children... }</nav>
+		case "figure":
+			<figure class={ CardClasses(p) } { p.Attrs... }>{ children... }</figure>
+		case "search":
+			<search class={ CardClasses(p) } { p.Attrs... }>{ children... }</search>
+		case "hgroup":
+			<hgroup class={ CardClasses(p) } { p.Attrs... }>{ children... }</hgroup>
+		default:
+			<div class={ CardClasses(p) } { p.Attrs... }>{ children... }</div>
+	}
+}
+
+// CardHeader renders the top slot with bottom border.
+templ CardHeader(p CardHeaderProps) {
+	<div class={ uiutils.Cn("border-b border-border px-4 py-2", p.Class) } { p.Attrs... }>
+		{ children... }
+	</div>
+}
+
+// CardTitle renders heading text at Order level.
+templ CardTitle(p CardTitleProps, value string) {
+	@cardTitleTag(p) {
+		{ value }
+	}
+}
+
+templ cardTitleTag(p CardTitleProps) {
+	switch uiutils.TitleTag(p.Order) {
+		case "h1":
+			<h1 class={ uiutils.Cn("text-sm font-semibold", p.Class) } { p.Attrs... }>{ children... }</h1>
+		case "h3":
+			<h3 class={ uiutils.Cn("text-sm font-semibold", p.Class) } { p.Attrs... }>{ children... }</h3>
+		default:
+			<h2 class={ uiutils.Cn("text-sm font-semibold", p.Class) } { p.Attrs... }>{ children... }</h2>
+	}
+}
+
+// CardDescription renders muted subtitle in a p element.
+templ CardDescription(p CardDescriptionProps, value string) {
+	<p class={ uiutils.Cn("text-sm text-muted-foreground", p.Class) } { p.Attrs... }>{ value }</p>
+}
+
+// CardContent renders the padded main body slot.
+templ CardContent(p CardContentProps) {
+	<div class={ uiutils.Cn("p-4", p.Class) } { p.Attrs... }>
+		{ children... }
+	</div>
+}
+
+// CardFooter renders the bottom action slot with top border.
+templ CardFooter(p CardFooterProps) {
+	<div class={ uiutils.Cn("border-t border-border px-4 py-3", p.Class) } { p.Attrs... }>
+		{ children... }
+	</div>
+}

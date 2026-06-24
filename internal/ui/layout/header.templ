@@ -2,8 +2,9 @@ package layout
 
 import (
 	templpkg "github.com/a-h/templ"
-	"github.com/fastygo/templ/ui"
 	"github.com/fastygo/blank/internal/ui/components/icon"
+	"github.com/fastygo/blank/internal/ui/components/navigation"
+	"github.com/fastygo/templ/ui"
 )
 
 templ Header(props HeaderProps) {
@@ -22,7 +23,10 @@ templ Header(props HeaderProps) {
 				Class: "col-start-2 hidden items-center justify-center gap-1 justify-self-center md:flex",
 				Attrs: templpkg.Attributes{"aria-label": props.Navigation.MainNavigation},
 			}) {
-				@Nav(NavProps{Items: props.NavItems, Active: props.Active})
+				@navigation.Nav(navigation.NavProps{
+					Items:  props.NavItems,
+					Active: props.Active,
+				})
 			}
 		}
 		@ui.Group(ui.GroupProps{Class: "col-start-3 flex shrink-0 items-center justify-end gap-2 justify-self-end"}) {
@@ -38,9 +42,11 @@ templ Header(props HeaderProps) {
 				})
 			}
 			if props.ShowMenuTrigger {
-				@ui.Button(headerMenuButtonProps(props.Navigation)) {
-					@icon.Icon(icon.IconProps{Name: "menu", Size: "sm", Class: "h-4 w-4 shrink-0"})
-				}
+				@navigation.MobileSheetTrigger(navigation.MobileSheetTriggerProps{
+					ID:        MobileSheetTriggerID,
+					For:       MobileSheetPanelID,
+					AriaLabel: props.Navigation.OpenNavigationMenu,
+				})
 			}
 		}
 	}

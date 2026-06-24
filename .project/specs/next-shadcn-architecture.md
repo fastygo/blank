@@ -2,8 +2,8 @@
 
 Durable architecture spec for the Blank refactor aimed at React developers who know **Next App Router** and **shadcn/ui**. This document freezes vocabulary and responsibilities before runtime changes.
 
-**Status:** Block 05 complete — topnav app shell extracted to registry artifact.  
-**Next slice:** Block 06 — reusable mobile sheet/nav UI (see [active.md](./active.md)).
+**Status:** Block 06 complete — reusable mobile nav/sheet UI in `components/navigation`.  
+**Next slice:** Block 07 — sidebar app layout organism (see [active.md](./active.md)).
 
 ---
 
@@ -302,4 +302,10 @@ See [next-shadcn-refactor-progress.md](../next-shadcn-refactor-progress.md) for 
 
 - **Completed:** [`internal/ui/blocks/dashboard/app_shell/`](../../internal/ui/blocks/dashboard/app_shell/) — `appshell.AppShell` wraps `layout.Shell`; `views.AppShell` maps `LayoutData` → `layout.ShellProps` and delegates.
 - **No visual change:** Same topnav shell behavior; render tests pass for artifact and `views.AppShell` / `SiteShell`.
-- **Next:** Block 06 — factor reusable mobile sheet/nav UI.
+
+## Block 06 completion notes
+
+- **Completed:** [`internal/ui/components/navigation/`](../../internal/ui/components/navigation/) — props-only `Nav`, `MobileSheet`, `MobileSheetTrigger` using `templ/components` Sheet with `Behavior: "ui8kit"`.
+- **Layout integration:** [`internal/ui/layout/shell.templ`](../../internal/ui/layout/shell.templ) and `header.templ` consume navigation components; `layout.NavItem` / `NavProps` alias navigation types for router and views compatibility.
+- **Stable IDs:** `ui8kit-mobile-sheet-panel`, `ui8kit-mobile-sheet-trigger`, `ui8kit-mobile-sheet-title` preserved with render tests.
+- **Next:** Block 07 — sidebar app layout organism under `internal/ui/blocks/dashboard/sidebar_app` (or similar).

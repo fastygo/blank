@@ -1,0 +1,87 @@
+/**
+ * IconBadge renders a small icon surface for nav rows, cards, and status blocks.
+ */
+
+// Copy: components/ui/iconbadge/iconbadge.templ
+
+package iconbadge
+
+import (
+	"github.com/fastygo/templ/ui"
+	"github.com/fastygo/templ/utils"
+)
+
+var IconBadgeVariants = uiutils.Variants{
+	Base: "inline-flex shrink-0 items-center justify-center rounded-md font-semibold",
+	Keys: []string{"variant", "size"},
+	Defaults: map[string]string{
+		"variant": "default",
+		"size":    "default",
+	},
+	ByKey: map[string]map[string]string{
+		"variant": {
+			"default":     "bg-muted text-muted-foreground",
+			"accent":      "bg-accent text-accent-foreground",
+			"secondary":   "bg-secondary text-secondary-foreground",
+			"outline":     "border border-border text-foreground",
+			"destructive": "bg-destructive text-destructive-foreground",
+			"unstyled":    "",
+		},
+		"size": {
+			"xs":      "h-6 w-6 text-xs",
+			"sm":      "h-8 w-8 text-xs",
+			"default": "h-10 w-10 text-sm",
+			"lg":      "h-12 w-12 text-base",
+		},
+	},
+}
+
+// IconBadgeProps configures an icon surface.
+type IconBadgeProps struct {
+	Variant   string
+	Size      string
+	Class     string
+	Name      string
+	IconType  string
+	BaseClass string
+	Prefix    string
+	Text      string
+	Title     string
+	AriaLabel string
+	Attrs     templ.Attributes
+}
+
+func IconBadgeClasses(p IconBadgeProps) string {
+	return uiutils.Compose(IconBadgeVariants, map[string]string{
+		"variant": p.Variant,
+		"size":    p.Size,
+	}, p.Class)
+}
+
+func iconBadgeText(p IconBadgeProps) string {
+	if p.Text != "" {
+		return p.Text
+	}
+	if p.Name == "" {
+		return "*"
+	}
+	return string([]rune(p.Name)[0])
+}
+
+// IconBadge renders an icon if configured, otherwise a text fallback.
+templ IconBadge(p IconBadgeProps) {
+	<span class={ IconBadgeClasses(p) } { p.Attrs... }>
+		if p.BaseClass != "" || p.IconType == "svg" {
+			@ui.Icon(ui.IconProps{
+				Type:      p.IconType,
+				Name:      p.Name,
+				BaseClass: p.BaseClass,
+				Prefix:    p.Prefix,
+				Title:     p.Title,
+				AriaLabel: p.AriaLabel,
+			})
+		} else {
+			{ iconBadgeText(p) }
+		}
+	</span>
+}

@@ -1,0 +1,281 @@
+/**
+ * Sheet composes a side panel with trigger, overlay, content, and close parts.
+ * Behavior hooks are opt-in through Behavior so markup stays framework-neutral by default.
+ */
+
+// Copy: components/ui/sheet/sheet.templ
+
+package sheet
+
+import (
+	"strconv"
+	"strings"
+
+	"github.com/fastygo/templ/ui"
+	"github.com/fastygo/templ/utils"
+)
+
+var SheetVariants = uiutils.Variants{
+	Base: "fixed z-50 border-border bg-background text-foreground shadow-lg transition-transform",
+	Keys: []string{"side", "size", "variant"},
+	Defaults: map[string]string{
+		"side":    "right",
+		"size":    "default",
+		"variant": "default",
+	},
+	ByKey: map[string]map[string]string{
+		"side": {
+			"left":   "inset-y-0 left-0 border-r",
+			"right":  "inset-y-0 right-0 border-l",
+			"top":    "inset-x-0 top-0 border-b",
+			"bottom": "inset-x-0 bottom-0 border-t",
+		},
+		"size": {
+			"sm":      "w-64 max-w-full",
+			"default": "w-80 max-w-full",
+			"md":      "w-80 max-w-full",
+			"lg":      "w-96 max-w-full",
+			"xl":      "w-[28rem] max-w-full",
+			"full":    "h-full w-full max-w-none",
+		},
+		"variant": {
+			"default": "",
+			"card":    "bg-card text-card-foreground",
+			"ghost":   "border-transparent shadow-none",
+			"unstyled": "",
+		},
+	},
+}
+
+// SheetProps configures the panel root.
+type SheetProps struct {
+	ID              string
+	Variant         string
+	Side            string
+	Size            string
+	Class           string
+	Open            bool
+	AriaLabel       string
+	AriaLabelledBy  string
+	AriaDescribedBy string
+	Behavior        string
+	Attrs           templ.Attributes
+}
+
+// SheetTriggerProps configures a button that opens a sheet.
+type SheetTriggerProps struct {
+	ID        string
+	For       string
+	Class     string
+	Variant   string
+	Size      string
+	Open      bool
+	Behavior  string
+	AriaLabel string
+	Attrs     templ.Attributes
+}
+
+// SheetOverlayProps configures the backdrop.
+type SheetOverlayProps struct {
+	For      string
+	Class    string
+	Open     bool
+	Behavior string
+	Attrs    templ.Attributes
+}
+
+// SheetContentProps configures the inner scroll container.
+type SheetContentProps struct {
+	ID    string
+	Class string
+	Attrs templ.Attributes
+}
+
+// SheetHeaderProps configures the header slot.
+type SheetHeaderProps struct {
+	Class string
+	Attrs templ.Attributes
+}
+
+// SheetTitleProps configures the title element.
+type SheetTitleProps struct {
+	ID    string
+	Class string
+	Attrs templ.Attributes
+}
+
+// SheetDescriptionProps configures supporting copy.
+type SheetDescriptionProps struct {
+	ID    string
+	Class string
+	Attrs templ.Attributes
+}
+
+// SheetCloseProps configures a button that closes a sheet.
+type SheetCloseProps struct {
+	For       string
+	Class     string
+	Variant   string
+	Size      string
+	Behavior  string
+	AriaLabel string
+	Attrs     templ.Attributes
+}
+
+func SheetClasses(p SheetProps) string {
+	return uiutils.Compose(SheetVariants, map[string]string{
+		"side":    p.Side,
+		"size":    p.Size,
+		"variant": p.Variant,
+	}, p.Class)
+}
+
+func sheetState(open bool) string {
+	if open {
+		return "open"
+	}
+	return "closed"
+}
+
+func sheetBehavior(value string) string {
+	switch strings.TrimSpace(value) {
+	case "ui8kit":
+		return "ui8kit"
+	default:
+		return ""
+	}
+}
+
+func sheetRootAttrs(p SheetProps) templ.Attributes {
+	attrs := uiutils.MergeAttrs(templ.Attributes{}, p.Attrs)
+	if strings.TrimSpace(p.ID) != "" {
+		attrs["id"] = p.ID
+	}
+	attrs["role"] = "dialog"
+	attrs["aria-modal"] = "true"
+	attrs["data-state"] = sheetState(p.Open)
+	if strings.TrimSpace(p.AriaLabel) != "" {
+		attrs["aria-label"] = p.AriaLabel
+	}
+	if strings.TrimSpace(p.AriaLabelledBy) != "" {
+		attrs["aria-labelledby"] = p.AriaLabelledBy
+	}
+	if strings.TrimSpace(p.AriaDescribedBy) != "" {
+		attrs["aria-describedby"] = p.AriaDescribedBy
+	}
+	if sheetBehavior(p.Behavior) == "ui8kit" {
+		attrs["data-ui8kit"] = "sheet"
+		attrs["data-ui8kit-dialog"] = true
+	}
+	return attrs
+}
+
+func sheetTriggerAttrs(p SheetTriggerProps) templ.Attributes {
+	attrs := uiutils.MergeAttrs(templ.Attributes{}, p.Attrs)
+	if strings.TrimSpace(p.For) != "" {
+		attrs["aria-controls"] = p.For
+	}
+	attrs["aria-haspopup"] = "dialog"
+	attrs["aria-expanded"] = strconv.FormatBool(p.Open)
+	if sheetBehavior(p.Behavior) == "ui8kit" && strings.TrimSpace(p.For) != "" {
+		attrs["data-ui8kit-dialog-open"] = true
+		attrs["data-ui8kit-dialog-target"] = p.For
+	}
+	return attrs
+}
+
+func sheetCloseAttrs(forID, behavior string, attrs templ.Attributes) templ.Attributes {
+	out := uiutils.MergeAttrs(templ.Attributes{}, attrs)
+	if sheetBehavior(behavior) == "ui8kit" {
+		out["data-ui8kit-dialog-close"] = true
+		if strings.TrimSpace(forID) != "" {
+			out["data-ui8kit-dialog-target"] = forID
+		}
+	}
+	return out
+}
+
+// Sheet renders the panel root.
+templ Sheet(p SheetProps) {
+	<div class={ SheetClasses(p) } hidden?={ !p.Open } { sheetRootAttrs(p)... }>
+		{ children... }
+	</div>
+}
+
+// SheetTrigger renders a button wired to a sheet.
+templ SheetTrigger(p SheetTriggerProps) {
+	@ui.Button(ui.ButtonProps{
+		ID:        p.ID,
+		Variant:   p.Variant,
+		Size:      p.Size,
+		Class:     p.Class,
+		AriaLabel: p.AriaLabel,
+		Attrs:     sheetTriggerAttrs(p),
+	}) {
+		{ children... }
+	}
+}
+
+// SheetOverlay renders a backdrop, optionally wired as close target.
+templ SheetOverlay(p SheetOverlayProps) {
+	<div
+		class={ uiutils.Cn("fixed inset-0 z-40 bg-background/80", p.Class) }
+		hidden?={ !p.Open }
+		{ sheetCloseAttrs(p.For, p.Behavior, p.Attrs)... }
+	></div>
+}
+
+// SheetContent renders the scrollable content wrapper.
+templ SheetContent(p SheetContentProps) {
+	<div
+		if p.ID != "" {
+			id={ p.ID }
+		}
+		class={ uiutils.Cn("flex h-full flex-col overflow-y-auto p-4", p.Class) }
+		{ p.Attrs... }
+	>
+		{ children... }
+	</div>
+}
+
+// SheetHeader renders the top sheet row.
+templ SheetHeader(p SheetHeaderProps) {
+	<div class={ uiutils.Cn("flex items-start justify-between gap-3", p.Class) } { p.Attrs... }>
+		{ children... }
+	</div>
+}
+
+// SheetTitle renders a sheet title.
+templ SheetTitle(p SheetTitleProps, value string) {
+	<h2
+		if p.ID != "" {
+			id={ p.ID }
+		}
+		class={ uiutils.Cn("text-sm font-semibold", p.Class) }
+		{ p.Attrs... }
+	>{ value }</h2>
+}
+
+// SheetDescription renders supporting sheet copy.
+templ SheetDescription(p SheetDescriptionProps, value string) {
+	<p
+		if p.ID != "" {
+			id={ p.ID }
+		}
+		class={ uiutils.Cn("text-sm text-muted-foreground", p.Class) }
+		{ p.Attrs... }
+	>{ value }</p>
+}
+
+// SheetClose renders a button wired to close a sheet.
+templ SheetClose(p SheetCloseProps) {
+	@ui.Button(ui.ButtonProps{
+		Variant:   p.Variant,
+		Size:      p.Size,
+		Class:     p.Class,
+		AriaLabel: p.AriaLabel,
+		Attrs:     sheetCloseAttrs(p.For, p.Behavior, p.Attrs),
+	}) {
+		{ children... }
+	}
+}

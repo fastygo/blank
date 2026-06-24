@@ -8,11 +8,6 @@ import (
 	uiutils "github.com/fastygo/templ/utils"
 )
 
-const (
-	MobileSheetTriggerID = "ui8kit-mobile-sheet-trigger"
-	MobileSheetPanelID   = "ui8kit-mobile-sheet-panel"
-)
-
 func shellBrand(name string) string {
 	if name == "" {
 		return "App"
@@ -30,7 +25,7 @@ func shellLang(value string) string {
 func shellBodyClass(_ ShellProps) string {
 	return uiutils.Cn(
 		"min-h-screen overflow-x-hidden bg-background font-sans text-foreground",
-		"max-md:has-[#ui8kit-mobile-sheet-panel:not([hidden])]:overflow-hidden",
+		"max-md:has-[#"+MobileSheetPanelID+":not([hidden])]:overflow-hidden",
 	)
 }
 
@@ -50,21 +45,6 @@ func themeToggleSwitchToLightLabel(value string) string {
 	return strings.TrimSpace(value)
 }
 
-func navItemClasses(active, path string, vertical bool) string {
-	if vertical {
-		base := "flex w-full items-center gap-2 rounded-md px-4 py-2 text-sm"
-		if active == path {
-			return uiutils.Cn(base, "bg-accent text-accent-foreground")
-		}
-		return uiutils.Cn(base, "text-muted-foreground hover:bg-accent")
-	}
-	base := "inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors"
-	if active == path {
-		return uiutils.Cn(base, "text-foreground")
-	}
-	return uiutils.Cn(base, "text-muted-foreground hover:text-foreground")
-}
-
 func brandLogoButtonProps(brandName string, nav NavigationProps) ui.ButtonProps {
 	name := shellBrand(brandName)
 	return ui.ButtonProps{
@@ -73,27 +53,6 @@ func brandLogoButtonProps(brandName string, nav NavigationProps) ui.ButtonProps 
 		Class:   "text-base font-semibold tracking-tight text-foreground transition-colors hover:text-foreground/80",
 		Attrs: uiutils.MergeAttrs(
 			templ.Attributes{"aria-label": name + nav.BrandHomeSuffix},
-		),
-	}
-}
-
-func headerMenuButtonProps(nav NavigationProps) ui.ButtonProps {
-	return ui.ButtonProps{
-		ID:      MobileSheetTriggerID,
-		Type:    "button",
-		Variant: "unstyled",
-		Class: uiutils.Cn(
-			"inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border text-foreground md:hidden",
-		),
-		Attrs: uiutils.MergeAttrs(
-			templ.Attributes{
-				"data-ui8kit-dialog-open":   true,
-				"data-ui8kit-dialog-target": MobileSheetPanelID,
-			},
-			uiutils.AriaLabel(nav.OpenNavigationMenu),
-			uiutils.AriaHasPopup("dialog"),
-			uiutils.AriaControls(MobileSheetPanelID),
-			uiutils.AriaExpanded(false),
 		),
 	}
 }
@@ -115,59 +74,5 @@ func themeToggleButtonProps(props ThemeToggleProps) ui.ButtonProps {
 			uiutils.AriaLabel(themeToggleLabel(props.Label)),
 			uiutils.AriaPressed(false),
 		),
-	}
-}
-
-func mobileSheetRootBlock(nav NavigationProps) ui.BlockProps {
-	return ui.BlockProps{
-		ID:    MobileSheetPanelID,
-		Class: "fixed inset-y-0 left-0 z-50 w-full md:hidden",
-		Attrs: templ.Attributes{
-			"data-ui8kit":        "sheet",
-			"data-ui8kit-dialog": true,
-			"role":               "dialog",
-			"aria-modal":         "true",
-			"aria-label":         nav.NavigationMenuLabel,
-			"aria-labelledby":    "ui8kit-mobile-sheet-title",
-			"data-state":         "closed",
-			"hidden":             true,
-		},
-	}
-}
-
-func mobileSheetOverlayBox() ui.BoxProps {
-	return ui.BoxProps{
-		Class: "absolute inset-0 cursor-pointer bg-card/50",
-		Attrs: templ.Attributes{
-			"data-ui8kit-dialog-overlay": true,
-			"data-ui8kit-dialog-close":   true,
-			"data-ui8kit-dialog-target":  MobileSheetPanelID,
-		},
-	}
-}
-
-func mobileSheetCloseButtonProps(nav NavigationProps) ui.ButtonProps {
-	return ui.ButtonProps{
-		Type:      "button",
-		Variant:   "unstyled",
-		Class:     "inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-border text-muted-foreground",
-		AriaLabel: nav.CloseNavigationMenu,
-		Attrs: templ.Attributes{
-			"data-ui8kit-dialog-close":  true,
-			"data-ui8kit-dialog-target": MobileSheetPanelID,
-		},
-	}
-}
-
-func navLinkButtonProps(active string, item NavItem, vertical bool) ui.ButtonProps {
-	attrs := templ.Attributes{}
-	if active == item.Path {
-		attrs = uiutils.MergeAttrs(attrs, uiutils.AriaCurrent("page"))
-	}
-	return ui.ButtonProps{
-		Href:    item.Path,
-		Variant: "unstyled",
-		Class:   navItemClasses(active, item.Path, vertical),
-		Attrs:   attrs,
 	}
 }

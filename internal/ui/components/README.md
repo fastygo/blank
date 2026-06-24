@@ -16,6 +16,7 @@
 | Package | Role |
 |---------|------|
 | `icon/` | Latty mask icons |
+| `navigation/` | Reusable nav links + mobile sheet (`Nav`, `MobileSheet`, `MobileSheetTrigger`) via `templ/components` Sheet with `Behavior: "ui8kit"` |
 | `toggles/` | Language switch (`language_switch.templ`) |
 
 ## Heuristic

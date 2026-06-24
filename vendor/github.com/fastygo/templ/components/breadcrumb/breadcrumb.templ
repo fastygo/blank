@@ -1,0 +1,75 @@
+/**
+ * Breadcrumb shows the current page location within a hierarchy.
+ * Renders nav with ordered links and aria-current on the active item.
+ */
+
+// Copy: components/ui/breadcrumb/breadcrumb.templ
+
+package breadcrumb
+
+import (
+	"strings"
+
+	"github.com/fastygo/templ/utils"
+)
+
+// BreadcrumbItem is one crumb in the trail.
+type BreadcrumbItem struct {
+	Label    string
+	Href     string
+	// Current — marks the active page (aria-current=page)
+	Current  bool
+	Disabled bool
+}
+
+// BreadcrumbProps configures items and nav classes.
+type BreadcrumbProps struct {
+	Class      string
+	Items      []BreadcrumbItem
+	AriaLabel  string
+	DataUI8Kit string
+	Attrs      templ.Attributes
+}
+
+func breadcrumbLinkClasses(item BreadcrumbItem) string {
+	classes := []string{"text-sm"}
+	if item.Current {
+		classes = append(classes, "font-medium")
+	} else if item.Disabled {
+		classes = append(classes, "text-muted-foreground")
+	} else {
+		classes = append(classes, "text-primary underline-offset-4 hover:underline")
+	}
+	return uiutils.Cn(classes...)
+}
+
+// Breadcrumb renders the full navigation trail.
+templ Breadcrumb(p BreadcrumbProps) {
+	<nav
+		class={ uiutils.Cn("text-sm", strings.TrimSpace(p.Class)) }
+		{ uiutils.BreadcrumbRootAttrs(p.AriaLabel, p.DataUI8Kit, p.Attrs)... }
+	>
+		<ol class="flex flex-wrap items-center gap-2">
+			for _, item := range p.Items {
+				<li class="inline-flex items-center">
+					if strings.TrimSpace(item.Href) != "" && !item.Disabled {
+						<a
+							href={ templ.SafeURL(item.Href) }
+							class={ breadcrumbLinkClasses(item) }
+							{ uiutils.BreadcrumbItemAttrs(item.Current)... }
+						>
+							{ item.Label }
+						</a>
+					} else {
+						<span
+							class={ breadcrumbLinkClasses(item) }
+							{ uiutils.BreadcrumbItemAttrs(item.Current)... }
+						>
+							{ item.Label }
+						</span>
+					}
+				</li>
+			}
+		</ol>
+	</nav>
+}

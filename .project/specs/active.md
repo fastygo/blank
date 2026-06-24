@@ -36,6 +36,22 @@ No new sidebar, docs toc, marketing divergence, or visual changes.
 
 ---
 
-## After Block 05
+## Block 06 — Reusable mobile sheet/nav UI
 
-Proceed to Block 06: extract reusable mobile sheet/nav UI for future sidebar/docs blocks.
+**Goal:** Extract mobile navigation sheet and nav rendering into reusable props-only components for topnav, sidebar, and docs blocks.
+
+**Delivered:**
+
+- [x] `internal/ui/components/navigation/` — `Nav`, `MobileSheet`, `MobileSheetTrigger` via `templ/components` Sheet (`Behavior: "ui8kit"`).
+- [x] `layout.Shell` / `layout.Header` consume navigation components; `layout.NavItem` aliases `navigation.Item`.
+- [x] Stable ui8kit IDs preserved (`ui8kit-mobile-sheet-panel`, `-trigger`, `-title`).
+- [x] Focused render tests in `navigation_render_test.go`; shell/view tests still pass.
+- [x] No manifest or JS bundle changes (`dialog` pattern sufficient).
+
+**Block 06 complete.** Validation: `bun run templ`, `bun run lint:ui8px`, `bun run validate:aria`, `go test ./...`.
+
+---
+
+## After Block 06
+
+Proceed to Block 07: sidebar/app layout organism under `internal/ui/blocks/dashboard/sidebar_app` (or similar).

@@ -49,7 +49,7 @@ If a command cannot be run, report why and what remains unverified.
 - [x] 03. React onboarding docs explain route -> shell -> page and the add-page workflow.
 - [x] 04. Registry boundary is frozen: atoms/molecules/organisms/templates map to `Templ` and `internal/ui/*`.
 - [x] 05. Current topnav shell is extracted from `views` into the chosen `internal/ui` registry location, with `views.AppShell` as thin adapter.
-- [ ] 06. Mobile sheet/nav reusable UI is factored through existing `templ/components` Sheet APIs and `@ui8kit/aria`.
+- [x] 06. Mobile sheet/nav reusable UI is factored through existing `templ/components` Sheet APIs and `@ui8kit/aria`.
 - [ ] 07. Sidebar/app layout organism is implemented under `internal/ui/blocks` or `internal/ui/widgets` as decided by Block 04.
 - [ ] 08. Three sidebar wireframes are documented or showcased as registry artifacts, not runtime engine variants.
 - [ ] 09. Runtime router chooses layout organisms explicitly without hiding layout choice in a global switch.
@@ -417,6 +417,8 @@ Acceptance:
 - Existing topnav mobile menu still works.
 - The same reusable UI can later host sidebar or docs navigation.
 - `bun run validate:aria` remains green.
+
+**Done:** [`internal/ui/components/navigation/`](../internal/ui/components/navigation/) (`navigation.Nav`, `MobileSheet`, `MobileSheetTrigger`); [`internal/ui/layout/`](../internal/ui/layout/) consumes it; stable IDs preserved; `layout.NavItem` aliases `navigation.Item`.
 
 ---
 
