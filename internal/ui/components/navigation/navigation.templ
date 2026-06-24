@@ -25,19 +25,15 @@ templ MobileSheet(props MobileSheetProps) {
 	@cmp.Sheet(cmp.SheetProps{
 		ID:             props.panelID(),
 		Side:           "left",
-		Size:           "default",
+		Size:           "full",
 		Variant:        "card",
 		Behavior:       "ui8kit",
 		AriaLabel:      props.AriaLabel,
 		AriaLabelledBy: props.titleID(),
 		Class:          mobileSheetPanelClass(),
 	}) {
-		@cmp.SheetOverlay(cmp.SheetOverlayProps{
-			For:      props.panelID(),
-			Behavior: "ui8kit",
-			Class:    "cursor-pointer bg-card/50",
-		})
-		@cmp.SheetContent(cmp.SheetContentProps{Class: "p-4"}) {
+		@ui.Box(mobileSheetOverlayBox(props.panelID()))
+		@cmp.SheetContent(cmp.SheetContentProps{Class: mobileSheetContentClass()}) {
 			@cmp.SheetHeader(cmp.SheetHeaderProps{}) {
 				@cmp.SheetTitle(cmp.SheetTitleProps{ID: props.titleID(), Class: "text-sm font-normal text-muted-foreground"}, props.Title)
 				@cmp.SheetClose(cmp.SheetCloseProps{

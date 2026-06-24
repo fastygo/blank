@@ -36,6 +36,9 @@ func TestMobileSheet_rendersUi8kitContract(t *testing.T) {
 	if !strings.Contains(html, `data-ui8kit="sheet"`) {
 		t.Fatal("expected sheet ui8kit hook")
 	}
+	if !strings.Contains(html, `data-ui8kit-dialog-overlay`) {
+		t.Fatal("expected ui8kit dialog overlay hook")
+	}
 	if !strings.Contains(html, `role="dialog"`) {
 		t.Fatal("expected dialog role")
 	}

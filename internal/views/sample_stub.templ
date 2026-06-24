@@ -1,13 +1,22 @@
 package views
 
-import "github.com/fastygo/templ/ui"
+import (
+	"github.com/fastygo/blank/internal/ui/components/appsidebar"
+	"github.com/fastygo/blank/internal/ui/layout"
+	"github.com/fastygo/templ/ui"
+)
 
-templ SamplePage(data SampleData) {
-	@ui.Box(ui.BoxProps{Class: "flex flex-1 flex-col items-center justify-center px-4 py-16 text-center md:py-24"}) {
-		@ui.Box(ui.BoxProps{Class: "flex w-full max-w-md flex-col items-center gap-3 text-center"}) {
-			@ui.Title(ui.TitleProps{Order: 1, Class: "text-3xl font-bold tracking-tight"}, data.Title)
-			@ui.Text(ui.TextProps{Class: "text-base text-muted-foreground"}, data.Description)
-			@ui.Text(ui.TextProps{Class: "text-sm leading-relaxed text-muted-foreground"}, data.Body)
+// SamplePage composes the sidebar document shell with the page body.
+// This file is the entire layout picture for `/sample` — open it once and
+// you see SidebarShell + AppSidebar + content, like app/dashboard/page.tsx.
+templ SamplePage(data SamplePageData) {
+	@layout.SidebarShell(data.Shell, appsidebar.AppSidebar(data.Sidebar)) {
+		@ui.Box(ui.BoxProps{Class: "flex flex-1 flex-col items-center justify-center px-4 py-16 text-center md:py-24"}) {
+			@ui.Box(ui.BoxProps{Class: "flex w-full max-w-md flex-col items-center gap-3 text-center"}) {
+				@ui.Title(ui.TitleProps{Order: 1, Class: "text-3xl font-bold tracking-tight"}, data.Title)
+				@ui.Text(ui.TextProps{Class: "text-base text-muted-foreground"}, data.Description)
+				@ui.Text(ui.TextProps{Class: "text-sm leading-relaxed text-muted-foreground"}, data.Body)
+			}
 		}
 	}
 }

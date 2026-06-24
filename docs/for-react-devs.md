@@ -7,43 +7,48 @@ If you know **Next App Router** and **shadcn/ui**, start here — you do not nee
 ## One-line mental model
 
 ```text
-route -> PageSpec -> layout data -> route shell -> page body
+route -> PageSpec -> page template (composes its own layout shell)
 ```
 
-Runtime routes live in [`internal/site/router.go`](../internal/site/router.go). Pages live in [`internal/views/`](../internal/views/). **Choose the route shell in one `PageSpec.Layout` line** — e.g. `views.AppShell`, `views.SidebarAppShell`, `views.MarketingShell`, or `views.DocsShell`. Reusable UI artifacts live in [`internal/ui/`](../internal/ui/). Copy lives in [`internal/fixtures/locale/`](../internal/fixtures/locale/).
+Runtime routes live in [`internal/site/router.go`](../internal/site/router.go). Pages live in [`internal/views/*.templ`](../internal/views/). **The page itself composes its layout shell** — `@layout.Shell(d.Shell) { ... }` for topnav, or `@layout.SidebarShell(d.Shell, appsidebar.AppSidebar(d.Sidebar)) { ... }` for sidebar layouts. Reusable UI lives in [`internal/ui/`](../internal/ui/). Copy lives in [`internal/fixtures/locale/`](../internal/fixtures/locale/).
+
+The page file is the **single point of truth for the layout tree** — opening `views/sample_stub.templ` shows `SidebarShell + AppSidebar + content` in one place, the same cognitive model as opening `app/dashboard/page.tsx` in a shadcn project.
 
 ## File map
 
 | Next / React + shadcn | Blank | Role |
 |-----------------------|-------|------|
-| `app/layout.tsx` (document frame) | [`internal/ui/layout/shell.templ`](../internal/ui/layout/shell.templ) → `layout.Shell` | **Document / chrome shell** — `html`, `head`, `body`, header, footer, mobile sheet, assets |
-| `app/(app)/layout.tsx` | [`internal/views/layout.templ`](../internal/views/layout.templ) → `views.AppShell` | **Route shell** — topnav app zone (`/` today) |
-| Sidebar app route shell | `views.SidebarAppShell` → [`sidebar_app`](../internal/ui/blocks/dashboard/sidebar_app/) block | **Route shell** — desktop aside + mobile sheet (`/sample` today) |
-| `app/(marketing)/layout.tsx` | `views.MarketingShell` | Route shell — landing/marketing (currently same chrome as `AppShell`) |
-| `app/(docs)/layout.tsx` | `views.DocsShell` | Route shell — docs (placeholder until docs routes) |
-| `app/**/page.tsx` | [`internal/views/*.templ`](../internal/views/) | Page content only |
-| `components/ui/*` | [`github.com/fastygo/templ/ui`](https://github.com/fastygo/templ) + [`templ/components`](https://github.com/fastygo/templ) + [`internal/ui/*`](../internal/ui/) | Atoms/molecules from templ; app registry for blocks, components, widgets |
+| Document frame inside `app/layout.tsx` | [`internal/ui/layout/shell.templ`](../internal/ui/layout/shell.templ) → `layout.Shell` | Topnav document shell — `html`, `head`, `body`, header, footer, mobile sheet, assets |
+| `SidebarProvider + SidebarInset` | [`internal/ui/layout/sidebar_shell.templ`](../internal/ui/layout/sidebar_shell.templ) → `layout.SidebarShell` | Sidebar document shell — `Shell` + desktop aside slot beside main column |
+| `components/app-sidebar.tsx` | [`internal/ui/components/appsidebar/`](../internal/ui/components/appsidebar/) → `appsidebar.AppSidebar` | Local aside content (title + vertical nav); pass to `SidebarShell` |
+| `app/(app)/layout.tsx` (route adapter) | **gone** — pages compose `@layout.Shell { ... }` directly in their `.templ` | No `views.*Shell` indirection |
+| `app/**/page.tsx` | [`internal/views/*.templ`](../internal/views/) | Page = layout composition + content (one file) |
+| `components/ui/*` (shadcn primitives) | [`github.com/fastygo/templ/ui`](https://github.com/fastygo/templ) + [`templ/components`](https://github.com/fastygo/templ) | Atoms/molecules from templ |
+| App components | [`internal/ui/components/*`](../internal/ui/components/) | App-owned components (icon, toggles, navigation, appsidebar) |
+| shadcn blocks (full scaffolds) | [`internal/ui/blocks/*`](../internal/ui/blocks/) | Full scaffolds with default copy (no empty adapter wrappers) |
 | `vite.config.ts` | [`fastygo.config.mjs`](../fastygo.config.mjs) | **Tooling only** — server env, templ generate paths, CSS/JS build, ui8px validation. Not the route registry. |
 | `messages/*.json` | [`internal/fixtures/locale/*.json`](../internal/fixtures/locale/) | Site copy per locale |
 | Dev overlay i18n | [`internal/devoverlay/fixtures/locale/`](../internal/devoverlay/fixtures/locale/) | Separate from site fixtures |
 
 ## Request flow
 
-When docs say “layout”, check which layer is meant. Blank uses **two layout layers**:
-
-1. **Route shell** (`views.AppShell`, `views.SidebarAppShell`, …) — analogous to Next route-group `layout.tsx`; chosen in `PageSpec.Layout`.
-2. **Document shell** (`layout.Shell`) — analogous to root document frame only.
+There is **one** layout layer — the document shell composed inside the page template. `PageSpec` no longer has a `Layout` field.
 
 Example for `GET /sample` (sidebar app shell):
 
 ```text
 GET /sample
-  -> PageSpec in internal/site/router.go (Layout: views.SidebarAppShell)
+  -> PageSpec in internal/site/router.go (Title, Body, Nav)
   -> fixtures.Locale (en/ru)
   -> views.LayoutData (nav, theme, language switch, assets)
-  -> views.SidebarAppShell(data, SamplePage(...))
-       -> sidebarapp.SidebarApp (registry block)
-            -> layout.Shell (document chrome)
+  -> views.SamplePage(views.SamplePageData{
+       Shell:   views.ShellPropsFor(d),
+       Sidebar: views.SidebarPropsFor(d, title),
+       ...
+     })
+       -> @layout.SidebarShell(d.Shell, appsidebar.AppSidebar(d.Sidebar)) {
+            ...page content...
+          }
   -> web.Render (full HTML response)
 ```
 
@@ -51,34 +56,37 @@ Example for `GET /` (topnav app shell):
 
 ```text
 GET /
-  -> PageSpec (Layout: views.AppShell)
-  -> views.AppShell(data, HomePage(...))
-       -> appshell.AppShell -> layout.Shell
+  -> PageSpec (Title, Body, Nav)
+  -> views.HomePage(views.HomePageData{Shell: views.ShellPropsFor(d), ...})
+       -> @layout.Shell(d.Shell) { ...page content... }
 ```
 
 ```mermaid
 flowchart LR
   request["GET /sample"] --> pageSpec["router.go PageSpec"]
-  pageSpec --> layoutLine["Layout: views.SidebarAppShell"]
   pageSpec --> locale["fixtures.Locale"]
   locale --> layoutData["views.LayoutData"]
-  pageSpec --> body["views.SamplePage"]
-  layoutData --> routeShell["views.SidebarAppShell"]
-  body --> routeShell
-  routeShell --> registryBlock["sidebarapp.SidebarApp"]
-  registryBlock --> documentShell["layout.Shell"]
+  pageSpec --> body["views.SamplePage(SamplePageData)"]
+  layoutData --> body
+  body --> shell["@layout.SidebarShell + appsidebar.AppSidebar"]
+  shell --> render["web.Render"]
 ```
 
-**Route shells:** `views.AppShell` (topnav), `views.SidebarAppShell` (desktop aside + mobile sheet), `views.MarketingShell`, `views.DocsShell` — chosen in one `PageSpec.Layout` line in [`router.go`](../internal/site/router.go).
+**Shells:**
 
-Architecture details: [`.project/specs/next-shadcn-architecture.md`](../.project/specs/next-shadcn-architecture.md).
+- `layout.Shell` — topnav document chrome
+- `layout.SidebarShell` — topnav + desktop aside slot
+
+Choose by **which `@layout.*` you write at the top of `views/<page>.templ`** — there is no `PageSpec.Layout` and no route adapter.
+
+Architecture details: [`.project/specs/next-shadcn-architecture.md`](../.project/specs/next-shadcn-architecture.md). Refactor spec: [`.project/specs/page-composes-layout.md`](../.project/specs/page-composes-layout.md).
 
 ## Runtime site package
 
 | File | Role |
 |------|------|
-| [`internal/site/router.go`](../internal/site/router.go) | Route manifest — `PageSpec` entries with visible `Layout`, `Title`, `Body`, `Nav` |
-| [`internal/site/render.go`](../internal/site/render.go) | `handlePage` — locale, layout data, `web.Render` |
+| [`internal/site/router.go`](../internal/site/router.go) | Route manifest — `PageSpec` entries with `Title`, `Body`, `Nav` (no `Layout`) |
+| [`internal/site/render.go`](../internal/site/render.go) | `handlePage` — one `web.Render` call per request |
 | [`internal/site/nav.go`](../internal/site/nav.go) | Header nav derived from `PageSpec.Nav` |
 | [`internal/site/layout_data.go`](../internal/site/layout_data.go) | Assets, navigation props, language switch |
 | [`internal/site/feature.go`](../internal/site/feature.go) | Feature wiring — registers routes from the manifest |
@@ -92,25 +100,27 @@ There is **no** `routes.yaml` or codegen yet. Adding a route means editing Go in
 | You want to change… | Edit… |
 |---------------------|-------|
 | Route URL, nav entry, page body | [`internal/site/router.go`](../internal/site/router.go) `PageSpec` |
-| Which layout wraps a route | `PageSpec.Layout` — e.g. `views.AppShell`, `views.SidebarAppShell` |
+| Layout for a route | Open `internal/views/<page>.templ` and change `@layout.Shell` / `@layout.SidebarShell` directly |
 | Page markup | [`internal/views/*.templ`](../internal/views/) |
+| Aside content | [`internal/ui/components/appsidebar/`](../internal/ui/components/appsidebar/) |
+| Document chrome | [`internal/ui/layout/`](../internal/ui/layout/) |
 | Copy / i18n | [`internal/fixtures/locale/`](../internal/fixtures/locale/) |
 | Dev server port, static dir, overlay | [`fastygo.config.mjs`](../fastygo.config.mjs) `server.env` |
 | Tailwind input/output, lint paths | `fastygo.config.mjs` `css` / `ui8px` |
 
-Do **not** add routes, layout presets, or `APP_LAYOUT` to config — that would create a second source of truth beside `router.go`.
+Do **not** add routes, layout presets, or `APP_LAYOUT` to config — that would create a second source of truth beside `router.go` and the page templates.
 
 ## Registry terms (shadcn-like)
 
-Blank separates **runtime wiring** from **copy-pasteable UI artifacts**:
+Blank separates **runtime wiring**, **page composition**, and **reusable UI**:
 
 | Term | Location | shadcn analogy |
 |------|----------|----------------|
-| **Document / chrome shell** | `internal/ui/layout/*` | App-owned frame (header, footer, mobile sheet host) |
-| **Route shell** | `views.AppShell`, `views.SidebarAppShell`, `MarketingShell`, `DocsShell` | Runtime adapter — one line in `PageSpec.Layout`; wraps registry blocks |
-| **Page** | `internal/views/*.templ` | `page.tsx` content only |
+| **Named shell** | `internal/ui/layout/{shell,sidebar_shell}.templ` | `SidebarProvider` / `SidebarInset` primitives |
+| **Local aside** | `internal/ui/components/appsidebar/` | `components/app-sidebar.tsx` |
+| **Page** | `internal/views/<page>.templ` | `page.tsx` — composes layout + content |
 | **Components** | `internal/ui/components/*` | Small reusable UI; props in, markup out |
-| **Blocks** | `internal/ui/blocks/*` | Layout organisms and sections (`app_shell`, `sidebar_app`, …) |
+| **Blocks** | `internal/ui/blocks/*` | Full scaffolds — not adapter wrappers |
 | **Widgets** | `internal/ui/widgets/*` | UI + behavior (fetch, state, orchestration) |
 
 Kit primitives (`Button`, `Stack`, `Card`, `Sheet`, …) come from **`github.com/fastygo/templ`**. App-specific reusable mass accumulates under **`internal/ui/*`** until extraction.
@@ -119,35 +129,57 @@ See [`internal/ui/README.md`](../internal/ui/README.md) for the registry tree.
 
 ## Adding a page (cookbook)
 
-Follow the existing `/sample` route as a template. For a hypothetical `/about` page, touch these files in order:
+Follow the existing `/sample` route as a template. For a hypothetical `/about` page (sidebar layout), touch these files in order:
 
 | Step | File |
 |------|------|
 | Copy struct | [`internal/fixtures/fixtures.go`](../internal/fixtures/fixtures.go) — add `About` to `Locale` |
 | i18n JSON | [`internal/fixtures/locale/en.json`](../internal/fixtures/locale/en.json) and [`ru.json`](../internal/fixtures/locale/ru.json) |
-| Page props | [`internal/views/models.go`](../internal/views/models.go) — `AboutData` |
-| Page markup | `internal/views/about.templ` — content only (no header, footer, nav) |
-| Route + layout | [`internal/site/router.go`](../internal/site/router.go) — one `PageSpec` with `Layout:` |
-
-Sidebar and mobile sheet behavior live in [`internal/ui/blocks/dashboard/sidebar_app/`](../internal/ui/blocks/dashboard/sidebar_app/) and [`internal/ui/components/navigation/`](../internal/ui/components/navigation/); `@ui8kit/aria` is already wired — no custom JS for covered patterns.
+| Page props | [`internal/views/models.go`](../internal/views/models.go) — `AboutPageData` (include `Shell` and `Sidebar`) |
+| Page markup | `internal/views/about.templ` — composes `@layout.SidebarShell(d.Shell, appsidebar.AppSidebar(d.Sidebar)) { ...content... }` |
+| Route | [`internal/site/router.go`](../internal/site/router.go) — one `PageSpec` with `Body` returning the page |
 
 ### 1. Add copy to fixtures
 
 Extend [`fixtures.Locale`](../internal/fixtures/fixtures.go) with a new struct (e.g. `About`) and add matching keys to **every** file in [`internal/fixtures/locale/`](../internal/fixtures/locale/) (`en.json`, `ru.json`, …).
 
-### 2. Create the page template
+### 2. Add the page data model
 
-Add `internal/views/about.templ` (content only — no header, footer, or nav):
-
-```templ
-templ AboutPage(data AboutData) {
-    @ui.Box(...) { ... }
+```go
+type AboutPageData struct {
+    Shell   layout.ShellProps
+    Sidebar appsidebar.Props // omit if topnav-only
+    Title   string
+    Body    string
 }
 ```
 
-Add props to [`internal/views/models.go`](../internal/views/models.go) if needed.
+### 3. Create the page template
 
-### 3. Register one route spec
+Add `internal/views/about.templ` — the layout composition is right here:
+
+```templ
+package views
+
+import (
+    "github.com/fastygo/blank/internal/ui/components/appsidebar"
+    "github.com/fastygo/blank/internal/ui/layout"
+    "github.com/fastygo/templ/ui"
+)
+
+templ AboutPage(d AboutPageData) {
+    @layout.SidebarShell(d.Shell, appsidebar.AppSidebar(d.Sidebar)) {
+        @ui.Box(ui.BoxProps{Class: "..."}) {
+            @ui.Title(ui.TitleProps{Order: 1}, d.Title)
+            @ui.Text(ui.TextProps{}, d.Body)
+        }
+    }
+}
+```
+
+For a topnav-only page, replace `@layout.SidebarShell(d.Shell, appsidebar.AppSidebar(d.Sidebar)) { ... }` with `@layout.Shell(d.Shell) { ... }` and drop the `Sidebar` field.
+
+### 4. Register one route spec
 
 Add one entry to `pages` in [`internal/site/router.go`](../internal/site/router.go):
 
@@ -156,10 +188,14 @@ Add one entry to `pages` in [`internal/site/router.go`](../internal/site/router.
     Method:  "GET",
     Pattern: "/about",
     Active:  "/about",
-    Layout:  views.AppShell, // or SidebarAppShell / MarketingShell / DocsShell
     Title:   func(f fixtures.Locale) string { return f.About.Title },
-    Body: func(f fixtures.Locale) templ.Component {
-        return views.AboutPage(views.AboutData{ ... })
+    Body: func(d views.LayoutData, f fixtures.Locale) templ.Component {
+        return views.AboutPage(views.AboutPageData{
+            Shell:   views.ShellPropsFor(d),
+            Sidebar: views.SidebarPropsFor(d, f.About.Title),
+            Title:   f.About.Title,
+            Body:    f.About.Body,
+        })
     },
     Nav: func(f fixtures.Locale) (layout.NavItem, bool) {
         return layout.NavItem{Label: f.About.NavLabel, Path: "/about", Icon: "info"}, true
@@ -167,9 +203,9 @@ Add one entry to `pages` in [`internal/site/router.go`](../internal/site/router.
 },
 ```
 
-Nav is optional: omit `Nav` or return `false` for routes that should not appear in the header.
+`Nav` is optional: omit it or return `false` for routes that should not appear in the header.
 
-### 4. Rebuild and verify
+### 5. Rebuild and verify
 
 ```bash
 bun run templ          # after .templ changes

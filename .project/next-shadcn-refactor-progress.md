@@ -1,5 +1,10 @@
 # Blank Next/shadcn Refactor Progress
 
+> **Status:** Superseded by the **page-composes-layout** refactor.
+> See [`specs/page-composes-layout.md`](specs/page-composes-layout.md) and the updated [`specs/next-shadcn-architecture.md`](specs/next-shadcn-architecture.md).
+>
+> Blocks 00–11 below are kept as **history only**. Some statements (named route adapters, `views.*Shell` functions, `PageSpec.Layout`, `blocks/dashboard/{app_shell,sidebar_app}`) are no longer accurate. Snapshot of the final adapter-era spec: [`specs/archive/block-11-final.md`](specs/archive/block-11-final.md).
+
 This file is a copy-paste progress driver for iterative Plan mode chats.
 Copy one block at a time into a new chat or current chat in Plan mode.
 Ask the agent to produce a bounded implementation plan from that block, then switch to Agent mode for the implementation slice.

@@ -22,10 +22,10 @@ Develop here first; `require` shared modules only after extraction.
 
 ```
 internal/ui/
-  layout/       # registry:layout — document/chrome shell (stays in app)
-  components/   # registry:components — icon, toggles, …
-  blocks/       # registry:blocks — section/layout organisms (staging → fastygo/blocks)
-    dashboard/  # e.g. app_shell (topnav today), sidebar_app
+  layout/       # registry:layout — named document shells (Shell, SidebarShell)
+  components/   # registry:components — icon, toggles, navigation, appsidebar, …
+  blocks/       # registry:blocks — full scaffolds (staging → fastygo/blocks)
+    dashboard/  # future dashboard scaffolds
     marketing/  # e.g. topnav_shell, landing_shell
     docs/       # e.g. toc_shell
   widgets/      # registry:widgets — UI + behavior (staging → fastygo/widgets)
@@ -35,8 +35,8 @@ internal/ui/
 
 | Label | Path | Role |
 |--------|------|------|
-| `registry:layout` | `layout/` | App document/chrome frame; **not** extracted; **not** every layout variant |
-| `registry:blocks` | `blocks/<domain>/` | Section/layout organisms + in-package default copy |
+| `registry:layout` | `layout/` | Document shells composed directly by pages (`Shell`, `SidebarShell`); stays in app |
+| `registry:blocks` | `blocks/<domain>/` | **Full scaffolds** with in-package default copy — not 4-line adapter wrappers |
 | `registry:components` | `components/` | Props in, markup out; no HTTP, domain, or fetch |
 | `registry:widgets` | `widgets/` | Fetch, state, orchestration; composes blocks/components |
 | `registry:variants` | `variants/` | Named, ui8px-safe utility presets |
@@ -48,15 +48,22 @@ There is **no** `internal/ui/elements`, **no** `internal/ui/ui/`, and **no** `in
 
 | You are building… | Put it in… |
 |-------------------|------------|
-| Document shell, header, footer, mobile sheet host | `layout/` |
-| Small reusable control (icon, toggle) | `components/` |
-| Sidebar app shell, dashboard grid, docs toc layout (props-only wireframe) | `blocks/<domain>/<organism>/` |
+| Document shell, header, footer, mobile sheet host | `layout/shell.templ` |
+| New named shell (e.g. topnav + aside slot) | `layout/<name>_shell.templ` |
+| Small reusable control (icon, toggle) | `components/<area>/` |
+| Aside / sidebar content consumed by `SidebarShell` | `components/appsidebar/` (or fork it) |
+| Full scaffold with default copy (dashboard, hero, docs toc) | `blocks/<domain>/<organism>/` |
 | Shell that fetches or orchestrates API/state | `widgets/` |
-| Route-specific page content | `internal/views/*.templ` |
-| HTTP route + layout choice | `internal/site/router.go` (`PageSpec`) |
-| Thin Next-like route wrapper | `internal/views/*Shell` (adapter only) |
+| Route page (composes its own shell) | `internal/views/<page>.templ` |
+| HTTP route + page choice | `internal/site/router.go` (`PageSpec`) |
 
-Layout organisms use **domain folders** first: `dashboard/sidebar_app`, `docs/toc_shell`, `marketing/topnav_shell` — not a generic `blocks/layout/` tree.
+Routes call `views.<Page>` from `internal/views/`; the page itself composes
+`@layout.Shell { ... }` or `@layout.SidebarShell(shell, appsidebar.AppSidebar(s)) { ... }`.
+There are **no** `views/*Shell` adapter functions.
+
+Full scaffolds use **domain folders** first: `dashboard/*`, `docs/toc_shell`,
+`marketing/topnav_shell` — not a generic `blocks/layout/` tree, and not 4-line
+wrappers around `layout.Shell`.
 
 ## `components` vs `widgets` vs `blocks`
 
@@ -69,12 +76,14 @@ If it only renders props → **`components`** or **`blocks`**. If it **fetches**
 ## Runtime vs registry (do not collapse)
 
 ```text
-internal/site/router.go  →  views.AppShell (adapter)  →  internal/ui/blocks/... + layout.Shell  →  views.Page
+internal/site/router.go  →  internal/views/<Page>  →  @layout.Shell (or @layout.SidebarShell)  →  @ui.* atoms
 ```
 
-- **`internal/site/`** — runtime wiring only; no reusable markup.
-- **`internal/views/*Shell`** — temporary route adapters; should delegate to registry artifacts as they appear.
-- **`internal/ui/*`** — shadcn-like accumulation layer; copy-paste or `require` after extraction.
+- **`internal/site/`** — runtime wiring only; no reusable markup, no layout selection.
+- **`internal/views/<page>.templ`** — composes its own layout shell. The composition tree is visible in one file (shadcn parity).
+- **`internal/ui/layout/`** — named document shells used by pages directly.
+- **`internal/ui/components/`** — small reusable parts and aside content (e.g. `appsidebar`).
+- **`internal/ui/blocks/*`** — shadcn-style full scaffolds; copy-paste or `require` after extraction.
 
 ## Data (three layers)
 

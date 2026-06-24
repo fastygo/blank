@@ -1,3 +1,5 @@
+> **Статус:** исторический брейншторм по архитектуре сайдбаров. Действующая реализация — `layout.SidebarShell` (named shell в `internal/ui/layout/`) + `appsidebar.AppSidebar` (локальный компонент в `internal/ui/components/`). Страница композирует оба напрямую. См. [`specs/page-composes-layout.md`](specs/page-composes-layout.md) и [`specs/next-shadcn-architecture.md`](specs/next-shadcn-architecture.md).
+
 В React/shadcn **не делают один движок на все комбинации**. Делают **малые enum на примитивах + compound parts + nested layouts + copy-paste blocks**. Для Go/templ это как раз ближе к [`templ-component-spec.mdc`](e:\_@Go\@Templ\.cursor\rules\templ-component-spec.mdc), чем к гигантскому `Variant`.
 
 ---

@@ -6,12 +6,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/a-h/templ"
 	"github.com/fastygo/blank/internal/ui/components/toggles"
 	"github.com/fastygo/blank/internal/ui/layout"
 )
 
-func homeShellLayoutData() LayoutData {
+func homeLayoutData() LayoutData {
 	return LayoutData{
 		PageTitle:  "Home",
 		Lang:       "en",
@@ -48,21 +47,29 @@ func homeShellLayoutData() LayoutData {
 	}
 }
 
-func homeShellBody() templ.Component {
-	return HomePage(HomeData{
+func renderHomePage(t *testing.T, d LayoutData) string {
+	t.Helper()
+	body := HomePage(HomePageData{
+		Shell:        ShellPropsFor(d),
 		Welcome:      "Welcome",
 		WelcomeBrand: "to FastyGo",
 		Description:  "Minimal starter.",
 	})
+	var buf bytes.Buffer
+	if err := body.Render(context.Background(), &buf); err != nil {
+		t.Fatal(err)
+	}
+	return buf.String()
 }
 
-func assertHomeShellMarkup(t *testing.T, html string) {
-	t.Helper()
+func TestHomePage_composesTopnavShell(t *testing.T) {
+	html := renderHomePage(t, homeLayoutData())
+
 	if !strings.Contains(strings.ToLower(html), "<!doctype html>") {
 		t.Fatal("expected full document with doctype")
 	}
 	if strings.Contains(html, "<aside") {
-		t.Fatal("expected no sidebar aside")
+		t.Fatal("expected no sidebar aside on topnav page")
 	}
 	if !strings.Contains(html, `data-ui8kit="sheet"`) {
 		t.Fatal("expected shell mobile sheet markup")
@@ -87,44 +94,35 @@ func assertHomeShellMarkup(t *testing.T, html string) {
 	}
 }
 
-func renderShell(t *testing.T, shell func(LayoutData, templ.Component) templ.Component) string {
+func sampleLayoutData() LayoutData {
+	d := homeLayoutData()
+	d.PageTitle = "Sample"
+	d.Active = "/sample"
+	d.NavItems = []layout.NavItem{
+		{Label: "Home", Path: "/", Icon: "home"},
+		{Label: "Sample", Path: "/sample", Icon: "box"},
+	}
+	return d
+}
+
+func renderSamplePage(t *testing.T, d LayoutData) string {
 	t.Helper()
+	body := SamplePage(SamplePageData{
+		Shell:       ShellPropsFor(d),
+		Sidebar:     SidebarPropsFor(d, "Sample page"),
+		Title:       "Sample page",
+		Description: "Second route for onboarding.",
+		Body:        "Add routes in router.go.",
+	})
 	var buf bytes.Buffer
-	if err := shell(homeShellLayoutData(), homeShellBody()).Render(context.Background(), &buf); err != nil {
+	if err := body.Render(context.Background(), &buf); err != nil {
 		t.Fatal(err)
 	}
 	return buf.String()
 }
 
-func TestAppShell_homeRenders(t *testing.T) {
-	assertHomeShellMarkup(t, renderShell(t, AppShell))
-}
-
-func sampleShellLayoutData() LayoutData {
-	data := homeShellLayoutData()
-	data.PageTitle = "Sample"
-	data.Active = "/sample"
-	data.NavItems = []layout.NavItem{
-		{Label: "Home", Path: "/", Icon: "home"},
-		{Label: "Sample", Path: "/sample", Icon: "box"},
-	}
-	return data
-}
-
-func sampleShellBody() templ.Component {
-	return SamplePage(SampleData{
-		Title:       "Sample page",
-		Description: "Second route for onboarding.",
-		Body:        "Add routes in router.go.",
-	})
-}
-
-func TestSidebarAppShell_sampleRenders(t *testing.T) {
-	var buf bytes.Buffer
-	if err := SidebarAppShell(sampleShellLayoutData(), sampleShellBody()).Render(context.Background(), &buf); err != nil {
-		t.Fatal(err)
-	}
-	html := buf.String()
+func TestSamplePage_composesSidebarShell(t *testing.T) {
+	html := renderSamplePage(t, sampleLayoutData())
 
 	if !strings.Contains(strings.ToLower(html), "<!doctype html>") {
 		t.Fatal("expected full document with doctype")
@@ -151,6 +149,6 @@ func TestSidebarAppShell_sampleRenders(t *testing.T) {
 		t.Fatal("expected mobile sheet trigger id")
 	}
 	if !strings.Contains(html, "Sample page") {
-		t.Fatal("expected page body slot")
+		t.Fatal("expected page body slot copy")
 	}
 }

@@ -1,6 +1,7 @@
 package views
 
 import (
+	"github.com/fastygo/blank/internal/ui/components/appsidebar"
 	"github.com/fastygo/blank/internal/ui/components/toggles"
 	"github.com/fastygo/blank/internal/ui/layout"
 )
@@ -12,7 +13,8 @@ type AssetPaths struct {
 	AppJS   string
 }
 
-// LayoutData drives the app shell (header, main, footer).
+// LayoutData drives the document shell (assets, locale, nav, theme, language).
+// Site/render builds it once per request and passes it into each page template.
 type LayoutData struct {
 	PageTitle      string
 	Lang           string
@@ -39,15 +41,18 @@ func FormatDocumentTitle(pageTitle, brand string) string {
 	return pageTitle + " · " + brand
 }
 
-// HomeData is the home page hero body inside the shell.
-type HomeData struct {
+// HomePageData is the home page payload (document shell + hero content).
+type HomePageData struct {
+	Shell        layout.ShellProps
 	Welcome      string
 	WelcomeBrand string
 	Description  string
 }
 
-// SampleData is a second stub route for onboarding new pages.
-type SampleData struct {
+// SamplePageData is the sample page payload (document shell + sidebar + content).
+type SamplePageData struct {
+	Shell       layout.ShellProps
+	Sidebar     appsidebar.Props
 	Title       string
 	Description string
 	Body        string

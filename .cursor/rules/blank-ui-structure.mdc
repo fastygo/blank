@@ -11,20 +11,23 @@ On-disk index: **`internal/ui/README.md`** (same `registry:*` labels as FastyGoU
 
 ```
 internal/ui/
-  layout/       # registry:layout — document/chrome shell (stays in app)
-  components/   # registry:components — icon, toggles, …
-  blocks/       # registry:blocks — dashboard/, marketing/, docs/ (layout organisms)
+  layout/       # registry:layout — document/chrome shells
+                #   shell.templ          (topnav app shell)
+                #   sidebar_shell.templ  (topnav + desktop aside slot)
+  components/   # registry:components
+                #   icon/ toggles/ navigation/ appsidebar/
+  blocks/       # registry:blocks — dashboard/, marketing/, docs/ (full scaffolds)
   widgets/      # registry:widgets — UI + behavior (staging)
   variants/     # registry:variants — wireframe utility maps
   utils/        # registry:utils — app helpers on templ/utils
 internal/views/
-  *.templ       # route pages (home hero, sample, …)
-  layout.templ  # thin route shell adapters (AppShell, …)
+  *.templ       # route pages — each composes its own layout shell
   partials/     # shell head assets, header trailing glue
-  models.go     # LayoutData, page structs
+  models.go     # LayoutData, *PageData (with Shell / Sidebar fields)
+  layout_helpers.go # ShellPropsFor, SidebarPropsFor
 internal/site/
-  router.go     # PageSpec route manifest
-  render.go     # handlePage, web.Render
+  router.go     # PageSpec route manifest (no Layout field — pages compose their own)
+  render.go     # handlePage, web.Render (one call, no wrapping adapter)
   nav.go        # nav from route specs
   layout_data.go # LayoutData, language switch, assets
   feature.go    # Feature wiring only
@@ -34,19 +37,34 @@ internal/fixtures/
 
 | Path | Role |
 |------|------|
-| `internal/ui/layout` | Document/chrome shell; stays in app — **not** every layout variant |
+| `internal/ui/layout` | Document chrome and named shells (`Shell`, `SidebarShell`); stays in app |
 | `internal/ui/components` | Props-only UI; no HTTP or fetch |
-| `internal/ui/blocks/<domain>/` | Section/layout organisms → future `fastygo/blocks` |
+| `internal/ui/components/appsidebar` | Local sidebar component used as `SidebarShell`'s aside slot |
+| `internal/ui/blocks/<domain>/` | Full scaffolds (future `fastygo/blocks`); **not** for empty 4-line adapters |
 | `internal/ui/widgets` | Behavior shells → future `fastygo/widgets` |
-| `internal/views` | Pages + thin route adapters; not a registry |
+| `internal/views` | Pages only — each composes `@layout.Shell { ... }` or `@layout.SidebarShell(..., aside) { ... }` |
 | `internal/site` | Runtime routing; not a registry |
 
-**Layout organisms:** `blocks/dashboard/sidebar_app`, `blocks/docs/toc_shell`, `blocks/marketing/topnav_shell` — **not** `blocks/layout/`.
+**Page composes layout.** Open `views/<route>.templ` and you see the full tree: `@layout.Shell { content }` or `@layout.SidebarShell(shell, appsidebar.AppSidebar(s)) { content }`. There are **no** `views/*Shell` route-adapter functions.
 
-**Forbidden folders:** `internal/ui/recipes`, `internal/ui/elements`, `internal/ui/ui/`, `internal/ui/blocks/layout/`.
+**Named shells in `internal/ui/layout/`:**
+- `layout.Shell` — topnav document chrome (`html + head + body + Header + main{children} + Footer`).
+- `layout.SidebarShell` — same chrome plus a desktop aside slot beside the main column.
+
+Add new shells in `internal/ui/layout/` only when a route needs structurally different document chrome. Geometry variants (alternate sidebars, dashboard grids, docs toc shells) belong as **full scaffolds** in `internal/ui/blocks/<domain>/<organism>/`, not empty adapter wrappers.
+
+**Forbidden:**
+- `internal/ui/recipes`, `internal/ui/elements`, `internal/ui/ui/`, `internal/ui/blocks/layout/`.
+- 4-line `blocks/*` packages that only call `@layout.Shell { @body }`.
+- `views/*Shell` adapter functions that forward props with no markup.
 
 **views** receive resolved strings/structs only — no `fixtures.LoadLocale` inside `.templ`.
 
-When adding a page: extend `fixtures.Locale` + every `locale/*.json`, add `internal/views/<page>.templ`, add one `PageSpec` in `internal/site/router.go`.
+When adding a page:
+
+1. Extend `fixtures.Locale` and every `locale/*.json`.
+2. Add `*PageData` in `internal/views/models.go` — include `Shell layout.ShellProps` (and `Sidebar appsidebar.Props` for sidebar pages).
+3. Add `internal/views/<page>.templ` — compose `@layout.Shell(data.Shell) { ... }` or `@layout.SidebarShell(data.Shell, appsidebar.AppSidebar(data.Sidebar)) { ... }`.
+4. Add one `PageSpec` in `internal/site/router.go` — `Body` returns the page directly (no `Layout` field).
 
 For sidebar layout history, see git branch **`sidebar`**.

@@ -1,0 +1,31 @@
+package appsidebar
+
+import (
+	"github.com/fastygo/blank/internal/ui/components/navigation"
+	"github.com/fastygo/templ/ui"
+)
+
+// AppSidebar renders the desktop sidebar aside (title + vertical navigation).
+// Mobile navigation is served by the shell's mobile sheet — this component is
+// hidden below md by its aside class. Pass into layout.SidebarShell as the sidebar slot.
+templ AppSidebar(props Props) {
+	@ui.Box(ui.BoxProps{
+		Tag:   "aside",
+		Class: asideClass(props.Class),
+		Attrs: asideAttrs(props),
+	}) {
+		@ui.Stack(ui.StackProps{Class: "gap-2 p-4"}) {
+			@ui.Text(ui.TextProps{
+				Tag:   "p",
+				Class: "px-2 text-sm font-semibold text-foreground",
+			}, props.title())
+			@ui.Stack(ui.StackProps{Tag: "nav", Class: navClass()}) {
+				@navigation.Nav(navigation.NavProps{
+					Items:    props.Items,
+					Active:   props.Active,
+					Vertical: true,
+				})
+			}
+		}
+	}
+}

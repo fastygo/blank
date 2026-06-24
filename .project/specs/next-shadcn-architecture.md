@@ -1,21 +1,21 @@
 # Blank Next/shadcn Architecture
 
-Durable architecture spec for the Blank refactor aimed at React developers who know **Next App Router** and **shadcn/ui**. This document freezes vocabulary and responsibilities before runtime changes.
+Durable architecture spec for the Blank refactor aimed at React developers who know **Next App Router** and **shadcn/ui**. This document freezes vocabulary and responsibilities.
 
-**Status:** Block 10 complete — tooling config documented as dev/build only; refactor checklist done.  
-**Next:** Maintain explicit `PageSpec.Layout` routing; extend registry blocks as needed.
+**Status:** Page-composes-layout refactor complete — see [page-composes-layout.md](./page-composes-layout.md).
+**Previous status:** Blocks 00–11 (named-shell adapters) — superseded; snapshot at [archive/block-11-final.md](./archive/block-11-final.md).
 
 ---
 
 ## Intent
 
-Blank is a **server-rendered BFF frontend** (Go + templ + Tailwind). React developers should onboard using the same mental model as Next:
+Blank is a **server-rendered BFF frontend** (Go + templ + Tailwind). React developers should onboard using the same mental model as Next + shadcn:
 
 ```text
-route -> route layout -> page content
+route -> page (composes its own layout shell) -> content
 ```
 
-They should **not** need to read framework internals to add a page, choose a layout, or understand where chrome vs page markup lives.
+The **page template file is the single point of truth** for the layout tree. Opening `internal/views/sample_stub.templ` shows `SidebarShell + AppSidebar + content` in one place — the same cognitive experience as opening `app/dashboard/page.tsx` in a shadcn project.
 
 ---
 
@@ -23,39 +23,34 @@ They should **not** need to read framework internals to add a page, choose a lay
 
 | Term | Blank location | Role |
 |------|----------------|------|
-| **Document shell** | `internal/ui/layout.Shell` | Full HTML document: `DOCTYPE`, `html`, `head`, `body`, asset hooks, top-level chrome composition, `@ui8kit/aria` markup hooks. Analogous to root `app/layout.tsx` document frame only — not route-group choice. |
-| **Route shell / route layout** | `views.AppShell`, `views.MarketingShell`, `views.DocsShell` | Temporary runtime adapters that wrap `{children}` page body. Analogous to `app/(app)/layout.tsx`, `(marketing)/layout.tsx`, `(docs)/layout.tsx`; later blocks move reusable UI mass into `internal/ui/*`. |
-| **Page** | `internal/views/*.templ` (e.g. `HomePage`, `SamplePage`) | Route content only. Receives resolved props/strings. No fixture loading inside `.templ`. No header/footer/sidebar chrome. Analogous to `page.tsx`. |
-| **Chrome** | `internal/ui/layout/*`, `internal/ui/components/*` | App-owned shell/frame UI: document shell, header, footer, nav, mobile sheet hosts, theme/language controls. `internal/ui/layout` stays in the app. |
-| **Registry artifact** | `internal/ui/{components,blocks,widgets,variants,utils}` | Copy-pasteable or reusable UI mass accumulated in the app registry before extraction. This is the shadcn-like layer. |
-| **Layout organism** | Usually `internal/ui/blocks/*` or `internal/ui/widgets/*` | Reusable composed UI such as sidebar app shell, dashboard shell, docs toc shell. It may compose `templ/ui`, `templ/components`, app components, and widgets. |
-| **Block / showcase** | `internal/ui/blocks/*`, `@Templ/examples/ui/blocks/*` | Copy-paste wireframe scaffolds (shadcn Blocks). **Not** the runtime router itself. Runtime routes may choose adapters that render these artifacts. |
+| **Document shell** | `internal/ui/layout/shell.templ` → `layout.Shell` | Full HTML document: `DOCTYPE`, `html`, `head`, `body`, asset hooks, header, footer, mobile sheet, `@ui8kit/aria` markup hooks. The topnav variant. |
+| **Sidebar shell** | `internal/ui/layout/sidebar_shell.templ` → `layout.SidebarShell` | `Shell` plus a desktop aside slot beside the main column. Analogous to shadcn `SidebarProvider + SidebarInset`. |
+| **Local aside** | `internal/ui/components/appsidebar/` → `appsidebar.AppSidebar` | Project-owned aside content (title + vertical nav). Analogous to shadcn `components/app-sidebar.tsx`. Copy-paste-friendly. |
+| **Page** | `internal/views/*.templ` (e.g. `HomePage`, `SamplePage`) | **Composes** its own layout shell at the top of the templ + content body. Receives resolved props/strings. No fixture loading inside `.templ`. Analogous to `page.tsx`. |
+| **Page data** | `internal/views/models.go` (e.g. `HomePageData`, `SamplePageData`) | View-model with `Shell layout.ShellProps` (and `Sidebar appsidebar.Props` if relevant) plus content fields. |
+| **Registry artifact** | `internal/ui/{components,blocks,widgets,variants,utils}` | Copy-pasteable or reusable UI mass accumulated in the app registry before extraction. |
+| **Block** | `internal/ui/blocks/<domain>/*` | **Full scaffolds** — complete sections or pre-built dashboards with default copy. **Not** empty adapter wrappers. |
 
-### Two “layout” layers (common confusion)
+### Two confusing terms (resolved)
 
-| Layer | Name in docs | File today | Next analogy |
-|-------|--------------|------------|--------------|
-| 1 | Document shell | `internal/ui/layout/shell.templ` → `layout.Shell` | Root document + providers frame |
-| 2 | Route shell adapter | `internal/views/layout.templ` → `views.AppShell`, `views.SidebarAppShell`, … | Route group adapter |
-
-**Rule:** When onboarding says “layout”, specify **document shell** vs **route shell**.
+Earlier iterations had a **route shell** layer (`views.AppShell`, `views.SidebarAppShell`, …) as runtime adapters. That layer is **removed** — pages compose their shell directly. There is now one "shell" concept: the named document shells in `internal/ui/layout/`.
 
 ---
 
 ## Next / shadcn mapping
 
-| Next App Router | shadcn | Blank (target) |
-|-----------------|--------|----------------|
+| Next App Router | shadcn | Blank |
+|-----------------|--------|-------|
 | `next.config.ts` / `vite.config.ts` | — | [`fastygo.config.mjs`](../../fastygo.config.mjs) — **tooling only** |
-| Root document | — | `internal/ui/layout.Shell` |
-| `app/(app)/layout.tsx` | `SidebarProvider` + inset | `views.AppShell` |
-| `app/(marketing)/layout.tsx` | minimal header | `views.MarketingShell` |
-| `app/(docs)/layout.tsx` | toc + content | `views.DocsShell` |
-| `app/**/page.tsx` | block content | `internal/views/<page>.templ` |
+| Root `app/layout.tsx` document frame | — | `internal/ui/layout/shell.templ` (Shell) |
+| `SidebarProvider + SidebarInset` | shadcn sidebar primitives | `internal/ui/layout/sidebar_shell.templ` (SidebarShell) |
+| `components/app-sidebar.tsx` | local aside content | `internal/ui/components/appsidebar/` |
+| `app/(app)/layout.tsx`, `(marketing)/layout.tsx`, `(docs)/layout.tsx` | route group adapters | **inline** in `internal/views/<page>.templ` — page chooses which `@layout.*` to compose |
+| `app/**/page.tsx` | block content | `internal/views/<page>.templ` (composes shell + content) |
 | `components/ui/*` | primitives | `github.com/fastygo/templ/ui` + `templ/components` |
 | App components | local UI | `internal/ui/components/*` |
-| shadcn blocks | copy-paste | `internal/ui/blocks/*` + Templ examples |
-| Route table | file-based routes | `internal/site/router.go` |
+| shadcn blocks (full scaffolds) | copy-paste | `internal/ui/blocks/*` (full scaffolds only) |
+| Route table | file-based routes | `internal/site/router.go` (`PageSpec`) |
 | `middleware.ts` | — | `internal/serverapp/app.go` (locales, security) |
 | `messages/*.json` | — | `internal/fixtures/locale/*.json` |
 
@@ -70,95 +65,89 @@ flowchart LR
   end
 
   subgraph site [internal/site]
-    RF["router.go"]
+    RF["router.go (PageSpec)"]
     LD["layout_data.go"]
   end
 
   subgraph views [internal/views]
-    RS["AppShell / MarketingShell / DocsShell"]
-    PG["SamplePage"]
+    PG["SamplePage(SamplePageData)"]
   end
 
-  subgraph chrome [internal/ui]
-    DS["layout.Shell"]
-    LP["registry artifacts"]
+  subgraph ui [internal/ui]
+    SS["layout.SidebarShell"]
+    AS["appsidebar.AppSidebar"]
   end
 
   R --> RF
   RF --> LD
-  RF --> RS
-  RS --> DS
-  DS --> LP
-  RS --> PG
+  LD --> PG
+  RF --> PG
+  PG --> SS
+  PG --> AS
+  SS --> render["web.Render (single call)"]
 ```
 
-**Onboarding rule:** React devs touch **`internal/views/*.templ`** and **`fixtures/locale/*.json`** daily; **`internal/site/`** stays thin runtime routing; reusable UI mass lives in **`internal/ui/*`**.
+**Onboarding rule:** React devs touch **`internal/views/*.templ`** and **`internal/fixtures/locale/*.json`** daily; **`internal/site/`** stays thin runtime routing; named shells and components live in **`internal/ui/*`**.
 
 ---
 
-## Registry boundary (frozen)
+## Registry boundary
 
 Three concepts must stay separate:
 
 | Concept | Location | shadcn analogy |
 |---------|----------|----------------|
-| **Runtime wiring** | `internal/site/router.go` | Route table — chooses layout adapter + page |
-| **Route shell adapter** | `views.AppShell`, `MarketingShell`, `DocsShell` | Next route-group `layout.tsx` wrapper |
-| **Registry artifact** | `internal/ui/{components,blocks,widgets,…}` | Copy-paste blocks/components you accumulate |
+| **Runtime wiring** | `internal/site/router.go` (`PageSpec`) | Route table — Title, Body, Nav (no Layout field) |
+| **Page composition** | `internal/views/<page>.templ` | `page.tsx` — composes shell + content |
+| **Registry artifact** | `internal/ui/{layout,components,blocks,widgets,…}` | Named shells, local components, full scaffolds, behavior widgets |
 
 ```mermaid
 flowchart LR
-  routeSpec["internal/site/router.go PageSpec"] --> routeAdapter["views.AppShell adapter"]
-  routeAdapter --> uiArtifact["internal/ui/blocks/domain/organism"]
-  routeAdapter --> docShell["internal/ui/layout.Shell"]
-  pageBody["internal/views/Page"] --> routeAdapter
+  routeSpec["site/router.go PageSpec"] --> pageBody["views/Page composes shell"]
+  pageBody --> shell["ui/layout/Shell or SidebarShell"]
+  pageBody --> aside["ui/components/appsidebar/AppSidebar"]
 ```
 
-**Rule:** Do not put reusable layout organisms in `internal/site/` or grow `views/layout.templ` into a layout engine. Routes **select** artifacts; artifacts **compose** markup.
+**Rule:** Do not put reusable layout organisms in `internal/site/`, do not reintroduce empty `views/*Shell` adapter functions, do not create empty `blocks/*` wrappers around `layout.Shell`.
 
-### Where layout organisms live
+### Where named shells live
 
-Use **`internal/ui/blocks/<domain>/<organism>`** for props-only, copy-pasteable layout scaffolds (future `github.com/fastygo/blocks` candidates):
+`internal/ui/layout/` hosts the **named document shells** composed by pages directly:
+
+| Shell | Composition | Used by |
+|-------|-------------|---------|
+| `layout.Shell` | topnav: `html + head + body + Header + main{children} + Footer` | `views.HomePage` |
+| `layout.SidebarShell` | `Shell` + `flex row (aside slot + main{children})` | `views.SamplePage` |
+
+Add new shells in `layout/` only when a route needs **structurally different document chrome**. Geometry variants that fork from `SidebarShell` (alternate grids, dual aside) belong as **full scaffolds** in `blocks/<domain>/<organism>/`, not as empty adapter wrappers.
+
+### Where full scaffolds live
+
+`internal/ui/blocks/<domain>/<organism>/` for **complete artifacts** with in-package default data — shadcn-style copy-paste blocks (full hero, dashboard, docs toc):
 
 | Domain folder | Example organism | Use |
 |---------------|------------------|-----|
-| `blocks/dashboard/` | `app_shell`, `sidebar_app` | App/dashboard shell wireframes |
+| `blocks/dashboard/` | (currently empty — stub) | Future dashboard scaffolds |
 | `blocks/docs/` | `toc_shell` | Docs toc + content column |
 | `blocks/marketing/` | `topnav_shell`, `landing_shell` | Public/landing layouts |
 
-**Do not** create `internal/ui/blocks/layout/` — it collides with permanent app chrome in `internal/ui/layout/`.
-
-**Do not** create `internal/ui/recipes`, `internal/ui/elements`, or `internal/ui/ui/`.
+**Do not** create `internal/ui/blocks/layout/` (collides with `internal/ui/layout/`).
+**Do not** create `internal/ui/recipes`, `internal/ui/elements`, `internal/ui/ui/`.
+**Do not** create empty `blocks/*` packages whose only job is `@layout.Shell { @body }`.
 
 ### What stays in `internal/ui/layout/` permanently
 
-App-owned **document/chrome infrastructure** only:
-
-- `Shell` — document frame, main slot, mobile sheet host
-- Header, nav, footer — top-level chrome
+- `Shell`, `SidebarShell`, and any future named document shells
+- Header, footer, navigation host markup
 - Props/helpers shared by all routes
-
-Sidebar geometry, dashboard grids, and docs toc shells are **blocks** (or **widgets** when behavior is required), not new folders under `layout/`.
 
 ### components vs blocks vs widgets
 
 | Layer | When to use | Example |
 |-------|-------------|---------|
-| **`components/`** | Small props-only app UI | `icon/`, `toggles/`, future nav chip |
-| **`blocks/<domain>/`** | Section or layout organism; portable wireframe | `dashboard/sidebar_app` |
+| **`components/`** | Small props-only app UI; aside content for shells | `icon/`, `toggles/`, `navigation/`, `appsidebar/` |
+| **`blocks/<domain>/`** | Full scaffolds with default copy | `docs/toc_shell` (future), `marketing/landing_shell` (future) |
 | **`widgets/`** | UI + fetch/state/orchestration | Live data shell, authenticated nav |
-
-If it only renders props → **`components`** or **`blocks`**. If it **fetches** or coordinates side effects → **`widgets`**.
-
-### Route adapters vs registry
-
-| Symbol | Role today | Future |
-|--------|------------|--------|
-| `views.AppShell` | Thin adapter → `appshell.AppShell` in `blocks/dashboard/app_shell` | Same adapter; may point at `sidebar_app` later |
-| `views.MarketingShell` | Same as `AppShell` until marketing diverges | Delegates to `blocks/marketing/*` |
-| `views.DocsShell` | Placeholder | Delegates to `blocks/docs/toc_shell` |
-
-`views.*Shell` may remain as **named route adapters** even after UI mass moves to `internal/ui/*`. They should not accumulate markup — only wire resolved props into registry artifacts.
 
 ---
 
@@ -166,11 +155,13 @@ If it only renders props → **`components`** or **`blocks`**. If it **fetches**
 
 | Symbol | Status | Meaning |
 |--------|--------|---------|
-| `views.AppShell` | **Temporary adapter** | App-zone route layout adapter; maps `LayoutData` → `appshell.AppShell` (`blocks/dashboard/app_shell`). |
-| `views.MarketingShell` | **Temporary adapter** | Public/landing layout adapter. |
-| `views.DocsShell` | **Temporary adapter** | Docs layout adapter. |
-| `views.SidebarAppShell` | **Temporary adapter** | Sidebar app route layout; maps to `sidebarapp.SidebarApp`. |
-| `layout.Shell` | **Keep** | Document/chrome shell — do not rename to avoid colliding with route shells. |
+| `layout.Shell` | **Keep** | Topnav document shell composed by pages. |
+| `layout.SidebarShell` | **Keep** | Sidebar document shell composed by pages; takes `(shell ShellProps, sidebar templ.Component)`. |
+| `appsidebar.AppSidebar` | **Keep** | Local aside; populates `SidebarShell`'s sidebar slot. Forkable. |
+| `views.ShellPropsFor(d)` | **Keep** | Builds `layout.ShellProps` from `views.LayoutData`. |
+| `views.SidebarPropsFor(d, title)` | **Keep** | Builds `appsidebar.Props` from `views.LayoutData`. |
+| `views.AppShell` / `views.SidebarAppShell` / `views.MarketingShell` / `views.DocsShell` | **Removed** | Route adapters; replaced by direct shell composition in page templates. |
+| `PageSpec.Layout` | **Removed** | Layout choice lives inside the page templ, not the route spec. |
 
 ---
 
@@ -181,25 +172,25 @@ If it only renders props → **`components`** or **`blocks`**. If it **fetches**
 - HTTP route registration
 - Locale resolution per request
 - Building `views.LayoutData` from fixtures
-- Choosing route layout adapter / UI artifact + page component
-- **Must not** contain page markup
+- Forwarding to page renderer (`PageSpec.Body`)
+- **Must not** contain page markup or layout selection
 
 ### `internal/views/`
 
-- Route shells (`*Shell`)
-- Page templates (`*Page`)
-- View models (`models.go`)
+- Page templates (`*Page`) that compose their layout shell + content
+- View models (`models.go`) with `Shell layout.ShellProps` and optional `Sidebar appsidebar.Props`
+- Helpers (`layout_helpers.go`) that map `LayoutData` to shell/sidebar props
 - **Must not** load fixtures inside `.templ`
+- **Must not** define adapter functions (`*Shell`) that only forward props
 
 ### `internal/ui/*`
 
-- `layout/`: app-owned document/chrome frame — **stays in app**; not a catalog for every layout variant
-- `components/`: small props-only app UI
-- `blocks/<domain>/`: reusable section/layout organisms with default demo data — use domain folders (`dashboard/`, `docs/`, `marketing/`), not `blocks/layout/`
+- `layout/`: named document shells composed by pages (`Shell`, `SidebarShell`); stays in app
+- `components/`: small props-only app UI; includes `appsidebar/` for the sidebar slot
+- `blocks/<domain>/`: full scaffolds with default demo data — **not** empty adapter wrappers
 - `widgets/`: reusable UI with behavior/data orchestration
 - `variants/` and `utils/`: named class maps and thin helpers
 - Preserves `data-ui8kit-*` / `@ui8kit/aria` contracts where behavior is needed
-- **Not a registry:** `internal/views/` (pages + thin adapters), `internal/site/` (runtime routing)
 
 ### `internal/fixtures/`
 
@@ -209,7 +200,7 @@ If it only renders props → **`components`** or **`blocks`**. If it **fetches**
 ### `fastygo.config.mjs`
 
 - Dev/build tooling: server env, templ, CSS, JS bundles, ui8px validation
-- **Not** the route registry or primary layout switch for production routes
+- **Not** the route registry, **not** layout selection
 
 ---
 
@@ -223,117 +214,44 @@ If it only renders props → **`components`** or **`blocks`**. If it **fetches**
 
 ---
 
-## Non-goals (this refactor track)
+## Non-goals
 
 | Item | Reason |
 |------|--------|
-| `routes.yaml` + codegen | Later DX layer; Go route manifest first |
-| Custom JS for sidebar/sheet | Use `@ui8kit/aria` + templ Sheet |
-| Icon-collapse sidebar + cookie state | shadcn parity deferred; wireframe phase |
-| Full layout engine / JSON layout config | Use registry artifacts + explicit runtime route wiring |
-| Split `site` / `app` / `docs` features | Only when multiple layout groups need different nav |
-| `github.com/fastygo/blocks` / `widgets` deps | Staging stays in `internal/ui/*` |
-| Go auto-restart in dev | Document honest restart-after-Go-change workflow |
+| Reintroducing `views.*Shell` route adapters | Pages compose shells directly — that is the win. |
+| `PageSpec.Layout` field | Was a misleading declarative perk — the layout was not visible from the page. |
+| Empty `blocks/*` adapter wrappers | Indirection without scaffold content; absorbed into `layout/`. |
+| `routes.yaml` + codegen | Later DX layer; Go route manifest first. |
+| Custom JS for sidebar/sheet | Use `@ui8kit/aria` + templ Sheet. |
+| Icon-collapse sidebar + cookie state | shadcn parity deferred; wireframe phase. |
+| Full layout engine / JSON layout config | Pages compose shells explicitly. |
+| Split `site` / `app` / `docs` features | Only when multiple layout groups need different nav. |
+| `github.com/fastygo/blocks` / `widgets` deps | Staging stays in `internal/ui/*`. |
+| Go auto-restart in dev | Document honest restart-after-Go-change workflow. |
 
 ---
 
 ## Sidebar direction (summary)
 
-Sidebars are **registry artifacts / organisms**, not separate repos or branches:
+Sidebars are **named shells + local components**, not separate repos or branches:
 
-- **Desktop:** static `aside` in layout grid
-- **Mobile:** same nav content in `MobileSheet` + `SheetTrigger`
-- **Geometry:** represented by the specific block/widget composition, not a global runtime engine
-- **Three wireframe images** are **showcase artifacts** (`sidebars_full`, `sidebars_main`, `sidebars_header`), not core runtime names
-
-Reference implementations: `@Templ/examples/ui/blocks/home/page.templ`, `dashboard/page.templ`.
-
----
-
-## One-line onboarding (target README phrase)
-
-> **Runtime routes live in `internal/site/router.go`. Pages live in `internal/views/*.templ`. Route layout adapters are `AppShell`, `SidebarAppShell`, `MarketingShell`, and `DocsShell`. Reusable UI artifacts live in `internal/ui/*`. Copy lives in `fixtures/locale/*.json`.**
-
-Runtime route specs live in `internal/site/router.go`; `feature.go` registers handlers from the manifest.
+- **Shell:** `layout.SidebarShell` (topnav + desktop aside slot + main column)
+- **Local aside:** `appsidebar.AppSidebar` (forkable per project)
+- **Desktop:** static `aside` rendered by `appsidebar.AppSidebar` in the shell's sidebar slot
+- **Mobile:** same nav content in `navigation.MobileSheet` + `MobileSheetTrigger` (inherited from `Shell`)
+- **Geometry variants:** represented by **forking** `SidebarShell` or `AppSidebar`, not by a global runtime engine
 
 ---
 
-## Refactor sequence (progress driver)
+## One-line onboarding
 
-See [next-shadcn-refactor-progress.md](../next-shadcn-refactor-progress.md) for copy-paste blocks.
-
-| Block | Deliverable |
-|-------|-------------|
-| 00 | This spec |
-| 01 | Named route shells (`AppShell`, `MarketingShell`, `DocsShell`; `SiteShell` alias removed in Block 11) |
-| 02 | `router.go` + render helper |
-| 03 | React onboarding docs |
-| 04–09 | Registry boundary, UI artifacts, sidebar organism, runtime wiring |
-| 10–11 | Tooling honesty + final verification |
+> **Routes live in `internal/site/router.go`. Pages live in `internal/views/<page>.templ` and compose their own layout shell — `@layout.Shell { ... }` or `@layout.SidebarShell(shell, appsidebar.AppSidebar(s)) { ... }`. Named shells live in `internal/ui/layout/`. Aside content lives in `internal/ui/components/appsidebar/`. Copy lives in `internal/fixtures/locale/*.json`.**
 
 ---
 
-## Block 00 completion notes
+## Refactor history
 
-- **Completed:** Architecture glossary, naming, non-goals, and request-flow documented.
-- **Baseline unchanged:** No runtime code modified in Block 00.
-- **Next:** Implement Block 01 per [active.md](./active.md).
-
-## Block 02 completion notes
-
-- **Completed:** `PageSpec` route manifest in `internal/site/router.go`; `handlePage` in `render.go`; nav derived from specs in `nav.go`; layout data in `layout_data.go`; `feature.go` wiring only.
-- **Layout adapter:** Current routes visibly use `views.AppShell` in route specs.
-- **Next:** Block 03 — update React onboarding docs to reference the route manifest workflow.
-
-## Block 03 completion notes
-
-- **Completed:** [`docs/for-react-devs.md`](../../docs/for-react-devs.md) and [`README.md`](../../README.md) explain request flow, file map, add-page cookbook, registry terms, and honest dev loop.
-- **No runtime changes:** Documentation-only slice.
-- **Next:** Block 04 — freeze registry boundary for layout artifacts.
-
-## Block 04 completion notes
-
-- **Completed:** Registry boundary frozen in this spec and [`internal/ui/README.md`](../../internal/ui/README.md) subtree.
-- **Folder policy:** Layout organisms under `internal/ui/blocks/<domain>/<organism>`; no `blocks/layout/`; `internal/ui/layout/` stays document/chrome only.
-- **Adapters:** `views.*Shell` remain thin runtime adapters; reusable UI mass moves to registry in Block 05+.
-- **Next:** Block 05 — extract current topnav shell from `views` into registry artifact.
-
-## Block 05 completion notes
-
-- **Completed:** [`internal/ui/blocks/dashboard/app_shell/`](../../internal/ui/blocks/dashboard/app_shell/) — `appshell.AppShell` wraps `layout.Shell`; `views.AppShell` maps `LayoutData` → `layout.ShellProps` and delegates.
-- **No visual change:** Same topnav shell behavior; render tests pass for artifact and `views.AppShell` / `SiteShell`.
-
-## Block 06 completion notes
-
-- **Completed:** [`internal/ui/components/navigation/`](../../internal/ui/components/navigation/) — props-only `Nav`, `MobileSheet`, `MobileSheetTrigger` using `templ/components` Sheet with `Behavior: "ui8kit"`.
-- **Layout integration:** [`internal/ui/layout/shell.templ`](../../internal/ui/layout/shell.templ) and `header.templ` consume navigation components; `layout.NavItem` / `NavProps` alias navigation types for router and views compatibility.
-- **Stable IDs:** `ui8kit-mobile-sheet-panel`, `ui8kit-mobile-sheet-trigger`, `ui8kit-mobile-sheet-title` preserved with render tests.
-
-## Block 07 completion notes
-
-- **Completed:** [`internal/ui/blocks/dashboard/sidebar_app/`](../../internal/ui/blocks/dashboard/sidebar_app/) — `sidebarapp.SidebarApp` wraps `layout.Shell` with desktop aside + vertical `navigation.Nav`; mobile sheet inherited from shell.
-- **Runtime unchanged:** `views.AppShell` still delegates to `app_shell`; sidebar block is registry-only until Block 09.
-
-## Block 08 completion notes
-
-- **Completed:** [`internal/ui/blocks/dashboard/sidebar_app/README.md`](../../internal/ui/blocks/dashboard/sidebar_app/README.md) — region/scopes vocabulary and showcase mappings for `sidebars_full`, `sidebars_main`, `sidebars_header`.
-- **Docs-only:** No new renderable layout forks or router wiring; showcase IDs remain non-runtime names.
-
-## Block 09 completion notes
-
-- **Completed:** `views.SidebarAppShell` adapter wraps `sidebarapp.SidebarApp`; `shellProps()` shared with `views.AppShell`.
-- **Explicit routing:** `/` → `Layout: views.AppShell`; `/sample` → `Layout: views.SidebarAppShell` in [`router.go`](../../internal/site/router.go).
-- **No global switch:** Layout choice visible in one line per `PageSpec`.
-
-## Block 10 completion notes
-
-- **Completed:** [`fastygo.config.mjs`](../../fastygo.config.mjs) and [`scripts/load-config.d.ts`](../../scripts/load-config.d.ts) documented as tooling-only; no route/layout fields added.
-- **Docs:** [`docs/for-react-devs.md`](../../docs/for-react-devs.md) tooling vs routing table; [`README.md`](../../README.md) clarifies config boundary.
-- **Dev loop:** [`scripts/dev.mjs`](../../scripts/dev.mjs) logs that `.templ` and Go edits require manual regenerate/restart (no HMR).
-- **Refactor:** Blocks 00–10 complete per [next-shadcn-refactor-progress.md](../next-shadcn-refactor-progress.md).
-
-## Block 11 completion notes
-
-- **Completed:** Final doc alignment ([`README.md`](../../README.md), [`docs/for-react-devs.md`](../../docs/for-react-devs.md), sidebar block README); removed `views.SiteShell` alias.
-- **Maintainer checklist:** Documented in [active.md](./active.md) — fixtures → views → `PageSpec` → layout choice → `bun run verify`.
-- **Refactor complete:** Blocks 00–11; ready for normal feature work.
+| Track | Status | Reference |
+|-------|--------|-----------|
+| Blocks 00–11 (named route adapters) | Completed, **superseded** | [`archive/block-11-final.md`](./archive/block-11-final.md) |
+| Page composes layout (no adapters) | **Active** | [`page-composes-layout.md`](./page-composes-layout.md) |

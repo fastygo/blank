@@ -2,9 +2,10 @@
  * FastyGo Blank — dev/build tooling config only (Vite-like central config).
  *
  * This file does NOT define routes, page content, or route layout selection.
- * Runtime routing and layout adapters live in:
- *   - internal/site/router.go  (PageSpec.Layout, Title, Body, Nav)
- *   - internal/views/layout.templ  (AppShell, SidebarAppShell, …)
+ * Runtime routing and page composition live in:
+ *   - internal/site/router.go     (PageSpec: Title, Body, Nav — no Layout field)
+ *   - internal/views/<page>.templ (page composes @layout.Shell or @layout.SidebarShell directly)
+ *   - internal/ui/layout/         (named shells: Shell, SidebarShell)
  *
  * @type {import('./scripts/load-config.d.ts').FastyGoConfig}
  */

@@ -1,0 +1,22 @@
+package layout
+
+import (
+	templpkg "github.com/a-h/templ"
+	"github.com/fastygo/templ/ui"
+)
+
+// SidebarShell wraps the document Shell with a desktop aside slot beside the main column.
+// The sidebar slot is rendered before the main column on md+ viewports; mobile navigation
+// uses the inherited shell mobile sheet. Pass nil for sidebar to omit the aside (rare).
+templ SidebarShell(shell ShellProps, sidebar templpkg.Component) {
+	@Shell(shell) {
+		@ui.Box(ui.BoxProps{Class: "flex min-h-0 w-full flex-1 flex-col md:flex-row"}) {
+			if sidebar != nil {
+				@sidebar
+			}
+			@ui.Box(ui.BoxProps{Class: "flex min-w-0 flex-1 flex-col"}) {
+				{ children... }
+			}
+		}
+	}
+}

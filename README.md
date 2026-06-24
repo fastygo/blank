@@ -15,13 +15,13 @@ go mod download
 bun run dev
 ```
 
-Open [http://127.0.0.1:8080/](http://127.0.0.1:8080/) — hero welcome page (topnav shell). Second demo route: [http://127.0.0.1:8080/sample](http://127.0.0.1:8080/sample) uses the sidebar app route shell (`views.SidebarAppShell`).
+Open [http://127.0.0.1:8080/](http://127.0.0.1:8080/) — hero welcome page (composes `layout.Shell`). Second demo route: [http://127.0.0.1:8080/sample](http://127.0.0.1:8080/sample) composes `layout.SidebarShell` with `appsidebar.AppSidebar` directly in the page template.
 
 `bun run dev` runs [`scripts/dev.mjs`](scripts/dev.mjs): one-shot templ/CSS/JS (+ dev overlay when enabled), then the Go server. For CSS watch, use a second terminal: `bun run watch:css`. After `.templ` edits run `bun run templ`. After Go edits, restart dev (`Ctrl+C`, then `bun run dev`). **Ctrl+C** stops the server.
 
 Static assets (Tailwind CSS, theme script, `@ui8kit/aria` dialog bundle) live under [`web/static/`](web/static/).
 
-Dev tooling is configured in [`fastygo.config.mjs`](fastygo.config.mjs) — **tooling only** (server env, templ/CSS/JS build, ui8px). Routes and layout adapters live in [`internal/site/router.go`](internal/site/router.go), not in config.
+Dev tooling is configured in [`fastygo.config.mjs`](fastygo.config.mjs) — **tooling only** (server env, templ/CSS/JS build, ui8px). Routes live in [`internal/site/router.go`](internal/site/router.go); each page composes its own layout shell inside [`internal/views/<page>.templ`](internal/views/) — there are no layout adapters.
 
 ## Scripts
 
@@ -63,10 +63,10 @@ Probes: `GET /healthz` and `GET /readyz`.
 | [`internal/devoverlay/fixtures/locale/`](internal/devoverlay/fixtures/locale/) | Dev overlay copy (separate from site fixtures) |
 | [`internal/site/`](internal/site/) | Runtime route manifest (`router.go`), render helpers, feature wiring |
 | [`internal/fixtures/locale/`](internal/fixtures/locale/) | Site shell and page copy per locale |
-| [`internal/ui/`](internal/ui/) | **UI registry** — layout, components, blocks, widgets, variants, utils ([`README`](internal/ui/README.md)) |
-| [`internal/ui/layout/`](internal/ui/layout/) | Shell, header nav, footer, mobile sheet |
-| [`internal/ui/components/`](internal/ui/components/) | Icon, language switch |
-| [`internal/views/`](internal/views/) | `templ` pages and shell glue |
+| [`internal/ui/`](internal/ui/) | **UI registry** — layout shells, components, blocks, widgets, variants, utils ([`README`](internal/ui/README.md)) |
+| [`internal/ui/layout/`](internal/ui/layout/) | Named document shells (`Shell`, `SidebarShell`), header, footer, mobile sheet host |
+| [`internal/ui/components/`](internal/ui/components/) | Icon, language switch, navigation, **appsidebar** (local aside) |
+| [`internal/views/`](internal/views/) | `templ` pages — each composes its own layout shell |
 | [`web/static/`](web/static/) | `app.css`, tokens, fonts, `theme.js`, `ui8kit.js` |
 
 ## Dev overlay
@@ -94,8 +94,9 @@ Runs: `templ generate` → Tailwind build → `build:js` → `ui8px lint` → `v
 ## Adding a page
 
 1. Add copy to [`internal/fixtures/fixtures.go`](internal/fixtures/fixtures.go) and every [`internal/fixtures/locale/*.json`](internal/fixtures/locale/) file.
-2. Add `internal/views/<page>.templ` (and props in [`internal/views/models.go`](internal/views/models.go) if needed).
-3. Add one **`PageSpec`** in [`internal/site/router.go`](internal/site/router.go) — choose `Layout: views.AppShell`, `views.SidebarAppShell`, `views.MarketingShell`, or `views.DocsShell`.
-4. Run `bun run verify` before landing the change.
+2. Add `*PageData` in [`internal/views/models.go`](internal/views/models.go) — include `Shell layout.ShellProps` (and `Sidebar appsidebar.Props` for sidebar pages).
+3. Add `internal/views/<page>.templ` — compose `@layout.Shell(d.Shell) { ... }` or `@layout.SidebarShell(d.Shell, appsidebar.AppSidebar(d.Sidebar)) { ... }` directly.
+4. Add one **`PageSpec`** in [`internal/site/router.go`](internal/site/router.go) — `Body` returns the page; there is no `Layout` field.
+5. Run `bun run verify` before landing the change.
 
 See [`docs/for-react-devs.md`](docs/for-react-devs.md) for the full cookbook (Next/shadcn mental model, request flow, dev loop).

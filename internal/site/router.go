@@ -7,19 +7,20 @@ import (
 	"github.com/fastygo/blank/internal/views"
 )
 
-type LayoutRenderer func(views.LayoutData, templ.Component) templ.Component
 type TitleResolver func(fixtures.Locale) string
-type BodyRenderer func(fixtures.Locale) templ.Component
+type PageRenderer func(views.LayoutData, fixtures.Locale) templ.Component
 type NavResolver func(fixtures.Locale) (layout.NavItem, bool)
 
-// PageSpec is one runtime route: method, pattern, layout adapter, and page body.
+// PageSpec is one runtime route: method, pattern, page renderer, and optional nav entry.
+// The Body renderer returns a fully composed HTML document — the page template
+// itself chooses its layout shell (layout.Shell or layout.SidebarShell), so the
+// runtime router does not own layout selection.
 type PageSpec struct {
 	Method  string
 	Pattern string
 	Active  string
-	Layout  LayoutRenderer
 	Title   TitleResolver
-	Body    BodyRenderer
+	Body    PageRenderer
 	Nav     NavResolver
 }
 
@@ -28,10 +29,10 @@ var pages = []PageSpec{
 		Method:  "GET",
 		Pattern: "/{$}",
 		Active:  "/",
-		Layout:  views.AppShell,
 		Title:   func(f fixtures.Locale) string { return f.Home.Title },
-		Body: func(f fixtures.Locale) templ.Component {
-			return views.HomePage(views.HomeData{
+		Body: func(d views.LayoutData, f fixtures.Locale) templ.Component {
+			return views.HomePage(views.HomePageData{
+				Shell:        views.ShellPropsFor(d),
 				Welcome:      f.Home.Welcome,
 				WelcomeBrand: f.Home.WelcomeBrand,
 				Description:  f.Home.Description,
@@ -45,10 +46,11 @@ var pages = []PageSpec{
 		Method:  "GET",
 		Pattern: "/sample",
 		Active:  "/sample",
-		Layout:  views.SidebarAppShell,
 		Title:   func(f fixtures.Locale) string { return f.Sample.Title },
-		Body: func(f fixtures.Locale) templ.Component {
-			return views.SamplePage(views.SampleData{
+		Body: func(d views.LayoutData, f fixtures.Locale) templ.Component {
+			return views.SamplePage(views.SamplePageData{
+				Shell:       views.ShellPropsFor(d),
+				Sidebar:     views.SidebarPropsFor(d, f.Sample.Title),
 				Title:       f.Sample.Title,
 				Description: f.Sample.Description,
 				Body:        f.Sample.Body,

@@ -135,11 +135,7 @@ func MobileSheet(props MobileSheetProps) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = cmp.SheetOverlay(cmp.SheetOverlayProps{
-				For:      props.panelID(),
-				Behavior: "ui8kit",
-				Class:    "cursor-pointer bg-card/50",
-			}).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = ui.Box(mobileSheetOverlayBox(props.panelID())).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -241,7 +237,7 @@ func MobileSheet(props MobileSheetProps) templ.Component {
 				}
 				return nil
 			})
-			templ_7745c5c3_Err = cmp.SheetContent(cmp.SheetContentProps{Class: "p-4"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = cmp.SheetContent(cmp.SheetContentProps{Class: mobileSheetContentClass()}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -250,7 +246,7 @@ func MobileSheet(props MobileSheetProps) templ.Component {
 		templ_7745c5c3_Err = cmp.Sheet(cmp.SheetProps{
 			ID:             props.panelID(),
 			Side:           "left",
-			Size:           "default",
+			Size:           "full",
 			Variant:        "card",
 			Behavior:       "ui8kit",
 			AriaLabel:      props.AriaLabel,

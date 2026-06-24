@@ -1,5 +1,8 @@
 # Blank для React-разработчика: рефакторинг роутов и layout
 
+> **Статус:** исторический брейншторм (Phase-планирование Block 01–05).
+> Действующая модель — **page composes layout**: см. [`specs/page-composes-layout.md`](specs/page-composes-layout.md). Маршрут больше не выбирает layout-адаптер; страница сама композирует `@layout.Shell` или `@layout.SidebarShell`.
+
 Ниже — как **перестроить Blank**, чтобы человек из **Next App Router + shadcn/ui** за один день понял «где что лежит» и мог добавлять страницы без чтения всего Go-стека.
 
 ---
