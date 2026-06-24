@@ -48,7 +48,7 @@ func TestPanelJSON_matchesClientShape(t *testing.T) {
 	if err := json.Unmarshal([]byte(raw), &payload); err != nil {
 		t.Fatal(err)
 	}
-	for _, key := range []string{"health", "assets", "request", "errors"} {
+	for _, key := range []string{"launcher_aria_label", "panel_aria_label", "title", "mobile_reload_hint", "mobile_reload_button", "tabs", "health", "assets", "request", "errors"} {
 		if _, ok := payload[key]; !ok {
 			t.Fatalf("expected panel json key %q", key)
 		}

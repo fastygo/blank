@@ -32,7 +32,11 @@ templ MobileSheet(props MobileSheetProps) {
 		AriaLabelledBy: props.titleID(),
 		Class:          mobileSheetPanelClass(),
 	}) {
-		@ui.Box(mobileSheetOverlayBox(props.panelID()))
+		@cmp.SheetOverlay(cmp.SheetOverlayProps{
+			For:      props.panelID(),
+			Behavior: "ui8kit",
+			Class:    mobileSheetOverlayClass(),
+		})
 		@cmp.SheetContent(cmp.SheetContentProps{Class: mobileSheetContentClass()}) {
 			@cmp.SheetHeader(cmp.SheetHeaderProps{}) {
 				@cmp.SheetTitle(cmp.SheetTitleProps{ID: props.titleID(), Class: "text-sm font-normal text-muted-foreground"}, props.Title)

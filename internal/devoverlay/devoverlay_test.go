@@ -89,20 +89,20 @@ func TestInjectMiddlewareInjectsOverlayMarkup(t *testing.T) {
 	handler.ServeHTTP(rec, req)
 
 	body := rec.Body.String()
-	if !strings.Contains(body, `id="fastygo-dev-overlay-root"`) {
-		t.Fatalf("expected overlay root, got: %s", body)
+	if strings.Contains(body, `id="fastygo-dev-overlay-root"`) || strings.Contains(body, `id="fastygo-dev-launcher"`) {
+		t.Fatalf("expected script-only overlay injection, got: %s", body)
 	}
-	if !strings.Contains(body, `pointer-events-none`) {
-		t.Fatalf("expected overlay root to ignore stray pointer hits, got: %s", body)
-	}
-	if !strings.Contains(body, `max-md:hidden`) {
-		t.Fatalf("expected dev overlay hidden on mobile viewports, got: %s", body)
+	if !strings.Contains(body, `id="fastygo-dev-overlay-loader"`) {
+		t.Fatalf("expected viewport-gated overlay loader, got: %s", body)
 	}
 	if !strings.Contains(body, `data-request-id="req-test-123"`) {
 		t.Fatalf("expected request id on script, got: %s", body)
 	}
-	if !strings.Contains(body, "/__fastygo/dev/overlay.js") {
-		t.Fatalf("expected overlay script, got: %s", body)
+	if strings.Contains(body, `src="/__fastygo/dev/overlay.js"`) {
+		t.Fatalf("expected overlay bundle to be loaded by desktop-only loader, got: %s", body)
+	}
+	if !strings.Contains(body, `matchMedia`) || !strings.Contains(body, `/__fastygo/dev/overlay.js`) {
+		t.Fatalf("expected loader to gate overlay bundle by viewport, got: %s", body)
 	}
 }
 

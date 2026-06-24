@@ -135,7 +135,11 @@ func MobileSheet(props MobileSheetProps) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = ui.Box(mobileSheetOverlayBox(props.panelID())).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = cmp.SheetOverlay(cmp.SheetOverlayProps{
+				For:      props.panelID(),
+				Behavior: "ui8kit",
+				Class:    mobileSheetOverlayClass(),
+			}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

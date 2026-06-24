@@ -6,6 +6,8 @@
   "tablist_aria_label": "Панели разработчика FastyGo",
   "hide_button_label": "Скрыть панель",
   "hide_button_aria_label": "Скрыть панель разработчика",
+  "mobile_reload_hint": "Появилась мобильная навигация. Перезагрузите страницу, чтобы выгрузить dev overlay runtime.",
+  "mobile_reload_button": "Перезагрузить",
   "loading_tab": "Загрузка %s…",
   "tabs": {
     "health": "Состояние",

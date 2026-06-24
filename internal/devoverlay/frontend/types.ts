@@ -1,6 +1,21 @@
 export type DevPanelID = "health" | "assets" | "request";
 
 export interface DevOverlayPanelI18n {
+  launcher_aria_label: string;
+  panel_aria_label: string;
+  title: string;
+  subtitle: string;
+  tablist_aria_label: string;
+  hide_button_label: string;
+  hide_button_aria_label: string;
+  mobile_reload_hint: string;
+  mobile_reload_button: string;
+  loading_tab: string;
+  tabs: {
+    health: string;
+    assets: string;
+    request: string;
+  };
   health: {
     intro: string;
     refresh_button: string;

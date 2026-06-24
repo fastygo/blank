@@ -1,6 +1,6 @@
 # Dev overlay
 
-Dev-only SSR widget for local FastyGo apps: **Health**, **Assets**, and **Request** tabs. Injected at the HTTP layer — no edits to `internal/views` or site routes.
+Dev-only overlay for local FastyGo apps: **Health**, **Assets**, and **Request** tabs. The HTTP layer injects only a viewport-gated loader script; desktop clients load an isolated Web Component with Shadow DOM, while mobile clients do not fetch the overlay bundle — no edits to `internal/views` or site routes.
 
 ## What ships in this folder
 
@@ -10,8 +10,8 @@ Dev-only SSR widget for local FastyGo apps: **Health**, **Assets**, and **Reques
 | `inject.go`, `middleware.go` | HTML inject before `</body>` |
 | `routes.go`, `assets.go` | `/__fastygo/dev/*` routes + `status.json` |
 | `fixtures/` | **Own** embedded `locale/en.json`, `locale/ru.json` |
-| `ui/` | Templ shell (`widget.templ`) via `github.com/fastygo/templ/ui` |
-| `frontend/` | TypeScript panel logic |
+| `ui/` | Templ loader script (`widget.templ`) |
+| `frontend/` | TypeScript web component, shadow styles, panel logic |
 | `static/overlay.js` | Bundled client (`go:embed`) |
 
 ## Host wiring (Blank)
@@ -35,13 +35,7 @@ go tool templ generate ./internal/devoverlay/...
 bun run build:dev-overlay
 ```
 
-Host CSS must scan overlay sources (Blank: [`web/static/css/input.css`](../../web/static/css/input.css)):
-
-```css
-@source "../../internal/devoverlay/**/*.templ";
-@source "../../internal/devoverlay/**/*.go";
-@source "../../internal/devoverlay/frontend/**/*.ts";
-```
+Overlay CSS is bundled into the web component shadow root. Host Tailwind does not scan overlay sources.
 
 ## Locale
 
@@ -49,7 +43,7 @@ Overlay strings live in **`fixtures/locale/`** — separate from app [`internal/
 
 Locale code is resolved per request in [`locale.go`](locale.go) (`?lang=`, `lang` cookie, `Accept-Language`) because `devoverlay.Wrap` sits outside app locale middleware. Rules mirror the site; JSON files do not.
 
-Client panels read SSR-serialized copy from `data-i18n` on the overlay script tag.
+Client panels read serialized copy from `data-i18n` on the loader script; the loader copies it to the desktop-only overlay bundle script.
 
 ## Config knobs
 
@@ -68,12 +62,10 @@ Use `devoverlay.Load(app.Config)` in Blank or construct `devoverlay.Config{...}`
 
 Do not rename without updating `frontend/main.ts`:
 
-- `#fastygo-dev-overlay-root`
-- `#fastygo-dev-launcher` (`aria-expanded`)
-- `#fastygo-dev-panel` (`hidden` toggled)
-- `#fastygo-dev-panel-health|assets|request` (panel mount points)
-- `[data-dev-tab]`, `[data-dev-panel]`
-- `script[src="/__fastygo/dev/overlay.js"]` with `data-request-id`, `data-i18n`
+- `#fastygo-dev-overlay-loader` with `data-request-id`, `data-i18n`
+- `/__fastygo/dev/overlay.js` is dynamically loaded only when `(max-width: 767px)` does not match
+- `<fastygo-dev-overlay>` custom element is created by `overlay.js` after the desktop gate
+- `#fastygo-dev-launcher`, `#fastygo-dev-panel`, `[data-dev-tab]`, and panel mount nodes live inside the custom element shadow root
 
 ## Portability checklist
 
@@ -83,18 +75,17 @@ Copy to another FastyGo app:
 2. Copy `scripts/dev-overlay-entry.ts`, `scripts/build-dev-overlay.mjs`; add `devOverlay` to `fastygo.config.mjs`.
 3. Add `"build:dev-overlay"` to `package.json`; run from `dev.mjs` when `APP_DEV_OVERLAY=1`.
 4. Wire `devoverlay.Wrap(handler, devoverlay.Load(appConfig))` in the composition root.
-5. Add `@source` lines for `internal/devoverlay/**` in host CSS input.
-6. Set loopback bind + `APP_DEV_OVERLAY=1`.
-7. Align `DefaultLocale`, `AvailableLocales`, `LangCookieName` with site locale config.
-8. Customize `Config.Assets`, `HealthPaths`, `StaleCSSSeconds` for the target project.
-9. Run `go tool templ generate ./internal/devoverlay/...` and `bun run build:dev-overlay`; commit `static/overlay.js`.
+5. Set loopback bind + `APP_DEV_OVERLAY=1`.
+6. Align `DefaultLocale`, `AvailableLocales`, `LangCookieName` with site locale config.
+7. Customize `Config.Assets`, `HealthPaths`, `StaleCSSSeconds` for the target project.
+8. Run `go tool templ generate ./internal/devoverlay/...` and `bun run build:dev-overlay`; commit `static/overlay.js`.
 
 **Do not copy** app `internal/fixtures/locale/*` for overlay strings — this package brings its own JSON.
 
 ## Dependencies
 
-- `github.com/fastygo/templ` + `templ/ui` — SSR markup
-- Host Tailwind build with semantic tokens (`bg-card`, `border-border`, …)
+- `github.com/fastygo/templ` — loader script markup
+- Shadow DOM CSS bundled in `overlay.js`; no host Tailwind dependency
 - `github.com/fastygo/framework` — locale negotiation in `locale.go` (optional to replace)
 
 ## Opt out

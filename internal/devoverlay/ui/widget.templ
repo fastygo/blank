@@ -1,158 +1,29 @@
 package ui
 
-import "github.com/fastygo/templ/ui"
-
 templ Host(props HostProps) {
-	<div id="fastygo-dev-overlay-root" class="fixed bottom-4 right-4 z-30 pointer-events-none max-md:hidden">
-		@ui.Button(ui.ButtonProps{
-			ID:        "fastygo-dev-launcher",
-			Type:      "button",
-			Variant:   "ghost",
-			Size:      "icon",
-			AriaLabel: props.Copy.LauncherAriaLabel,
-			Class:     "pointer-events-auto rounded-full",
-			Attrs: templ.Attributes{
-				"aria-controls": "fastygo-dev-panel",
-				"aria-expanded": "false",
-			},
-		}) {
-			@cogIcon()
-		}
-		@ui.Box(ui.BoxProps{
-			Tag: "section",
-			Class: "pointer-events-auto absolute bottom-full right-0 mb-2 hidden max-h-[min(80vh,640px)] w-[min(92vw,420px)] overflow-auto rounded-lg border border-border bg-card p-4 text-card-foreground shadow-lg",
-			Attrs: templ.Attributes{
-				"id":         "fastygo-dev-panel",
-				"role":       "region",
-				"aria-label": props.Copy.PanelAriaLabel,
-			},
-		}) {
-			@ui.Stack(ui.StackProps{Class: "gap-4 w-full"}) {
-				@ui.Title(ui.TitleProps{Order: 2}, props.Copy.Title)
-				@ui.Text(ui.TextProps{Tag: "small", Class: "text-muted-foreground"}, props.Copy.Subtitle)
-				@ui.Box(ui.BoxProps{
-					Tag:   "div",
-					Class: "flex flex-wrap gap-2",
-					Attrs: templ.Attributes{
-						"role":       "tablist",
-						"aria-label": props.Copy.TablistAriaLabel,
-					},
-				}) {
-					@tabButton("health", props.Copy.Tabs.Health, true)
-					@tabButton("assets", props.Copy.Tabs.Assets, false)
-					@tabButton("request", props.Copy.Tabs.Request, false)
-				}
-				@tabPanel("health", props.Copy.Tabs.Health, props.Copy.LoadingTab, true)
-				@tabPanel("assets", props.Copy.Tabs.Assets, props.Copy.LoadingTab, false)
-				@tabPanel("request", props.Copy.Tabs.Request, props.Copy.LoadingTab, false)
-				@ui.Separator(ui.SeparatorProps{Decorative: true})
-				@ui.Button(ui.ButtonProps{
-					ID:        "fastygo-dev-hide",
-					Type:      "button",
-					Variant:   "outline",
-					Size:      "sm",
-					AriaLabel: props.Copy.HideButtonAriaLabel,
-				}) {
-					{ props.Copy.HideButtonLabel }
-				}
+	<script id="fastygo-dev-overlay-loader" data-request-id={ props.RequestID } data-i18n={ props.PanelJSON }>
+		(() => {
+			const currentScript = document.currentScript;
+			if (!currentScript) return;
+			window.__FASTYGO_DEV_OVERLAY__ = {
+				requestId: currentScript.dataset.requestId || "",
+				i18n: currentScript.dataset.i18n || "",
+			};
+			if (window.matchMedia?.("(max-width: 767px)").matches) return;
+			if (window.__FASTYGO_DEV_OVERLAY_MOUNT__) {
+				window.__FASTYGO_DEV_OVERLAY_MOUNT__();
+				return;
 			}
-		}
-	</div>
-	<script defer src="/__fastygo/dev/overlay.js" data-request-id={ props.RequestID } data-i18n={ props.PanelJSON }></script>
-}
+			if (document.querySelector("script[data-fastygo-dev-overlay-bundle]")) return;
 
-templ cogIcon() {
-	@ui.Icon(ui.IconProps{
-		Type:       "svg",
-		Size:       "sm",
-		Class:      "h-5 w-5",
-		Decorative: true,
-		Attrs: templ.Attributes{
-			"xmlns":           "http://www.w3.org/2000/svg",
-			"viewBox":         "0 0 24 24",
-			"fill":            "none",
-			"stroke":          "currentColor",
-			"stroke-width":    "2",
-			"stroke-linecap":  "round",
-			"stroke-linejoin": "round",
-		},
-	}) {
-		<path d="M11 10.27 7 3.34"></path>
-		<path d="m11 13.73-4 6.93"></path>
-		<path d="M12 22v-2"></path>
-		<path d="M12 2v2"></path>
-		<path d="M14 12h8"></path>
-		<path d="m17 20.66-1-1.73"></path>
-		<path d="m17 3.34-1 1.73"></path>
-		<path d="M2 12h2"></path>
-		<path d="m20.66 17-1.73-1"></path>
-		<path d="m20.66 7-1.73 1"></path>
-		<path d="m3.34 17 1.73-1"></path>
-		<path d="m3.34 7 1.73 1"></path>
-		<circle cx="12" cy="12" r="2"></circle>
-		<circle cx="12" cy="12" r="8"></circle>
-	}
-}
-
-templ tabButton(id string, label string, selected bool) {
-	@ui.Button(ui.ButtonProps{
-		ID:      "fastygo-dev-tab-" + id,
-		Type:    "button",
-		Variant: tabVariant(selected),
-		Size:    "sm",
-		Attrs: tabButtonAttrs(id, label, selected),
-	}) {
-		{ label }
-	}
-}
-
-templ tabPanel(id string, label string, loadingTemplate string, selected bool) {
-	@ui.Box(ui.BoxProps{
-		Tag:   "section",
-		Class: "gap-3",
-		Attrs: tabPanelAttrs(id, label, selected),
-	}) {
-		@ui.Text(ui.TextProps{Tag: "small", Class: "text-muted-foreground"}, loadingTabText(loadingTemplate, label))
-		<div id={ "fastygo-dev-panel-" + id } class="flex flex-col gap-2"></div>
-	}
-}
-
-func tabVariant(selected bool) string {
-	if selected {
-		return "default"
-	}
-	return "ghost"
-}
-
-func tabButtonAttrs(id, label string, selected bool) templ.Attributes {
-	attrs := templ.Attributes{
-		"role":               "tab",
-		"type":               "button",
-		"aria-controls":      "fastygo-dev-panel-" + id,
-		"data-dev-tab":       id,
-		"data-dev-tab-label": label,
-	}
-	if selected {
-		attrs["aria-selected"] = "true"
-	} else {
-		attrs["aria-selected"] = "false"
-	}
-	return attrs
-}
-
-func tabPanelAttrs(id, label string, selected bool) templ.Attributes {
-	attrs := templ.Attributes{
-		"role":                 "tabpanel",
-		"id":                   "fastygo-dev-panel-wrap-" + id,
-		"aria-labelledby":      "fastygo-dev-tab-" + id,
-		"data-dev-panel":       id,
-		"data-dev-panel-label": label,
-	}
-	if selected {
-		attrs["data-dev-panel-active"] = "true"
-	} else {
-		attrs["hidden"] = true
-		attrs["data-dev-panel-active"] = "false"
-	}
-	return attrs
+			const script = document.createElement("script");
+			script.async = false;
+			script.src = "/__fastygo/dev/overlay.js";
+			script.dataset.fastygoDevOverlayBundle = "";
+			script.dataset.requestId = currentScript.dataset.requestId || "";
+			script.dataset.i18n = currentScript.dataset.i18n || "";
+			script.onload = () => window.__FASTYGO_DEV_OVERLAY_MOUNT__?.();
+			currentScript.after(script);
+		})();
+	</script>
 }

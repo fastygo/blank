@@ -6,6 +6,8 @@
   "tablist_aria_label": "FastyGo dev panels",
   "hide_button_label": "Hide overlay",
   "hide_button_aria_label": "Hide dev overlay",
+  "mobile_reload_hint": "Mobile navigation is now visible. Reload to unload the dev overlay runtime.",
+  "mobile_reload_button": "Reload",
   "loading_tab": "Loading %s…",
   "tabs": {
     "health": "Health",

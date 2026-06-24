@@ -19,7 +19,7 @@ Open [http://127.0.0.1:8080/](http://127.0.0.1:8080/) — hero welcome page (com
 
 `bun run dev` runs [`scripts/dev.mjs`](scripts/dev.mjs): one-shot templ/CSS/JS (+ dev overlay when enabled), then the Go server. For CSS watch, use a second terminal: `bun run watch:css`. After `.templ` edits run `bun run templ`. After Go edits, restart dev (`Ctrl+C`, then `bun run dev`). **Ctrl+C** stops the server.
 
-Static assets (Tailwind CSS, theme script, `@ui8kit/aria` dialog bundle) live under [`web/static/`](web/static/).
+Static assets (Tailwind CSS, theme script, `@ui8kit/aria` dialog bundle, and the dev overlay bundle) live under [`web/static/`](web/static/) and [`internal/devoverlay/static/`](internal/devoverlay/static/).
 
 Dev tooling is configured in [`fastygo.config.mjs`](fastygo.config.mjs) — **tooling only** (server env, templ/CSS/JS build, ui8px). Routes live in [`internal/site/router.go`](internal/site/router.go); each page composes its own layout shell inside [`internal/views/<page>.templ`](internal/views/) — there are no layout adapters.
 
@@ -43,7 +43,7 @@ See [`docs/for-react-devs.md`](docs/for-react-devs.md) for a Vite-to-Blank menta
 | Variable | Default | Purpose |
 |----------|---------|---------|
 | `APP_BIND` | `127.0.0.1:8080` | HTTP listen address |
-| `APP_DEV_OVERLAY` | `1` in local dev via `fastygo.config.mjs` | SSR dev status widget (loopback only) |
+| `APP_DEV_OVERLAY` | `1` in local dev via `fastygo.config.mjs` | Dev status overlay loader (loopback only) |
 | `APP_STATIC_DIR` | `web/static` when env omitted | Static files under `/static/` |
 | `APP_DEFAULT_LOCALE` | `en` | Default locale |
 | `APP_AVAILABLE_LOCALES` | `en,ru` | Locales for the header switcher (query + cookie) |
@@ -57,7 +57,7 @@ Probes: `GET /healthz` and `GET /readyz`.
 | [`fastygo.config.mjs`](fastygo.config.mjs) | Dev/build tooling only (server, templ, css, js, ui8px) — not routes or layouts |
 | [`cmd/server/main.go`](cmd/server/main.go) | Composition root entry |
 | [`internal/serverapp/`](internal/serverapp/) | Framework wiring (locales, security, site feature, dev overlay) |
-| [`internal/devoverlay/`](internal/devoverlay/) | Dev-only SSR overlay ([`README`](internal/devoverlay/README.md)) |
+| [`internal/devoverlay/`](internal/devoverlay/) | Dev-only overlay loader, routes, embedded Shadow DOM web component ([`README`](internal/devoverlay/README.md)) |
 | [`internal/devoverlay/fixtures/locale/`](internal/devoverlay/fixtures/locale/) | Dev overlay copy (separate from site fixtures) |
 | [`internal/site/`](internal/site/) | Runtime route manifest (`router.go`), render helpers, feature wiring |
 | [`internal/fixtures/locale/`](internal/fixtures/locale/) | Site shell and page copy per locale |
@@ -69,15 +69,17 @@ Probes: `GET /healthz` and `GET /readyz`.
 
 ## Dev overlay
 
-When `APP_DEV_OVERLAY=1` on loopback, Blank injects a small dev widget with three tabs:
+When `APP_DEV_OVERLAY=1` on loopback, Blank injects a viewport-gated loader script. On desktop it loads an isolated `<fastygo-dev-overlay>` web component with Shadow DOM and three tabs:
 
 - **Health** — `/healthz` and `/readyz` probe status and latency
 - **Assets** — `app.css`, `ui8kit.js`, `theme.js` freshness
 - **Request** — page `X-Request-ID`, path, and `<html lang>`
 
-Use **Hide overlay** to set an opt-out cookie and reload. The next SSR response contains no overlay markup or script tags.
+On mobile viewport the overlay bundle is not loaded, so it cannot interfere with the mobile navigation sheet. If you resize from desktop to mobile after the overlay has already loaded, the widget shows a small reload hint above the launcher.
 
-Build the overlay bundle with `bun run build:dev-overlay` (also runs during `bun run dev` when overlay is enabled).
+Use **Hide overlay** to set an opt-out cookie and reload. The next SSR response contains no overlay loader or bundle script.
+
+Build the overlay bundle with `bun run build:dev-overlay` (also runs during `bun run dev` when overlay is enabled). The bundle is built as an IIFE and embedded from [`internal/devoverlay/static/overlay.js`](internal/devoverlay/static/overlay.js).
 
 Overlay strings live in [`internal/devoverlay/fixtures/locale/`](internal/devoverlay/fixtures/locale/). Portability notes: [`internal/devoverlay/README.md`](internal/devoverlay/README.md).
 

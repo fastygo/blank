@@ -43,7 +43,7 @@ func TestMobileSheet_rendersUi8kitContract(t *testing.T) {
 	if idx < 0 {
 		t.Fatal("expected overlay marker")
 	}
-	snippet := html[idx:min(len(html), idx+120)]
+	snippet := html[max(0, idx-160):min(len(html), idx+160)]
 	if !strings.Contains(snippet, "hidden") {
 		t.Fatal("expected overlay hidden in closed SSR state")
 	}

@@ -28,8 +28,15 @@ export async function disableOverlay(i18n: DevOverlayPanelI18n): Promise<void> {
 }
 
 export function readRequestId(): string {
+  const globalPayload = (
+    globalThis as {
+      __FASTYGO_DEV_OVERLAY__?: { requestId?: string };
+    }
+  ).__FASTYGO_DEV_OVERLAY__;
+  if (globalPayload?.requestId) return globalPayload.requestId.trim();
+
   const script = document.querySelector<HTMLScriptElement>(
-    'script[src="/__fastygo/dev/overlay.js"]',
+    'script[data-fastygo-dev-overlay-bundle]',
   );
   return script?.dataset.requestId?.trim() ?? "";
 }

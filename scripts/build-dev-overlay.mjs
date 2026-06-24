@@ -15,6 +15,8 @@ await runCmd(
     resolveFromRoot(devOverlay.entry),
     "--outfile",
     resolveFromRoot(devOverlay.output),
+    "--format",
+    "iife",
     "--minify",
   ],
   { label: "build:dev-overlay" },

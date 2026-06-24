@@ -19,6 +19,8 @@ type Locale struct {
 	TablistAriaLabel    string `json:"tablist_aria_label"`
 	HideButtonLabel     string `json:"hide_button_label"`
 	HideButtonAriaLabel string `json:"hide_button_aria_label"`
+	MobileReloadHint    string `json:"mobile_reload_hint"`
+	MobileReloadButton  string `json:"mobile_reload_button"`
 	LoadingTab          string `json:"loading_tab"`
 	Tabs                Tabs   `json:"tabs"`
 	Health              Health `json:"health"`
@@ -78,23 +80,9 @@ type Errors struct {
 	DisableFailed    string `json:"disable_failed"`
 }
 
-// ClientPanels is serialized into the overlay script tag for client panels.
-type ClientPanels struct {
-	Health  Health  `json:"health"`
-	Assets  Assets  `json:"assets"`
-	Request Request `json:"request"`
-	Errors  Errors  `json:"errors"`
-}
-
-// PanelJSON returns escaped-ready JSON for overlay client panels.
+// PanelJSON returns escaped-ready JSON for the overlay web component.
 func (l Locale) PanelJSON() (string, error) {
-	payload := ClientPanels{
-		Health:  l.Health,
-		Assets:  l.Assets,
-		Request: l.Request,
-		Errors:  l.Errors,
-	}
-	raw, err := json.Marshal(payload)
+	raw, err := json.Marshal(l)
 	if err != nil {
 		return "", err
 	}
