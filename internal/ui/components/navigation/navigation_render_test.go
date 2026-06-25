@@ -36,12 +36,15 @@ func TestMobileSheet_rendersUi8kitContract(t *testing.T) {
 	if !strings.Contains(html, `data-ui8kit="sheet"`) {
 		t.Fatal("expected sheet ui8kit hook")
 	}
-	if !strings.Contains(html, `data-ui8kit-dialog-overlay`) {
-		t.Fatal("expected ui8kit dialog overlay hook")
+	if !strings.Contains(html, `data-ui8kit-dialog-close`) {
+		t.Fatal("expected ui8kit dialog close hook on overlay")
 	}
-	idx := strings.Index(html, `data-ui8kit-dialog-overlay`)
+	if !strings.Contains(html, `data-ui8kit-dialog-target="`+MobileSheetPanelID+`"`) {
+		t.Fatal("expected ui8kit dialog target on overlay")
+	}
+	idx := strings.Index(html, `data-ui8kit-dialog-close`)
 	if idx < 0 {
-		t.Fatal("expected overlay marker")
+		t.Fatal("expected overlay close marker")
 	}
 	snippet := html[max(0, idx-160):min(len(html), idx+160)]
 	if !strings.Contains(snippet, "hidden") {

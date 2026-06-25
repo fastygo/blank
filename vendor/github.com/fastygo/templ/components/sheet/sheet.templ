@@ -195,14 +195,6 @@ func sheetCloseAttrs(forID, behavior string, attrs templ.Attributes) templ.Attri
 	return out
 }
 
-func sheetOverlayAttrs(forID, behavior string, attrs templ.Attributes) templ.Attributes {
-	out := sheetCloseAttrs(forID, behavior, attrs)
-	if sheetBehavior(behavior) == "ui8kit" {
-		out["data-ui8kit-dialog-overlay"] = true
-	}
-	return out
-}
-
 // Sheet renders the panel root.
 templ Sheet(p SheetProps) {
 	<div class={ SheetClasses(p) } hidden?={ !p.Open } { sheetRootAttrs(p)... }>
@@ -229,7 +221,7 @@ templ SheetOverlay(p SheetOverlayProps) {
 	<div
 		class={ uiutils.Cn("fixed inset-0 z-40 bg-background/80", p.Class) }
 		hidden?={ !p.Open }
-		{ sheetOverlayAttrs(p.For, p.Behavior, p.Attrs)... }
+		{ sheetCloseAttrs(p.For, p.Behavior, p.Attrs)... }
 	></div>
 }
 

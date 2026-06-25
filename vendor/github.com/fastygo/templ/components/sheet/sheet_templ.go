@@ -209,14 +209,6 @@ func sheetCloseAttrs(forID, behavior string, attrs templ.Attributes) templ.Attri
 	return out
 }
 
-func sheetOverlayAttrs(forID, behavior string, attrs templ.Attributes) templ.Attributes {
-	out := sheetCloseAttrs(forID, behavior, attrs)
-	if sheetBehavior(behavior) == "ui8kit" {
-		out["data-ui8kit-dialog-overlay"] = true
-	}
-	return out
-}
-
 // Sheet renders the panel root.
 func Sheet(p SheetProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -392,7 +384,7 @@ func SheetOverlay(p SheetOverlayProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.RenderAttributes(ctx, templ_7745c5c3_Buffer, sheetOverlayAttrs(p.For, p.Behavior, p.Attrs))
+		templ_7745c5c3_Err = templ.RenderAttributes(ctx, templ_7745c5c3_Buffer, sheetCloseAttrs(p.For, p.Behavior, p.Attrs))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
