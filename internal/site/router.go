@@ -13,7 +13,7 @@ type NavResolver func(fixtures.Locale) (layout.NavItem, bool)
 
 // PageSpec is one runtime route: method, pattern, page renderer, and optional nav entry.
 // The Body renderer returns a fully composed HTML document — the page template
-// itself chooses its layout shell (layout.Shell or layout.SidebarShell), so the
+// itself chooses its layout layers (RootLayout + TopnavLayout or DashboardLayout), so the
 // runtime router does not own layout selection.
 type PageSpec struct {
 	Method  string
@@ -30,7 +30,7 @@ var pages = []PageSpec{
 		Pattern: "/{$}",
 		Active:  "/",
 		Title:   func(f fixtures.Locale) string { return f.Home.Title },
-		Body:    views.HomePageFrom,
+		Body:    views.HomePage,
 		Nav: func(f fixtures.Locale) (layout.NavItem, bool) {
 			return layout.NavItem{Label: f.Home.NavLabel, Path: "/", Icon: "home"}, true
 		},
@@ -40,7 +40,7 @@ var pages = []PageSpec{
 		Pattern: "/sample",
 		Active:  "/sample",
 		Title:   func(f fixtures.Locale) string { return f.Sample.Title },
-		Body:    views.SamplePageFrom,
+		Body:    views.SamplePage,
 		Nav: func(f fixtures.Locale) (layout.NavItem, bool) {
 			return layout.NavItem{Label: f.Sample.NavLabel, Path: "/sample", Icon: "box"}, true
 		},

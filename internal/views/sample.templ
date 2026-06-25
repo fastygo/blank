@@ -1,21 +1,23 @@
 package views
 
 import (
-	"github.com/fastygo/blank/internal/ui/components/appsidebar"
+	"github.com/fastygo/blank/internal/fixtures"
 	"github.com/fastygo/blank/internal/ui/layout"
 	"github.com/fastygo/templ/ui"
 )
 
-// SamplePage composes the sidebar document shell with the page body.
+// SamplePage composes RootLayout + DashboardLayout with the page body.
 // This file is the entire layout picture for `/sample` — open it once and
-// you see SidebarShell + AppSidebar + content, like app/dashboard/page.tsx.
-templ SamplePage(shell layout.ShellProps, sidebar appsidebar.Props, content SampleContent) {
-	@layout.SidebarShell(shell, appsidebar.AppSidebar(sidebar)) {
-		@ui.Box(ui.BoxProps{Class: "flex flex-1 flex-col items-center justify-center px-4 py-16 text-center md:py-24"}) {
-			@ui.Box(ui.BoxProps{Class: "flex w-full max-w-md flex-col items-center gap-3 text-center"}) {
-				@ui.Title(ui.TitleProps{Order: 1, Class: "text-3xl font-bold tracking-tight"}, content.Title)
-				@ui.Text(ui.TextProps{Class: "text-base text-muted-foreground"}, content.Description)
-				@ui.Text(ui.TextProps{Class: "text-sm leading-relaxed text-muted-foreground"}, content.Body)
+// you see DashboardLayout + content, like app/dashboard/page.tsx.
+templ SamplePage(d layout.Data, f fixtures.Locale) {
+	@layout.RootLayout(d.Document()) {
+		@layout.DashboardLayout(d.Dashboard(f.Sample.Title)) {
+			@ui.Box(ui.BoxProps{Class: "flex flex-1 flex-col items-center justify-center px-4 py-16 text-center md:py-24"}) {
+				@ui.Box(ui.BoxProps{Class: "flex w-full max-w-md flex-col items-center gap-3 text-center"}) {
+					@ui.Title(ui.TitleProps{Order: 1, Class: "text-3xl font-bold tracking-tight"}, f.Sample.Title)
+					@ui.Text(ui.TextProps{Class: "text-base text-muted-foreground"}, f.Sample.Description)
+					@ui.Text(ui.TextProps{Class: "text-sm leading-relaxed text-muted-foreground"}, f.Sample.Body)
+				}
 			}
 		}
 	}

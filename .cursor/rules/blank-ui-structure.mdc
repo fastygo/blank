@@ -12,18 +12,18 @@ On-disk index: **`internal/ui/README.md`** (same `registry:*` labels as FastyGoU
 ```
 internal/ui/
   layout/       # registry:layout — document/chrome shells + request data
-                #   shell.templ, sidebar_shell.templ, shell_head.templ, header_trailing.templ
-                #   data.go (Data, ShellProps, SidebarProps), build.go (BuildData)
+                #   root_layout.templ, topnav_layout.templ, dashboard_layout.templ
+                #   shell_head.templ, header_trailing.templ
+                #   data.go (Data, Document(), Topnav(), Dashboard()), build*.go
   components/   # registry:components — icon/, toggles/, navigation/, appsidebar/
   blocks/       # registry:blocks — marketing/hero/, … (full scaffolds)
   widgets/      # registry:widgets — UI + behavior (staging stub)
   variants/     # registry:variants — wireframe utility maps (staging stub)
   utils/        # registry:utils — app helpers on templ/utils
 internal/views/
-  <page>.templ  # route page — composes its own layout shell
-  <page>.go     # <Page>From(d layout.Data, f fixtures.Locale) builder
+  <page>.templ  # route page — views.<Page>(d layout.Data, f fixtures.Locale)
 internal/site/
-  router.go     # PageSpec route manifest (Body: views.<Page>From)
+  router.go     # PageSpec route manifest (Body: views.<Page>)
   render.go     # handlePage, web.Render
   nav.go        # nav from route specs
   layout_data.go # thin wrapper → layout.BuildData
@@ -34,32 +34,33 @@ internal/fixtures/
 
 | Path | Role |
 |------|------|
-| `internal/ui/layout` | Document chrome, named shells, request `Data`, head/trailing partials |
+| `internal/ui/layout` | Document frame + named chrome layers, request `Data`, head/trailing partials |
 | `internal/ui/components` | Props-only UI; no HTTP or fetch |
-| `internal/ui/components/appsidebar` | Local sidebar used as `SidebarShell`'s aside slot |
+| `internal/ui/components/appsidebar` | Local sidebar used inside `DashboardLayout` |
 | `internal/ui/blocks/<domain>/` | Full scaffolds (e.g. `marketing/hero`); **not** empty adapters |
 | `internal/ui/widgets` | Behavior shells → future `fastygo/widgets` (stub) |
-| `internal/views/<page>.{templ,go}` | Page composition + locale→props builder |
+| `internal/views/<page>.templ` | Page composition — `views.<Page>(d, f)` |
 | `internal/site` | Runtime routing; not a registry |
 
-**Page composes layout.** Open `views/<route>.templ` and you see the full tree. Builders live in the matching `<route>.go`.
+**Page composes layout.** Open `views/<route>.templ` and you see the full two-layer tree.
 
-**Named shells in `internal/ui/layout/`:**
-- `layout.Shell` — topnav document chrome.
-- `layout.SidebarShell` — same chrome plus a desktop aside slot beside the main column.
+**Named layout layers in `internal/ui/layout/`:**
+- `layout.RootLayout` — document frame only (`html`, `head`, `body`).
+- `layout.TopnavLayout` — header, main, footer, mobile sheet.
+- `layout.DashboardLayout` — TopnavLayout + desktop aside slot.
 
-Add new shells in `internal/ui/layout/` only when a route needs structurally different document chrome. Section scaffolds belong in `internal/ui/blocks/<domain>/<organism>/`.
+Add new layout layers in `internal/ui/layout/` only when a route needs structurally different app chrome. Section scaffolds belong in `internal/ui/blocks/<domain>/<organism>/`.
 
 **Forbidden:**
 - `internal/ui/recipes`, `internal/ui/elements`, `internal/ui/ui/`, `internal/ui/blocks/layout/`.
-- 4-line `blocks/*` packages that only call `@layout.Shell { @body }`.
+- 4-line `blocks/*` packages that only call `@layout.TopnavLayout { @body }`.
 - Central `views/models.go` or `views/layout_helpers.go` — co-locate per page instead.
+- `views.*From` wrapper functions — pages are `views.<Page>(d, f)` directly.
 
 **views** receive resolved strings/structs only — no `fixtures.LoadLocale` inside `.templ`.
 
 When adding a page:
 
 1. Extend `fixtures.Locale` and every `locale/*.json`.
-2. Add `internal/views/<page>.go` with `<Page>From(d layout.Data, f fixtures.Locale)`.
-3. Add `internal/views/<page>.templ` — compose `@layout.Shell` or `@layout.SidebarShell`.
-4. Add one `PageSpec` in `internal/site/router.go` with `Body: views.<Page>From`.
+2. Add `internal/views/<page>.templ` — `templ <Page>(d layout.Data, f fixtures.Locale)` composing `@layout.RootLayout` + `@layout.TopnavLayout` or `@layout.DashboardLayout`.
+3. Add one `PageSpec` in `internal/site/router.go` with `Body: views.<Page>`.

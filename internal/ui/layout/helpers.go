@@ -22,15 +22,11 @@ func shellLang(value string) string {
 	return value
 }
 
-func shellBodyClass(_ ShellProps) string {
+func documentBodyClass() string {
 	return uiutils.Cn(
 		"min-h-screen overflow-x-hidden bg-background font-sans text-foreground",
 		"max-md:has-[#"+MobileSheetPanelID+":not([hidden])]:overflow-hidden",
 	)
-}
-
-func shellHasNavigation(props ShellProps) bool {
-	return len(props.NavItems) > 0
 }
 
 func themeToggleLabel(value string) string {

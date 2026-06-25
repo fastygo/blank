@@ -1,0 +1,18 @@
+package layout
+
+templ RootLayout(props DocumentProps) {
+	<!DOCTYPE html>
+	<html lang={ shellLang(props.Lang) }>
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>{ props.Title }</title>
+			if props.HeadExtra != nil {
+				@props.HeadExtra
+			}
+		</head>
+		<body class={ props.BodyClass }>
+			{ children... }
+		</body>
+	</html>
+}

@@ -20,9 +20,9 @@ A block is a **stable, complete artifact** — equivalent to a shadcn block unde
 
 ## What does **not** belong here
 
-- **Empty adapters.** Packages whose only job is `@layout.Shell { @body }` belong nowhere — delete them. Use `internal/ui/layout/` shells directly from the page.
-- **Aside / sidebar markup** consumed by a layout shell — put it in `internal/ui/components/appsidebar/` (or another component package).
-- **Anything renaming a layout shell.** Pages compose `layout.Shell` / `layout.SidebarShell` directly.
+- **Empty adapters.** Packages whose only job is `@layout.TopnavLayout { @body }` belong nowhere — delete them. Use `internal/ui/layout/` layers directly from the page.
+- **Aside / sidebar markup** consumed by a layout layer — put it in `internal/ui/components/appsidebar/` (or another component package).
+- **Anything renaming a layout layer.** Pages compose `layout.RootLayout` + `layout.TopnavLayout` / `layout.DashboardLayout` directly.
 
 The previous `blocks/dashboard/app_shell/` (4 lines wrapping `Shell`) and
 `blocks/dashboard/sidebar_app/` (aside + main wrapper around `Shell`) were

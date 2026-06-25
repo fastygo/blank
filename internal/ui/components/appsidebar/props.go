@@ -1,5 +1,5 @@
 // Package appsidebar provides the local sidebar component used by route pages that
-// compose layout.SidebarShell. It is the templ analogue of shadcn's
+// compose layout.DashboardLayout. It is the templ analogue of shadcn's
 // components/app-sidebar.tsx: a small, props-only, copy-paste-friendly aside.
 package appsidebar
 

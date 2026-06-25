@@ -2,6 +2,7 @@ package layout
 
 import (
 	"github.com/a-h/templ"
+	"github.com/fastygo/blank/internal/ui/components/appsidebar"
 	"github.com/fastygo/blank/internal/ui/components/navigation"
 )
 
@@ -40,16 +41,28 @@ type NavigationProps struct {
 	NavigationMenuLabel string
 }
 
-// ShellProps configures the full page shell (header + main + footer).
-type ShellProps struct {
-	Title          string
-	Lang           string
-	BrandName      string
-	Active         string
-	NavItems       []NavItem
-	FooterText     string
-	Navigation     NavigationProps
-	HeadExtra      templ.Component
-	HeaderTrailing templ.Component
-	ThemeToggle    ThemeToggleProps
+// DocumentProps configures the document frame (html, head, body).
+type DocumentProps struct {
+	Title     string
+	Lang      string
+	BodyClass string
+	HeadExtra templ.Component
+}
+
+// TopnavLayoutProps configures the topnav app chrome (header, main, footer, mobile sheet).
+type TopnavLayoutProps struct {
+	Brand           string
+	Active          string
+	NavItems        []NavItem
+	Navigation      NavigationProps
+	Theme           ThemeToggleProps
+	Trailing        templ.Component
+	FooterText      string
+	ShowMobileSheet bool
+}
+
+// DashboardLayoutProps configures the dashboard app chrome (topnav + desktop aside).
+type DashboardLayoutProps struct {
+	Topnav  TopnavLayoutProps
+	Sidebar appsidebar.Props
 }

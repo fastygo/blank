@@ -33,7 +33,7 @@ internal/ui/
 
 | Label | Path | Role |
 |--------|------|------|
-| `registry:layout` | `layout/` | Document shells composed directly by pages (`Shell`, `SidebarShell`); stays in app |
+| `registry:layout` | `layout/` | Document + chrome layers composed directly by pages (`RootLayout`, `TopnavLayout`, `DashboardLayout`); stays in app |
 | `registry:blocks` | `blocks/<domain>/` | **Full scaffolds** with in-package default copy — not 4-line adapter wrappers |
 | `registry:components` | `components/` | Props in, markup out; no HTTP, domain, or fetch |
 | `registry:widgets` | `widgets/` | Fetch, state, orchestration; composes blocks/components |
@@ -46,17 +46,19 @@ There is **no** `internal/ui/elements`, **no** `internal/ui/ui/`, and **no** `in
 
 | You are building… | Put it in… |
 |-------------------|------------|
-| Document shell, header, footer, mobile sheet host | `layout/shell.templ` |
-| New named shell (e.g. topnav + aside slot) | `layout/<name>_shell.templ` |
+| Document frame (`html`, `head`, `body`) | `layout/root_layout.templ` |
+| Topnav chrome (header, footer, mobile sheet) | `layout/topnav_layout.templ` |
+| Dashboard chrome (topnav + aside) | `layout/dashboard_layout.templ` |
 | Small reusable control (icon, toggle) | `components/<area>/` |
-| Aside / sidebar content consumed by `SidebarShell` | `components/appsidebar/` (or fork it) |
+| Aside / sidebar content consumed by `DashboardLayout` | `components/appsidebar/` (or fork it) |
 | Full scaffold with default copy (dashboard, hero, docs toc) | `blocks/<domain>/<organism>/` |
 | Shell that fetches or orchestrates API/state | `widgets/` |
-| Route page (composes its own shell) | `internal/views/<page>.templ` + `<page>.go` |
+| Route page (composes its own layout layers) | `internal/views/<page>.templ` |
 | HTTP route + page choice | `internal/site/router.go` (`PageSpec`) |
 
-Routes call `views.<Page>From` from `internal/site/router.go`; each page composes
-`@layout.Shell { ... }` or `@layout.SidebarShell(shell, appsidebar.AppSidebar(sidebar)) { ... }`.
+Routes register `views.<Page>` from `internal/site/router.go`; each page composes
+`@layout.RootLayout(d.Document()) { @layout.TopnavLayout(d.Topnav()) { ... } }` or
+`@layout.RootLayout(d.Document()) { @layout.DashboardLayout(d.Dashboard(title)) { ... } }`.
 
 ## `components` vs `widgets` vs `blocks`
 
@@ -69,7 +71,7 @@ If it only renders props → **`components`** or **`blocks`**. If it **fetches**
 ## Runtime vs registry (do not collapse)
 
 ```text
-internal/site/router.go  →  internal/views/<Page>  →  @layout.Shell (or @layout.SidebarShell)  →  @ui.* atoms
+internal/site/router.go  →  internal/views/<Page>  →  @layout.RootLayout  →  @layout.TopnavLayout|DashboardLayout  →  @ui.* atoms
 ```
 
 - **`internal/site/`** — runtime wiring only; no reusable markup, no layout selection.

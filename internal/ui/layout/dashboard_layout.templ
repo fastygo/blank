@@ -1,0 +1,19 @@
+package layout
+
+import (
+	"github.com/fastygo/blank/internal/ui/components/appsidebar"
+	"github.com/fastygo/templ/ui"
+)
+
+// DashboardLayout wraps TopnavLayout with a desktop aside beside the main column.
+// Mobile navigation is inherited from TopnavLayout via the mobile sheet.
+templ DashboardLayout(props DashboardLayoutProps) {
+	@TopnavLayout(props.Topnav) {
+		@ui.Box(ui.BoxProps{Class: "flex min-h-0 w-full flex-1 flex-col md:flex-row"}) {
+			@appsidebar.AppSidebar(props.Sidebar)
+			@ui.Box(ui.BoxProps{Class: "flex min-w-0 flex-1 flex-col"}) {
+				{ children... }
+			}
+		}
+	}
+}

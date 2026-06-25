@@ -70,7 +70,7 @@ func testSampleLocale() fixtures.Locale {
 
 func renderHomePage(t *testing.T, d layout.Data) string {
 	t.Helper()
-	body := HomePageFrom(d, testHomeLocale())
+	body := HomePage(d, testHomeLocale())
 	var buf bytes.Buffer
 	if err := body.Render(context.Background(), &buf); err != nil {
 		t.Fatal(err)
@@ -123,7 +123,7 @@ func sampleLayoutData() layout.Data {
 
 func renderSamplePage(t *testing.T, d layout.Data) string {
 	t.Helper()
-	body := SamplePageFrom(d, testSampleLocale())
+	body := SamplePage(d, testSampleLocale())
 	var buf bytes.Buffer
 	if err := body.Render(context.Background(), &buf); err != nil {
 		t.Fatal(err)
@@ -131,7 +131,7 @@ func renderSamplePage(t *testing.T, d layout.Data) string {
 	return buf.String()
 }
 
-func TestSamplePage_composesSidebarShell(t *testing.T) {
+func TestSamplePage_composesDashboardLayout(t *testing.T) {
 	html := renderSamplePage(t, sampleLayoutData())
 
 	if !strings.Contains(strings.ToLower(html), "<!doctype html>") {

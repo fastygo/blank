@@ -1,9 +1,9 @@
+// Package layout provides document shells and request-scoped layout data.
+// Two-layer model: RootLayout owns the document; TopnavLayout/DashboardLayout own app chrome.
+// Pages compose both.
 package layout
 
 import (
-	"strings"
-
-	"github.com/fastygo/blank/internal/ui/components/appsidebar"
 	"github.com/fastygo/blank/internal/ui/components/toggles"
 )
 
@@ -42,38 +42,34 @@ func FormatDocumentTitle(pageTitle, brand string) string {
 	return pageTitle + " · " + brand
 }
 
-// ShellProps maps request data into document-shell props consumed by
-// Shell and SidebarShell.
-func (d Data) ShellProps() ShellProps {
-	return ShellProps{
-		Title:          d.DocumentTitle(),
-		Lang:           d.Lang,
-		BrandName:      d.Brand,
-		Active:         d.Active,
-		NavItems:       d.NavItems,
-		FooterText:     d.FooterText,
-		Navigation:     d.Navigation,
-		HeadExtra:      ShellHead(d.Assets.CSS, d.Assets.ThemeJS, d.Assets.AppJS),
-		HeaderTrailing: HeaderTrailing(d.LanguageSwitch),
-		ThemeToggle:    d.Theme,
+// Document maps request data into document-frame props for RootLayout.
+func (d Data) Document() DocumentProps {
+	return DocumentProps{
+		Title:     d.DocumentTitle(),
+		Lang:      d.Lang,
+		BodyClass: documentBodyClass(),
+		HeadExtra: ShellHead(d.Assets.CSS, d.Assets.ThemeJS, d.Assets.AppJS),
 	}
 }
 
-// SidebarProps builds appsidebar.Props from request data.
-// Pass the title to display above the vertical nav (typically brand or section name);
-// when empty, the sidebar falls back to the brand name or "App".
-func (d Data) SidebarProps(title string) appsidebar.Props {
-	resolvedTitle := strings.TrimSpace(title)
-	if resolvedTitle == "" {
-		resolvedTitle = strings.TrimSpace(d.Brand)
+// Topnav maps request data into topnav chrome props for TopnavLayout.
+func (d Data) Topnav() TopnavLayoutProps {
+	return TopnavLayoutProps{
+		Brand:           d.Brand,
+		Active:          d.Active,
+		NavItems:        d.NavItems,
+		Navigation:      d.Navigation,
+		Theme:           d.Theme,
+		Trailing:        HeaderTrailing(d.LanguageSwitch),
+		FooterText:      d.FooterText,
+		ShowMobileSheet: len(d.NavItems) > 0,
 	}
-	if resolvedTitle == "" {
-		resolvedTitle = "App"
-	}
-	return appsidebar.Props{
-		Title:     resolvedTitle,
-		AriaLabel: d.Navigation.MainNavigation,
-		Items:     d.NavItems,
-		Active:    d.Active,
+}
+
+// Dashboard maps request data into dashboard chrome props for DashboardLayout.
+func (d Data) Dashboard(title string) DashboardLayoutProps {
+	return DashboardLayoutProps{
+		Topnav:  d.Topnav(),
+		Sidebar: sidebarProps(d, title),
 	}
 }

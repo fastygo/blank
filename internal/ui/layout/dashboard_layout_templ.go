@@ -9,14 +9,13 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	templpkg "github.com/a-h/templ"
+	"github.com/fastygo/blank/internal/ui/components/appsidebar"
 	"github.com/fastygo/templ/ui"
 )
 
-// SidebarShell wraps the document Shell with a desktop aside slot beside the main column.
-// The sidebar slot is rendered before the main column on md+ viewports; mobile navigation
-// uses the inherited shell mobile sheet. Pass nil for sidebar to omit the aside (rare).
-func SidebarShell(shell ShellProps, sidebar templpkg.Component) templ.Component {
+// DashboardLayout wraps TopnavLayout with a desktop aside beside the main column.
+// Mobile navigation is inherited from TopnavLayout via the mobile sheet.
+func DashboardLayout(props DashboardLayoutProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -61,11 +60,9 @@ func SidebarShell(shell ShellProps, sidebar templpkg.Component) templ.Component 
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				if sidebar != nil {
-					templ_7745c5c3_Err = sidebar.Render(ctx, templ_7745c5c3_Buffer)
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
+				templ_7745c5c3_Err = appsidebar.AppSidebar(props.Sidebar).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
 				}
 				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " ")
 				if templ_7745c5c3_Err != nil {
@@ -101,7 +98,7 @@ func SidebarShell(shell ShellProps, sidebar templpkg.Component) templ.Component 
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = Shell(shell).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = TopnavLayout(props.Topnav).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

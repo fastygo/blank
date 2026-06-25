@@ -1,15 +1,22 @@
 package views
 
 import (
+	"github.com/fastygo/blank/internal/fixtures"
 	"github.com/fastygo/blank/internal/ui/blocks/marketing/hero"
 	"github.com/fastygo/blank/internal/ui/layout"
 )
 
-// HomePage composes the topnav document shell with the marketing hero block.
+// HomePage composes RootLayout + TopnavLayout with the marketing hero block.
 // This file is the entire layout picture for `/` — analogous to app/page.tsx
-// composing SidebarProvider/Inset in a shadcn project.
-templ HomePage(shell layout.ShellProps, content hero.Props) {
-	@layout.Shell(shell) {
-		@hero.Hero(content)
+// composing a route layout in a shadcn project.
+templ HomePage(d layout.Data, f fixtures.Locale) {
+	@layout.RootLayout(d.Document()) {
+		@layout.TopnavLayout(d.Topnav()) {
+			@hero.Hero(hero.Props{
+				Welcome:      f.Home.Welcome,
+				WelcomeBrand: f.Home.WelcomeBrand,
+				Description:  f.Home.Description,
+			})
+		}
 	}
 }

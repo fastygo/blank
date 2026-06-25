@@ -15,13 +15,13 @@ go mod download
 bun run dev
 ```
 
-Open [http://127.0.0.1:8080/](http://127.0.0.1:8080/) — hero welcome page (composes `layout.Shell`). Second demo route: [http://127.0.0.1:8080/sample](http://127.0.0.1:8080/sample) composes `layout.SidebarShell` with `appsidebar.AppSidebar` directly in the page template.
+Open [http://127.0.0.1:8080/](http://127.0.0.1:8080/) — hero welcome page (composes `layout.RootLayout` + `layout.TopnavLayout`). Second demo route: [http://127.0.0.1:8080/sample](http://127.0.0.1:8080/sample) composes `layout.RootLayout` + `layout.DashboardLayout` directly in the page template.
 
 `bun run dev` runs [`scripts/dev.mjs`](scripts/dev.mjs): one-shot templ/CSS/JS (+ dev overlay when enabled), then the Go server. For CSS watch, use a second terminal: `bun run watch:css`. After `.templ` edits run `bun run templ`. After Go edits, restart dev (`Ctrl+C`, then `bun run dev`). **Ctrl+C** stops the server.
 
 Static assets (Tailwind CSS, theme script, `@ui8kit/aria` dialog bundle, and the dev overlay bundle) live under [`web/static/`](web/static/) and [`internal/devoverlay/static/`](internal/devoverlay/static/).
 
-Dev tooling is configured in [`fastygo.config.mjs`](fastygo.config.mjs) — **tooling only** (server env, templ/CSS/JS build, ui8px). Routes live in [`internal/site/router.go`](internal/site/router.go); each page composes its own layout shell inside [`internal/views/<page>.templ`](internal/views/) — there are no layout adapters.
+Dev tooling is configured in [`fastygo.config.mjs`](fastygo.config.mjs) — **tooling only** (server env, templ/CSS/JS build, ui8px). Routes live in [`internal/site/router.go`](internal/site/router.go); each page composes its own layout layers inside [`internal/views/<page>.templ`](internal/views/) — there are no layout adapters.
 
 ## Scripts
 
@@ -62,9 +62,9 @@ Probes: `GET /healthz` and `GET /readyz`.
 | [`internal/site/`](internal/site/) | Runtime route manifest (`router.go`), render helpers, feature wiring |
 | [`internal/fixtures/locale/`](internal/fixtures/locale/) | Site shell and page copy per locale |
 | [`internal/ui/`](internal/ui/) | **UI registry** — layout shells, components, blocks, widgets, variants, utils ([`README`](internal/ui/README.md)) |
-| [`internal/ui/layout/`](internal/ui/layout/) | Named document shells (`Shell`, `SidebarShell`), header, footer, mobile sheet host |
+| [`internal/ui/layout/`](internal/ui/layout/) | Layout layers (`RootLayout`, `TopnavLayout`, `DashboardLayout`), header, footer, mobile sheet |
 | [`internal/ui/components/`](internal/ui/components/) | Icon, language switch, navigation, **appsidebar** (local aside) |
-| [`internal/views/`](internal/views/) | `templ` pages — each composes its own layout shell |
+| [`internal/views/`](internal/views/) | `templ` pages — each composes `views.<Page>(d, f)` with its own layout layers |
 | [`web/static/`](web/static/) | `app.css`, tokens, fonts, `theme.js`, `ui8kit.js` |
 
 ## Dev overlay
@@ -94,9 +94,8 @@ Runs: `templ generate` → Tailwind build → `build:js` → `ui8px lint` → `v
 ## Adding a page
 
 1. Add copy to [`internal/fixtures/fixtures.go`](internal/fixtures/fixtures.go) and every [`internal/fixtures/locale/*.json`](internal/fixtures/locale/) file.
-2. Add `internal/views/<page>.go` — `func <Page>From(d layout.Data, f fixtures.Locale) templ.Component`.
-3. Add `internal/views/<page>.templ` — compose `@layout.Shell(shell) { ... }` or `@layout.SidebarShell(shell, appsidebar.AppSidebar(sidebar)) { ... }` directly.
-4. Add one **`PageSpec`** in [`internal/site/router.go`](internal/site/router.go) with `Body: views.<Page>From`.
-5. Run `bun run verify` before landing the change.
+2. Add `internal/views/<page>.templ` — `templ <Page>(d layout.Data, f fixtures.Locale)` composing `@layout.RootLayout` + `@layout.TopnavLayout` or `@layout.DashboardLayout`.
+3. Add one **`PageSpec`** in [`internal/site/router.go`](internal/site/router.go) with `Body: views.<Page>`.
+4. Run `bun run verify` before landing the change.
 
 See [`docs/for-react-devs.md`](docs/for-react-devs.md) for the full cookbook (Next/shadcn mental model, request flow, dev loop).
