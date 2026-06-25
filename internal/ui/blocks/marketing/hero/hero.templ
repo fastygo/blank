@@ -1,0 +1,14 @@
+package hero
+
+import "github.com/fastygo/templ/ui"
+
+// Hero renders the marketing hero section (welcome line, title, description).
+templ Hero(props Props) {
+	@ui.Box(ui.BoxProps{Class: "flex flex-1 flex-col items-center justify-center px-4 py-16 text-center md:py-24"}) {
+		@ui.Box(ui.BoxProps{Class: "flex w-full max-w-md flex-col items-center gap-3 text-center"}) {
+			@ui.Text(ui.TextProps{Tag: "p", Class: "text-sm uppercase tracking-wide text-muted-foreground"}, props.Welcome)
+			@ui.Title(ui.TitleProps{Order: 1, Class: "text-4xl font-bold tracking-tight md:text-5xl"}, props.WelcomeBrand)
+			@ui.Text(ui.TextProps{Class: "text-base leading-relaxed text-muted-foreground md:text-lg"}, props.Description)
+		}
+	}
+}

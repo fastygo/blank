@@ -8,7 +8,7 @@ import (
 )
 
 type TitleResolver func(fixtures.Locale) string
-type PageRenderer func(views.LayoutData, fixtures.Locale) templ.Component
+type PageRenderer func(layout.Data, fixtures.Locale) templ.Component
 type NavResolver func(fixtures.Locale) (layout.NavItem, bool)
 
 // PageSpec is one runtime route: method, pattern, page renderer, and optional nav entry.
@@ -30,14 +30,7 @@ var pages = []PageSpec{
 		Pattern: "/{$}",
 		Active:  "/",
 		Title:   func(f fixtures.Locale) string { return f.Home.Title },
-		Body: func(d views.LayoutData, f fixtures.Locale) templ.Component {
-			return views.HomePage(views.HomePageData{
-				Shell:        views.ShellPropsFor(d),
-				Welcome:      f.Home.Welcome,
-				WelcomeBrand: f.Home.WelcomeBrand,
-				Description:  f.Home.Description,
-			})
-		},
+		Body:    views.HomePageFrom,
 		Nav: func(f fixtures.Locale) (layout.NavItem, bool) {
 			return layout.NavItem{Label: f.Home.NavLabel, Path: "/", Icon: "home"}, true
 		},
@@ -47,15 +40,7 @@ var pages = []PageSpec{
 		Pattern: "/sample",
 		Active:  "/sample",
 		Title:   func(f fixtures.Locale) string { return f.Sample.Title },
-		Body: func(d views.LayoutData, f fixtures.Locale) templ.Component {
-			return views.SamplePage(views.SamplePageData{
-				Shell:       views.ShellPropsFor(d),
-				Sidebar:     views.SidebarPropsFor(d, f.Sample.Title),
-				Title:       f.Sample.Title,
-				Description: f.Sample.Description,
-				Body:        f.Sample.Body,
-			})
-		},
+		Body:    views.SamplePageFrom,
 		Nav: func(f fixtures.Locale) (layout.NavItem, bool) {
 			return layout.NavItem{Label: f.Sample.NavLabel, Path: "/sample", Icon: "box"}, true
 		},

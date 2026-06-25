@@ -30,7 +30,7 @@ Prefer **`Button` `Variant` / `Size`** over `Variant: "unstyled"` + long manual 
 
 - **Forbidden:** raw layout/content tags in **`internal/ui/**`** (except documented exceptions) and **`internal/views/**`**.
 - **Mandatory:** `github.com/fastygo/templ/ui` (+ `templ/components` when appropriate).
-- **Exception — document shell only:** `<!DOCTYPE>`, `<html>`, `<head>`, `<body>`, `<meta>`, `<title>`, `<link>`, `<script>` in **`internal/ui/layout/shell.templ`** or **`internal/views/partials/shell_head.templ`**.
+- **Exception — document shell only:** `<!DOCTYPE>`, `<html>`, `<head>`, `<body>`, `<meta>`, `<title>`, `<link>`, `<script>` in **`internal/ui/layout/shell.templ`** or **`internal/ui/layout/shell_head.templ`**.
 - **Exception — latty host:** `internal/ui/components/icon/icon.templ` may use a single empty `<span>` for mask icons.
 
 ## Dependencies

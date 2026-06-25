@@ -6,12 +6,13 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/fastygo/blank/internal/fixtures"
 	"github.com/fastygo/blank/internal/ui/components/toggles"
 	"github.com/fastygo/blank/internal/ui/layout"
 )
 
-func homeLayoutData() LayoutData {
-	return LayoutData{
+func homeLayoutData() layout.Data {
+	return layout.Data{
 		PageTitle:  "Home",
 		Lang:       "en",
 		Brand:      "FastyGo",
@@ -20,7 +21,7 @@ func homeLayoutData() LayoutData {
 		NavItems: []layout.NavItem{
 			{Label: "Home", Path: "/", Icon: "home"},
 		},
-		Assets: AssetPaths{
+		Assets: layout.AssetPaths{
 			CSS:     "/static/css/app.css",
 			ThemeJS: "/static/js/theme.js",
 			AppJS:   "/static/js/ui8kit.js",
@@ -47,14 +48,29 @@ func homeLayoutData() LayoutData {
 	}
 }
 
-func renderHomePage(t *testing.T, d LayoutData) string {
+func testHomeLocale() fixtures.Locale {
+	return fixtures.Locale{
+		Home: fixtures.Home{
+			Welcome:      "Welcome",
+			WelcomeBrand: "to FastyGo",
+			Description:  "Minimal starter.",
+		},
+	}
+}
+
+func testSampleLocale() fixtures.Locale {
+	return fixtures.Locale{
+		Sample: fixtures.Sample{
+			Title:       "Sample page",
+			Description: "Second route for onboarding.",
+			Body:        "Add routes in router.go.",
+		},
+	}
+}
+
+func renderHomePage(t *testing.T, d layout.Data) string {
 	t.Helper()
-	body := HomePage(HomePageData{
-		Shell:        ShellPropsFor(d),
-		Welcome:      "Welcome",
-		WelcomeBrand: "to FastyGo",
-		Description:  "Minimal starter.",
-	})
+	body := HomePageFrom(d, testHomeLocale())
 	var buf bytes.Buffer
 	if err := body.Render(context.Background(), &buf); err != nil {
 		t.Fatal(err)
@@ -94,7 +110,7 @@ func TestHomePage_composesTopnavShell(t *testing.T) {
 	}
 }
 
-func sampleLayoutData() LayoutData {
+func sampleLayoutData() layout.Data {
 	d := homeLayoutData()
 	d.PageTitle = "Sample"
 	d.Active = "/sample"
@@ -105,15 +121,9 @@ func sampleLayoutData() LayoutData {
 	return d
 }
 
-func renderSamplePage(t *testing.T, d LayoutData) string {
+func renderSamplePage(t *testing.T, d layout.Data) string {
 	t.Helper()
-	body := SamplePage(SamplePageData{
-		Shell:       ShellPropsFor(d),
-		Sidebar:     SidebarPropsFor(d, "Sample page"),
-		Title:       "Sample page",
-		Description: "Second route for onboarding.",
-		Body:        "Add routes in router.go.",
-	})
+	body := SamplePageFrom(d, testSampleLocale())
 	var buf bytes.Buffer
 	if err := body.Render(context.Background(), &buf); err != nil {
 		t.Fatal(err)

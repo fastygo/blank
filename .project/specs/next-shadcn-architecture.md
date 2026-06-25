@@ -15,7 +15,7 @@ Blank is a **server-rendered BFF frontend** (Go + templ + Tailwind). React devel
 route -> page (composes its own layout shell) -> content
 ```
 
-The **page template file is the single point of truth** for the layout tree. Opening `internal/views/sample_stub.templ` shows `SidebarShell + AppSidebar + content` in one place — the same cognitive experience as opening `app/dashboard/page.tsx` in a shadcn project.
+The **page template file is the single point of truth** for the layout tree. Opening `internal/views/sample.templ` shows `SidebarShell + AppSidebar + content` in one place — the same cognitive experience as opening `app/dashboard/page.tsx` in a shadcn project.
 
 ---
 
@@ -27,7 +27,8 @@ The **page template file is the single point of truth** for the layout tree. Ope
 | **Sidebar shell** | `internal/ui/layout/sidebar_shell.templ` → `layout.SidebarShell` | `Shell` plus a desktop aside slot beside the main column. Analogous to shadcn `SidebarProvider + SidebarInset`. |
 | **Local aside** | `internal/ui/components/appsidebar/` → `appsidebar.AppSidebar` | Project-owned aside content (title + vertical nav). Analogous to shadcn `components/app-sidebar.tsx`. Copy-paste-friendly. |
 | **Page** | `internal/views/*.templ` (e.g. `HomePage`, `SamplePage`) | **Composes** its own layout shell at the top of the templ + content body. Receives resolved props/strings. No fixture loading inside `.templ`. Analogous to `page.tsx`. |
-| **Page data** | `internal/views/models.go` (e.g. `HomePageData`, `SamplePageData`) | View-model with `Shell layout.ShellProps` (and `Sidebar appsidebar.Props` if relevant) plus content fields. |
+| **Layout request data** | `internal/ui/layout/data.go` → `layout.Data` | Per-request shell inputs; `ShellProps()`, `SidebarProps()` |
+| **Page builder** | `internal/views/<page>.go` → `<Page>From(d layout.Data, f fixtures.Locale)` | Maps fixtures + layout data to page component |
 | **Registry artifact** | `internal/ui/{components,blocks,widgets,variants,utils}` | Copy-pasteable or reusable UI mass accumulated in the app registry before extraction. |
 | **Block** | `internal/ui/blocks/<domain>/*` | **Full scaffolds** — complete sections or pre-built dashboards with default copy. **Not** empty adapter wrappers. |
 
@@ -158,8 +159,8 @@ Add new shells in `layout/` only when a route needs **structurally different doc
 | `layout.Shell` | **Keep** | Topnav document shell composed by pages. |
 | `layout.SidebarShell` | **Keep** | Sidebar document shell composed by pages; takes `(shell ShellProps, sidebar templ.Component)`. |
 | `appsidebar.AppSidebar` | **Keep** | Local aside; populates `SidebarShell`'s sidebar slot. Forkable. |
-| `views.ShellPropsFor(d)` | **Keep** | Builds `layout.ShellProps` from `views.LayoutData`. |
-| `views.SidebarPropsFor(d, title)` | **Keep** | Builds `appsidebar.Props` from `views.LayoutData`. |
+| `layout.Data.ShellProps()` | **Keep** | Builds `layout.ShellProps` from request data. |
+| `layout.Data.SidebarProps(title)` | **Keep** | Builds `appsidebar.Props` from request data. |
 | `views.AppShell` / `views.SidebarAppShell` / `views.MarketingShell` / `views.DocsShell` | **Removed** | Route adapters; replaced by direct shell composition in page templates. |
 | `PageSpec.Layout` | **Removed** | Layout choice lives inside the page templ, not the route spec. |
 

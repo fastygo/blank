@@ -16,20 +16,18 @@ structure, fill packages incrementally, extract when stable.
 **Not Go dependencies during staging:** `github.com/fastygo/blocks`, `github.com/fastygo/widgets`.
 Develop here first; `require` shared modules only after extraction.
 
-**Not part of this registry:** `internal/views/` (pages + thin route adapters), `internal/site/` (runtime route manifest).
+**Not part of this registry:** `internal/views/` (route pages + co-located builders), `internal/site/` (runtime route manifest).
 
 ## Tree
 
 ```
 internal/ui/
-  layout/       # registry:layout — named document shells (Shell, SidebarShell)
+  layout/       # registry:layout — shells, data.go, build.go, shell_head, header_trailing
   components/   # registry:components — icon, toggles, navigation, appsidebar, …
   blocks/       # registry:blocks — full scaffolds (staging → fastygo/blocks)
-    dashboard/  # future dashboard scaffolds
-    marketing/  # e.g. topnav_shell, landing_shell
-    docs/       # e.g. toc_shell
-  widgets/      # registry:widgets — UI + behavior (staging → fastygo/widgets)
-  variants/     # registry:variants — optional wireframe utility maps
+    marketing/  # hero/ (live); add organisms as needed
+  widgets/      # registry:widgets — staging stub (README + doc.go)
+  variants/     # registry:variants — staging stub (README + doc.go)
   utils/        # registry:utils — thin helpers on templ/utils
 ```
 
@@ -54,16 +52,11 @@ There is **no** `internal/ui/elements`, **no** `internal/ui/ui/`, and **no** `in
 | Aside / sidebar content consumed by `SidebarShell` | `components/appsidebar/` (or fork it) |
 | Full scaffold with default copy (dashboard, hero, docs toc) | `blocks/<domain>/<organism>/` |
 | Shell that fetches or orchestrates API/state | `widgets/` |
-| Route page (composes its own shell) | `internal/views/<page>.templ` |
+| Route page (composes its own shell) | `internal/views/<page>.templ` + `<page>.go` |
 | HTTP route + page choice | `internal/site/router.go` (`PageSpec`) |
 
-Routes call `views.<Page>` from `internal/views/`; the page itself composes
-`@layout.Shell { ... }` or `@layout.SidebarShell(shell, appsidebar.AppSidebar(s)) { ... }`.
-There are **no** `views/*Shell` adapter functions.
-
-Full scaffolds use **domain folders** first: `dashboard/*`, `docs/toc_shell`,
-`marketing/topnav_shell` — not a generic `blocks/layout/` tree, and not 4-line
-wrappers around `layout.Shell`.
+Routes call `views.<Page>From` from `internal/site/router.go`; each page composes
+`@layout.Shell { ... }` or `@layout.SidebarShell(shell, appsidebar.AppSidebar(sidebar)) { ... }`.
 
 ## `components` vs `widgets` vs `blocks`
 
@@ -105,7 +98,7 @@ internal/site/router.go  →  internal/views/<Page>  →  @layout.Shell (or @lay
 ## Composition rules
 
 - **No raw HTML** layout/content tags — use `templ/ui` (+ `templ/components`).
-- Document shell only: `<!DOCTYPE>`, `<html>`, `<head>`, `<body>`, … in `layout/shell.templ` or `views/partials/shell_head.templ`.
+- Document shell only: `<!DOCTYPE>`, `<html>`, `<head>`, `<body>`, … in `layout/shell.templ` or `layout/shell_head.templ`.
 - Tailwind utilities must pass **`Blank/.ui8px/policy`** (`bun run lint:ui8px`).
 - Covered interaction: `@ui8kit/aria` + `templ/components` Sheet with `Behavior: "ui8kit"` — no custom JS for covered patterns.
 

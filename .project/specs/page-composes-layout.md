@@ -1,8 +1,10 @@
 # Page composes layout (shadcn parity)
 
-**Status:** active
+**Status:** delivered (2026-06-25); extended by registry co-location slice — see [active.md](./active.md)
 **Supersedes:** [archive/block-11-final.md](./archive/block-11-final.md)
 **Driver:** [`.cursor/rules/blank-spec-driver.mdc`](../../.cursor/rules/blank-spec-driver.mdc), brainstorm [`brainstorm/layout-structure.md`](../brainstorm/layout-structure.md)
+
+> **Superseded paths (registry co-location, 2026-06-25):** `views/models.go`, `views/layout_helpers.go`, `views/partials/`, `sample_stub.templ` — replaced by `layout/data.go`, `layout/build.go`, co-located `views/<page>.go`, and `views/sample.templ`.
 
 ---
 

@@ -94,9 +94,9 @@ Runs: `templ generate` → Tailwind build → `build:js` → `ui8px lint` → `v
 ## Adding a page
 
 1. Add copy to [`internal/fixtures/fixtures.go`](internal/fixtures/fixtures.go) and every [`internal/fixtures/locale/*.json`](internal/fixtures/locale/) file.
-2. Add `*PageData` in [`internal/views/models.go`](internal/views/models.go) — include `Shell layout.ShellProps` (and `Sidebar appsidebar.Props` for sidebar pages).
-3. Add `internal/views/<page>.templ` — compose `@layout.Shell(d.Shell) { ... }` or `@layout.SidebarShell(d.Shell, appsidebar.AppSidebar(d.Sidebar)) { ... }` directly.
-4. Add one **`PageSpec`** in [`internal/site/router.go`](internal/site/router.go) — `Body` returns the page; there is no `Layout` field.
+2. Add `internal/views/<page>.go` — `func <Page>From(d layout.Data, f fixtures.Locale) templ.Component`.
+3. Add `internal/views/<page>.templ` — compose `@layout.Shell(shell) { ... }` or `@layout.SidebarShell(shell, appsidebar.AppSidebar(sidebar)) { ... }` directly.
+4. Add one **`PageSpec`** in [`internal/site/router.go`](internal/site/router.go) with `Body: views.<Page>From`.
 5. Run `bun run verify` before landing the change.
 
 See [`docs/for-react-devs.md`](docs/for-react-devs.md) for the full cookbook (Next/shadcn mental model, request flow, dev loop).

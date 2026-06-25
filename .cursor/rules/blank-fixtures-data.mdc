@@ -9,7 +9,7 @@ alwaysApply: false
 ## Two layers
 
 1. **`internal/fixtures/`** — embedded `locale/*.json`, typed **`Locale`** in `fixtures.go`, **`LoadLocale(code)`** — **site shell and pages only**.
-2. **Handlers** (`internal/site`) — resolve locale from context, build **`views.LayoutData`** / page structs with **already-translated** strings.
+2. **Handlers** (`internal/site`) — resolve locale from context, build **`layout.Data`** via `layout.BuildData`, pass to page `*From` builders with **already-translated** strings.
 
 ## Dev overlay (separate)
 

@@ -1,21 +1,15 @@
 package views
 
 import (
+	"github.com/fastygo/blank/internal/ui/blocks/marketing/hero"
 	"github.com/fastygo/blank/internal/ui/layout"
-	"github.com/fastygo/templ/ui"
 )
 
-// HomePage composes the topnav document shell with the hero body.
+// HomePage composes the topnav document shell with the marketing hero block.
 // This file is the entire layout picture for `/` — analogous to app/page.tsx
 // composing SidebarProvider/Inset in a shadcn project.
-templ HomePage(data HomePageData) {
-	@layout.Shell(data.Shell) {
-		@ui.Box(ui.BoxProps{Class: "flex flex-1 flex-col items-center justify-center px-4 py-16 text-center md:py-24"}) {
-			@ui.Box(ui.BoxProps{Class: "flex w-full max-w-md flex-col items-center gap-3 text-center"}) {
-				@ui.Text(ui.TextProps{Tag: "p", Class: "text-sm uppercase tracking-wide text-muted-foreground"}, data.Welcome)
-				@ui.Title(ui.TitleProps{Order: 1, Class: "text-4xl font-bold tracking-tight md:text-5xl"}, data.WelcomeBrand)
-				@ui.Text(ui.TextProps{Class: "text-base leading-relaxed text-muted-foreground md:text-lg"}, data.Description)
-			}
-		}
+templ HomePage(shell layout.ShellProps, content hero.Props) {
+	@layout.Shell(shell) {
+		@hero.Hero(content)
 	}
 }

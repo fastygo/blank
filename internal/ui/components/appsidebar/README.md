@@ -44,7 +44,7 @@ templ SamplePage(d SamplePageData) {
 }
 ```
 
-Build the `Props` from `views.LayoutData` via `views.SidebarPropsFor(d, title)`.
+Build sidebar `Props` from `layout.Data` via `d.SidebarProps(title)`.
 
 ## Replacing or extending
 

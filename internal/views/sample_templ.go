@@ -17,7 +17,7 @@ import (
 // SamplePage composes the sidebar document shell with the page body.
 // This file is the entire layout picture for `/sample` — open it once and
 // you see SidebarShell + AppSidebar + content, like app/dashboard/page.tsx.
-func SamplePage(data SamplePageData) templ.Component {
+func SamplePage(shell layout.ShellProps, sidebar appsidebar.Props, content SampleContent) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -74,7 +74,7 @@ func SamplePage(data SamplePageData) templ.Component {
 						}()
 					}
 					ctx = templ.InitializeContext(ctx)
-					templ_7745c5c3_Err = ui.Title(ui.TitleProps{Order: 1, Class: "text-3xl font-bold tracking-tight"}, data.Title).Render(ctx, templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = ui.Title(ui.TitleProps{Order: 1, Class: "text-3xl font-bold tracking-tight"}, content.Title).Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -82,7 +82,7 @@ func SamplePage(data SamplePageData) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = ui.Text(ui.TextProps{Class: "text-base text-muted-foreground"}, data.Description).Render(ctx, templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = ui.Text(ui.TextProps{Class: "text-base text-muted-foreground"}, content.Description).Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -90,7 +90,7 @@ func SamplePage(data SamplePageData) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = ui.Text(ui.TextProps{Class: "text-sm leading-relaxed text-muted-foreground"}, data.Body).Render(ctx, templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = ui.Text(ui.TextProps{Class: "text-sm leading-relaxed text-muted-foreground"}, content.Body).Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -108,7 +108,7 @@ func SamplePage(data SamplePageData) templ.Component {
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = layout.SidebarShell(data.Shell, appsidebar.AppSidebar(data.Sidebar)).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = layout.SidebarShell(shell, appsidebar.AppSidebar(sidebar)).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -40,9 +40,7 @@ chrome in `internal/ui/layout/`).
 
 | Package | Example organisms | Showcase focus |
 |---------|-------------------|----------------|
-| `dashboard/` | (currently empty — stub) | Future dashboard scaffolds |
-| `marketing/` | `topnav_shell`, `landing_shell` | Public/landing layouts |
-| `docs/` | `toc_shell` | Docs toc + content column |
+| `marketing/` | [`hero`](marketing/hero/) | Landing hero section (welcome + title + description) |
 
 Add new **domain** top-level folders only when a new showcase group is needed
 (e.g. `storefront/`, `editorial/`). Add **organism** subfolders under an
