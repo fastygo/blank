@@ -32,7 +32,7 @@
     "separator": " · ",
     "load_failed": "Не удалось загрузить ресурсы",
     "missing_css_hint": "Нет app.css. Запустите bun run build:css.",
-    "stale_css_hint": "CSS устарел. Запустите bun run watch:css во втором терминале."
+    "stale_css_hint": "CSS устарел. Запустите bun run build:css или перезапустите dev."
   },
   "request": {
     "intro": "Используйте id запроса для сопоставления браузера и структурированных логов Go.",

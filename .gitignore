@@ -5,6 +5,7 @@ node_modules
 *.exe
 .env
 .DS_Store
+**/*_templ.go
 vendor/*
 !vendor/github.com/
 vendor/github.com/*

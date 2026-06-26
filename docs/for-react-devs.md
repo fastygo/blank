@@ -225,11 +225,11 @@ It does **not** watch `.templ` files or restart Go on `.go` changes.
 | You change | What to run |
 |------------|-------------|
 | `.templ` markup | `bun run templ`, then refresh browser (F5) |
-| Tailwind classes | `bun run watch:css` in a **second terminal**, then refresh |
+| Tailwind classes | `bun run build:css`, then refresh |
 | Go files (`router.go`, handlers, fixtures) | Stop dev (`Ctrl+C`), then `bun run dev` again |
 | JS bundle / `@ui8kit/aria` patterns | `bun run build:js`, restart dev if needed |
 
-**No HMR:** Blank uses SSR — the server renders full HTML documents. Template and CSS watchers rebuild artifacts on disk; you refresh the page to see changes. That is normal for this stack.
+**No HMR:** Blank uses SSR — the server renders full HTML documents. Rebuild artifacts on disk, then refresh the page to see changes. That is normal for this stack.
 
 **No Go auto-restart** in v1.
 
@@ -240,7 +240,7 @@ Server URL defaults to [http://127.0.0.1:8080/](http://127.0.0.1:8080/). Overrid
 With `APP_DEV_OVERLAY=1` (enabled in [`fastygo.config.mjs`](../fastygo.config.mjs) for local dev), Blank injects a floating widget at SSR time. It does not modify `internal/views/**`.
 
 - **Health:** browser probes for `/healthz` and `/readyz`
-- **Assets:** server reports static file age; stale CSS hints `bun run watch:css`
+- **Assets:** server reports static file age; stale CSS hints `bun run build:css`
 - **Request:** shows `X-Request-ID`, current path, and document locale
 
 Click **Hide overlay** to opt out via cookie and reload.
@@ -260,7 +260,6 @@ Run this before opening a PR or after large markup changes.
 | Task | Command |
 |------|---------|
 | Dev server | `bun run dev` |
-| CSS watch (second terminal) | `bun run watch:css` |
 | Production binary | `bun run build` → `./blank` |
 | Regenerate templ only | `bun run templ` |
 | CSS one-shot | `bun run build:css` |

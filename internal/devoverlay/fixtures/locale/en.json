@@ -32,7 +32,7 @@
     "separator": " · ",
     "load_failed": "Failed to load assets",
     "missing_css_hint": "Missing app.css. Run bun run build:css.",
-    "stale_css_hint": "CSS is stale. Run bun run watch:css in a second terminal."
+    "stale_css_hint": "CSS is stale. Run bun run build:css or restart dev."
   },
   "request": {
     "intro": "Use the request id to match browser traffic with Go structured logs.",

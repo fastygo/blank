@@ -17,7 +17,7 @@ bun run dev
 
 Open [http://127.0.0.1:8080/](http://127.0.0.1:8080/) — hero welcome page (composes `layout.RootLayout` + `layout.TopnavLayout`). Second demo route: [http://127.0.0.1:8080/sample](http://127.0.0.1:8080/sample) composes `layout.RootLayout` + `layout.DashboardLayout` directly in the page template.
 
-`bun run dev` runs [`scripts/dev.mjs`](scripts/dev.mjs): one-shot templ/CSS/JS (+ dev overlay when enabled), then the Go server. For CSS watch, use a second terminal: `bun run watch:css`. After `.templ` edits run `bun run templ`. After Go edits, restart dev (`Ctrl+C`, then `bun run dev`). **Ctrl+C** stops the server.
+`bun run dev` runs [`scripts/dev.mjs`](scripts/dev.mjs): one-shot templ/CSS/JS (+ dev overlay when enabled), then the Go server. After `.templ` edits run `bun run templ`. After Tailwind class changes run `bun run build:css`. After Go edits, restart dev (`Ctrl+C`, then `bun run dev`). **Ctrl+C** stops the server.
 
 Static assets (Tailwind CSS, theme script, `@ui8kit/aria` dialog bundle, and the dev overlay bundle) live under [`web/static/`](web/static/) and [`internal/devoverlay/static/`](internal/devoverlay/static/).
 
@@ -28,7 +28,6 @@ Dev tooling is configured in [`fastygo.config.mjs`](fastygo.config.mjs) — **to
 | Command | Purpose |
 |---------|---------|
 | `bun run dev` | One-shot templ/CSS/JS build + Go server |
-| `bun run watch:css` | Tailwind watch (run in a second terminal during dev) |
 | `bun run build` | Production assets + `go build -o blank` |
 | `bun run build:dev-overlay` | Dev-only overlay bundle (`APP_DEV_OVERLAY=1`) |
 | `bun run verify` | Full CI-style check |

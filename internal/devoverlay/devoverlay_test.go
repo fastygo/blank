@@ -238,7 +238,7 @@ func TestAssetStatusStaleHint(t *testing.T) {
 	handler.ServeHTTP(rec, req)
 
 	body := rec.Body.String()
-	if !strings.Contains(body, "watch:css") {
+	if !strings.Contains(body, "build:css") {
 		t.Fatalf("expected stale css hint, got: %s", body)
 	}
 }
