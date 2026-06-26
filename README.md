@@ -1,6 +1,20 @@
 # Blank
 
-Minimal **Go + templ** app shell on [FastyGo Framework](https://github.com/fastygo/framework) and [github.com/fastygo/templ](https://github.com/fastygo/templ). Demo routes: topnav home (`/`) and sidebar app sample (`/sample`), with mobile sheet, dark theme, and En/Ru locale switching. Use it as a neutral starting point for a new app.
+Official **Go + templ** starter shell for the [FastyGo](https://github.com/fastygo) stack: [FastyGo Framework](https://github.com/fastygo/framework) + [`github.com/fastygo/templ`](https://github.com/fastygo/templ). Clone it as a neutral base for a new server-rendered app — no legacy UI8Kit/Elements/Blocks stack.
+
+**Module:** `github.com/fastygo/blank`
+
+Demo routes: topnav home (`/`) and sidebar dashboard sample (`/sample`), with mobile sheet, dark theme, and En/Ru locale switching. Each page composes its own layout layers in `internal/views/`; routing lives in `internal/site/router.go`.
+
+## What this repo is
+
+| Layer | Location | Role |
+|-------|----------|------|
+| Framework wiring | [`internal/serverapp/`](internal/serverapp/), [`cmd/server/`](cmd/server/) | Locales, security, site feature, dev overlay |
+| UI registry | [`internal/ui/`](internal/ui/) | Layout shells, components, blocks (staging tree aligned with FastyGoUI) |
+| Pages | [`internal/views/`](internal/views/) | Route bodies — `views.<Page>(d, f)` with chosen layout layers |
+| Copy & i18n | [`internal/fixtures/locale/`](internal/fixtures/locale/) | Embedded En/Ru strings |
+| Dev tooling | [`fastygo.config.mjs`](fastygo.config.mjs), [`scripts/`](scripts/) | templ/CSS/JS build, ui8px — not routes or layouts |
 
 ## Prerequisites
 
@@ -98,3 +112,9 @@ Runs: `templ generate` → Tailwind build → `build:js` → `ui8px lint` → `v
 4. Run `bun run verify` before landing the change.
 
 See [`docs/for-react-devs.md`](docs/for-react-devs.md) for the full cookbook (Next/shadcn mental model, request flow, dev loop).
+
+## License
+
+MIT — see [LICENSE](LICENSE). Copyright (c) 2026 FastyGo.
+
+Depends on [a-h/templ](https://github.com/a-h/templ), [github.com/fastygo/framework](https://github.com/fastygo/framework), and [github.com/fastygo/templ](https://github.com/fastygo/templ); those projects remain under their respective licenses.
