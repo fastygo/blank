@@ -84,7 +84,7 @@ flowchart LR
 
 Choose by **which `@layout.*` you write at the top of `views/<page>.templ`** — there is no `PageSpec.Layout` and no route adapter.
 
-Architecture details: [`.project/specs/next-shadcn-architecture.md`](../.project/specs/next-shadcn-architecture.md). Refactor spec: [`.project/specs/page-composes-layout.md`](../.project/specs/page-composes-layout.md).
+Architecture details: [`architecture.md`](./architecture.md).
 
 ## Runtime site package
 

@@ -24,13 +24,13 @@ A block is a **stable, complete artifact** — equivalent to a shadcn block unde
 - **Aside / sidebar markup** consumed by a layout layer — put it in `internal/ui/components/appsidebar/` (or another component package).
 - **Anything renaming a layout layer.** Pages compose `layout.RootLayout` + `layout.TopnavLayout` / `layout.DashboardLayout` directly.
 
-The previous `blocks/dashboard/app_shell/` (4 lines wrapping `Shell`) and
-`blocks/dashboard/sidebar_app/` (aside + main wrapper around `Shell`) were
-removed in the **page-composes-layout** refactor — they were adapter
-indirection, not scaffolds. Their content moved to:
+The previous `blocks/dashboard/app_shell/` and `blocks/dashboard/sidebar_app/`
+adapter packages were removed — they were indirection, not scaffolds. Their
+roles moved to:
 
-- `Shell` chrome → `internal/ui/layout/shell.templ` (unchanged)
-- Sidebar geometry → `internal/ui/layout/sidebar_shell.templ`
+- Document frame → `internal/ui/layout/root_layout.templ`
+- Topnav chrome → `internal/ui/layout/topnav_layout.templ`
+- Dashboard chrome → `internal/ui/layout/dashboard_layout.templ`
 - Aside markup → `internal/ui/components/appsidebar/`
 
 ## Domain folders (frozen convention)
@@ -64,4 +64,4 @@ Keep default data inside the block package; `internal/fixtures` only for i18n ov
 - Registry index: [`../README.md`](../README.md)
 - Layout shells: [`../layout/README.md`](../layout/README.md)
 - Local aside component: [`../components/appsidebar/README.md`](../components/appsidebar/README.md)
-- Architecture: [`.project/specs/next-shadcn-architecture.md`](../../.project/specs/next-shadcn-architecture.md)
+- Architecture: [`docs/architecture.md`](../../docs/architecture.md)

@@ -100,7 +100,7 @@ internal/site/router.go  →  internal/views/<Page>  →  @layout.RootLayout  �
 ## Composition rules
 
 - **No raw HTML** layout/content tags — use `templ/ui` (+ `templ/components`).
-- Document shell only: `<!DOCTYPE>`, `<html>`, `<head>`, `<body>`, … in `layout/shell.templ` or `layout/shell_head.templ`.
+- Document shell only: `<!DOCTYPE>`, `<html>`, `<head>`, `<body>`, … in `layout/root_layout.templ` or `layout/shell_head.templ`.
 - Tailwind utilities must pass **`Blank/.ui8px/policy`** (`bun run lint:ui8px`).
 - Covered interaction: `@ui8kit/aria` + `templ/components` Sheet with `Behavior: "ui8kit"` — no custom JS for covered patterns.
 
@@ -112,7 +112,7 @@ internal/site/router.go  →  internal/views/<Page>  →  @layout.RootLayout  �
 - [`widgets/README.md`](widgets/README.md)
 - [`variants/README.md`](variants/README.md)
 - [`utils/README.md`](utils/README.md)
-- Architecture: [`.project/specs/next-shadcn-architecture.md`](../../.project/specs/next-shadcn-architecture.md)
+- Architecture: [`docs/architecture.md`](../../docs/architecture.md)
 - App rules: `@Blank/.cursor/rules/blank-ui-structure.mdc`, `blank-atomic-ui8px.mdc`
 
 ## Source policy

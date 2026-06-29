@@ -49,7 +49,7 @@ Dev tooling is configured in [`fastygo.config.mjs`](fastygo.config.mjs) — **to
 
 ## For React developers
 
-See [`docs/for-react-devs.md`](docs/for-react-devs.md) for a Vite-to-Blank mental model and dev workflow.
+See [`docs/for-react-devs.md`](docs/for-react-devs.md) for a Vite-to-Blank mental model and dev workflow. Maintainer reference: [`docs/architecture.md`](docs/architecture.md).
 
 ## Environment
 
