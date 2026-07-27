@@ -2,8 +2,8 @@ package navigation
 
 import (
 	"github.com/a-h/templ"
-	"github.com/fastygo/templ/ui"
-	uiutils "github.com/fastygo/templ/utils"
+	"github.com/fastygo/blank/internal/kit/ui/button"
+	uiutils "github.com/fastygo/blank/internal/kit/utils"
 )
 
 func (p MobileSheetProps) panelID() string {
@@ -49,12 +49,12 @@ func navItemClasses(active, path string, vertical bool) string {
 	return uiutils.Cn(base, "text-muted-foreground hover:text-foreground")
 }
 
-func navLinkButtonProps(active string, item Item, vertical bool) ui.ButtonProps {
+func navLinkButtonProps(active string, item Item, vertical bool) button.ButtonProps {
 	attrs := templ.Attributes{}
 	if active == item.Path {
 		attrs = uiutils.MergeAttrs(attrs, uiutils.AriaCurrent("page"))
 	}
-	return ui.ButtonProps{
+	return button.ButtonProps{
 		Href:    item.Path,
 		Variant: "unstyled",
 		Class:   navItemClasses(active, item.Path, vertical),

@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/a-h/templ"
-	uiutils "github.com/fastygo/templ/utils"
+	uiutils "github.com/fastygo/blank/internal/kit/utils"
 )
 
 func (p Props) title() string {

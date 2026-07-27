@@ -1,0 +1,39 @@
+---
+description: Retag — raw HTML only in kit/ui + layout; registry uses atoms
+globs: internal/{kit/ui,ui,views}/**/*.templ
+alwaysApply: false
+---
+
+# Templ retag
+
+Composition layers do not own raw HTML. See `.project/retag.md` and ADR 004.
+
+**Hidden-input registry SoT:** `fastygo.config.mjs` → `retag.allow` (not comments alone).
+
+## Zones
+
+- `internal/kit/ui/**` — atoms; raw HTML OK; do not retag / do not hand-edit codegen.
+- `internal/ui/layout/**` — only `html|head|body|meta|title|link|script|noscript|main`.
+- `internal/ui/{blocks,components,widgets}/**`, `internal/views/**` — **0 raw**, except allowlist.
+
+## Allowlist (composition)
+
+- `<input type="hidden">` — file must be listed in `fastygo.config.mjs` `retag.allow`; keep `// retag:allow: hidden input — …` above for readers.
+- Any other raw tag only with `// retag:allow: <reason>` on the previous line (prefer kit extension).
+
+## Prefer
+
+| Instead of | Use |
+| --- | --- |
+| `<div>` | `@box` / `@stack` / `@group` / `@grid` |
+| `<p>` / `<span>` / `<h*>` | `@text` / `@inline` / `@title` |
+| landmarks | `@block` with `Tag` |
+| prose `<a>` | `@link.Link` |
+| CTA `<a>` | `@button.Button` with `Href` |
+
+## Do not
+
+- Add raw layout/typography/controls in registry/views.
+- Add a new hidden field without updating `fastygo.config.mjs`.
+- Increase retag debt; run `bun run retag` before finishing.
+- Enforce ui8px here — brand utilities are intentional until FastyGoUI promotion.

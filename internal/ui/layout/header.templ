@@ -2,23 +2,26 @@ package layout
 
 import (
 	templpkg "github.com/a-h/templ"
+	"github.com/fastygo/blank/internal/kit/ui/block"
+	"github.com/fastygo/blank/internal/kit/ui/box"
+	"github.com/fastygo/blank/internal/kit/ui/button"
+	"github.com/fastygo/blank/internal/kit/ui/group"
 	"github.com/fastygo/blank/internal/ui/components/icon"
 	"github.com/fastygo/blank/internal/ui/components/navigation"
-	"github.com/fastygo/templ/ui"
 )
 
 templ Header(props HeaderProps) {
-	@ui.Block(ui.BlockProps{
+	@block.Block(block.BlockProps{
 		Tag: "header",
 		Class: "grid h-15 shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2 border-b border-border px-4 max-md:sticky max-md:top-0 max-md:z-50 max-md:backdrop-blur max-md:bg-background/80",
 	}) {
-		@ui.Box(ui.BoxProps{Class: "col-start-1 justify-self-start"}) {
-			@ui.Button(brandLogoButtonProps(props.BrandName, props.Navigation)) {
+		@box.Box(box.BoxProps{Class: "col-start-1 justify-self-start"}) {
+			@button.Button(brandLogoButtonProps(props.BrandName, props.Navigation)) {
 				{ shellBrand(props.BrandName) }
 			}
 		}
 		if len(props.NavItems) > 0 {
-			@ui.Group(ui.GroupProps{
+			@block.Block(block.BlockProps{
 				Tag:   "nav",
 				Class: "col-start-2 hidden items-center justify-center gap-1 justify-self-center md:flex",
 				Attrs: templpkg.Attributes{"aria-label": props.Navigation.MainNavigation},
@@ -29,11 +32,11 @@ templ Header(props HeaderProps) {
 				})
 			}
 		}
-		@ui.Group(ui.GroupProps{Class: "col-start-3 flex shrink-0 items-center justify-end gap-2 justify-self-end"}) {
+		@group.Group(group.GroupProps{Class: "col-start-3 flex shrink-0 items-center justify-end gap-2 justify-self-end"}) {
 			if props.Trailing != nil {
 				@props.Trailing
 			}
-			@ui.Button(themeToggleButtonProps(props.ThemeToggle)) {
+			@button.Button(themeToggleButtonProps(props.ThemeToggle)) {
 				@icon.Icon(icon.IconProps{
 					Name:  "moon",
 					Size:  "sm",

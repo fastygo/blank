@@ -6,20 +6,19 @@
     "@ui8kit/aria": "^0.1.0"
   },
   "scripts": {
-    "dev": "node scripts/dev.mjs",
-    "build": "node scripts/build.mjs",
-    "build:css": "node scripts/build-css.mjs",
+    "build:css": "bun scripts/build-css.mjs",
     "build:js": "node scripts/build-js.mjs",
     "build:dev-overlay": "node scripts/build-dev-overlay.mjs",
-    "templ": "node scripts/templ-generate.mjs",
-    "lint:ui8px": "node scripts/lint-ui8px.mjs",
-    "validate:aria": "node scripts/validate-aria.mjs",
-    "verify": "node scripts/verify.mjs",
-    "go": "bun run dev"
+    "dev": "bun run build:css && bun run build:js && bun run build:dev-overlay && bash ./scripts/dev.sh",
+    "g": "bun run dev",
+    "retag": "bash ./scripts/retag-check.sh",
+    "test": "bash ./scripts/test.sh",
+    "config": "bun scripts/config-get.mjs --json",
+    "templ": "templ generate ./...",
+    "verify": "bun run templ && bun run build:css && bun run build:js && bun run retag && go test ./..."
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.1",
-    "tailwindcss": "^4.3.1",
-    "ui8px": "0.2.4"
+    "tailwindcss": "^4.3.1"
   }
 }

@@ -10,9 +10,12 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	templpkg "github.com/a-h/templ"
+	"github.com/fastygo/blank/internal/kit/ui/block"
+	"github.com/fastygo/blank/internal/kit/ui/box"
+	"github.com/fastygo/blank/internal/kit/ui/button"
+	"github.com/fastygo/blank/internal/kit/ui/group"
 	"github.com/fastygo/blank/internal/ui/components/icon"
 	"github.com/fastygo/blank/internal/ui/components/navigation"
-	"github.com/fastygo/templ/ui"
 )
 
 func Header(props HeaderProps) templ.Component {
@@ -75,7 +78,7 @@ func Header(props HeaderProps) templ.Component {
 					var templ_7745c5c3_Var5 string
 					templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(shellBrand(props.BrandName))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layout/header.templ`, Line: 17, Col: 33}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layout/header.templ`, Line: 20, Col: 33}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 					if templ_7745c5c3_Err != nil {
@@ -83,13 +86,13 @@ func Header(props HeaderProps) templ.Component {
 					}
 					return nil
 				})
-				templ_7745c5c3_Err = ui.Button(brandLogoButtonProps(props.BrandName, props.Navigation)).Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = button.Button(brandLogoButtonProps(props.BrandName, props.Navigation)).Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				return nil
 			})
-			templ_7745c5c3_Err = ui.Box(ui.BoxProps{Class: "col-start-1 justify-self-start"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = box.Box(box.BoxProps{Class: "col-start-1 justify-self-start"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -119,7 +122,7 @@ func Header(props HeaderProps) templ.Component {
 					}
 					return nil
 				})
-				templ_7745c5c3_Err = ui.Group(ui.GroupProps{
+				templ_7745c5c3_Err = block.Block(block.BlockProps{
 					Tag:   "nav",
 					Class: "col-start-2 hidden items-center justify-center gap-1 justify-self-center md:flex",
 					Attrs: templpkg.Attributes{"aria-label": props.Navigation.MainNavigation},
@@ -177,7 +180,7 @@ func Header(props HeaderProps) templ.Component {
 					}
 					return nil
 				})
-				templ_7745c5c3_Err = ui.Button(themeToggleButtonProps(props.ThemeToggle)).Render(templ.WithChildren(ctx, templ_7745c5c3_Var8), templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = button.Button(themeToggleButtonProps(props.ThemeToggle)).Render(templ.WithChildren(ctx, templ_7745c5c3_Var8), templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -197,13 +200,13 @@ func Header(props HeaderProps) templ.Component {
 				}
 				return nil
 			})
-			templ_7745c5c3_Err = ui.Group(ui.GroupProps{Class: "col-start-3 flex shrink-0 items-center justify-end gap-2 justify-self-end"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var7), templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = group.Group(group.GroupProps{Class: "col-start-3 flex shrink-0 items-center justify-end gap-2 justify-self-end"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var7), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = ui.Block(ui.BlockProps{
+		templ_7745c5c3_Err = block.Block(block.BlockProps{
 			Tag:   "header",
 			Class: "grid h-15 shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2 border-b border-border px-4 max-md:sticky max-md:top-0 max-md:z-50 max-md:backdrop-blur max-md:bg-background/80",
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)

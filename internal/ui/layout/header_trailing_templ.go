@@ -9,8 +9,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"github.com/fastygo/blank/internal/kit/ui/group"
 	"github.com/fastygo/blank/internal/ui/components/toggles"
-	"github.com/fastygo/templ/ui"
 )
 
 // HeaderTrailing renders the locale switch in the header bar.
@@ -53,7 +53,7 @@ func HeaderTrailing(language toggles.LanguageSwitchProps) templ.Component {
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = ui.Group(ui.GroupProps{Class: "flex shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-3"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = group.Group(group.GroupProps{Class: "flex shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-3"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -2,7 +2,9 @@ package navigation
 
 import (
 	cmp "github.com/fastygo/templ/components"
-	"github.com/fastygo/templ/ui"
+	"github.com/fastygo/blank/internal/kit/ui/block"
+	"github.com/fastygo/blank/internal/kit/ui/button"
+	"github.com/fastygo/blank/internal/kit/ui/inline"
 	"github.com/fastygo/blank/internal/ui/components/icon"
 )
 
@@ -13,11 +15,13 @@ templ Nav(props NavProps) {
 }
 
 templ navLink(active string, item Item, vertical bool) {
-	@ui.Button(navLinkButtonProps(active, item, vertical)) {
+	@button.Button(navLinkButtonProps(active, item, vertical)) {
 		if vertical && item.Icon != "" {
 			@icon.Icon(icon.IconProps{Name: item.Icon, Size: "sm"})
 		}
-		@ui.Text(ui.TextProps{Tag: "span", Class: "min-w-0"}, item.Label)
+		@inline.Inline(inline.InlineProps{Class: "min-w-0"}) {
+			{ item.Label }
+		}
 	}
 }
 
@@ -50,7 +54,7 @@ templ MobileSheet(props MobileSheetProps) {
 					✕
 				}
 			}
-			@ui.Stack(ui.StackProps{Tag: "nav", Class: "mt-4 w-full gap-1 p-2"}) {
+			@block.Block(block.BlockProps{Tag: "nav", Class: "mt-4 w-full gap-1 p-2"}) {
 				@Nav(NavProps{Items: props.Items, Active: props.Active, Vertical: true})
 			}
 		}

@@ -9,8 +9,9 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"github.com/fastygo/blank/internal/kit/ui/block"
+	"github.com/fastygo/blank/internal/kit/ui/box"
 	"github.com/fastygo/blank/internal/ui/components/navigation"
-	"github.com/fastygo/templ/ui"
 )
 
 // TopnavLayout renders header, main slot, footer, and mobile navigation sheet.
@@ -82,7 +83,7 @@ func TopnavLayout(props TopnavLayoutProps) templ.Component {
 				}
 				return nil
 			})
-			templ_7745c5c3_Err = ui.Block(ui.BlockProps{Tag: "main", Class: "flex w-full min-w-0 max-w-full flex-1 flex-col"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = block.Block(block.BlockProps{Tag: "main", Class: "flex w-full min-w-0 max-w-full flex-1 flex-col"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -96,7 +97,7 @@ func TopnavLayout(props TopnavLayoutProps) templ.Component {
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = ui.Box(ui.BoxProps{Class: "flex min-h-screen w-full flex-col"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = box.Box(box.BoxProps{Class: "flex min-h-screen w-full flex-col"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -19,7 +19,8 @@ internal/ui/
   blocks/       # registry:blocks — marketing/hero/, … (full scaffolds)
   widgets/      # registry:widgets — UI + behavior (staging stub)
   variants/     # registry:variants — wireframe utility maps (staging stub)
-  utils/        # registry:utils — app helpers on templ/utils
+  utils/        # registry:utils — app helpers on kit/utils
+internal/kit/   # atoms (ui/*) + utils — not the app registry
 internal/views/
   <page>.templ  # route page — views.<Page>(d layout.Data, f fixtures.Locale)
 internal/site/

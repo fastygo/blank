@@ -4,8 +4,8 @@ import (
 	"strings"
 
 	"github.com/a-h/templ"
-	"github.com/fastygo/templ/ui"
-	uiutils "github.com/fastygo/templ/utils"
+	"github.com/fastygo/blank/internal/kit/ui/button"
+	uiutils "github.com/fastygo/blank/internal/kit/utils"
 )
 
 func shellBrand(name string) string {
@@ -41,9 +41,9 @@ func themeToggleSwitchToLightLabel(value string) string {
 	return strings.TrimSpace(value)
 }
 
-func brandLogoButtonProps(brandName string, nav NavigationProps) ui.ButtonProps {
+func brandLogoButtonProps(brandName string, nav NavigationProps) button.ButtonProps {
 	name := shellBrand(brandName)
-	return ui.ButtonProps{
+	return button.ButtonProps{
 		Href:    "/",
 		Variant: "unstyled",
 		Class:   "text-base font-semibold tracking-tight text-foreground transition-colors hover:text-foreground/80",
@@ -53,8 +53,8 @@ func brandLogoButtonProps(brandName string, nav NavigationProps) ui.ButtonProps 
 	}
 }
 
-func themeToggleButtonProps(props ThemeToggleProps) ui.ButtonProps {
-	return ui.ButtonProps{
+func themeToggleButtonProps(props ThemeToggleProps) button.ButtonProps {
+	return button.ButtonProps{
 		ID:      "ui8kit-theme-toggle",
 		Type:    "button",
 		Variant: "unstyled",

@@ -22,6 +22,7 @@ There is **no** `PageSpec.Layout` field and **no** route adapter layer (`views.*
 
 | Term | Blank location | Role |
 |------|----------------|------|
+| **Kit atoms** | `internal/kit/ui/*` | Codegen primitives (Button, Box, Text, …) |
 | **Root layout** | `internal/ui/layout/root_layout.templ` → `layout.RootLayout` | Document frame only: `html`, `head`, `body`, asset hooks |
 | **Topnav layout** | `internal/ui/layout/topnav_layout.templ` → `layout.TopnavLayout` | Header, main slot, footer, mobile sheet |
 | **Dashboard layout** | `internal/ui/layout/dashboard_layout.templ` → `layout.DashboardLayout` | `TopnavLayout` + desktop aside column |
@@ -43,7 +44,7 @@ There is **no** `PageSpec.Layout` field and **no** route adapter layer (`views.*
 | `SidebarProvider + SidebarInset` | sidebar primitives | `layout.DashboardLayout` |
 | `components/app-sidebar.tsx` | local aside | `internal/ui/components/appsidebar/` |
 | `app/**/page.tsx` | page content | `internal/views/<page>.templ` |
-| `components/ui/*` | primitives | `github.com/fastygo/templ/ui` + `templ/components` |
+| `components/ui/*` | primitives | `internal/kit/ui` (+ `templ/components` Sheet interim) |
 | App components | local UI | `internal/ui/components/*` |
 | shadcn blocks | copy-paste scaffolds | `internal/ui/blocks/*` |
 | Route table | file-based routes | `internal/site/router.go` (`PageSpec`) |

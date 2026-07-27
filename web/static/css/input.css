@@ -1,14 +1,16 @@
 @import "tailwindcss";
+
 @source "../../internal/views/**/*.templ";
 @source "../../internal/views/**/*.go";
 @source "../../internal/ui/**/*.templ";
 @source "../../internal/ui/**/*.go";
-@source "../../vendor/github.com/fastygo/templ/ui/**/*.templ";
-@source "../../vendor/github.com/fastygo/templ/ui/**/*_templ.go";
+@source "../../internal/kit/ui/**/*.templ";
+@source "../../internal/kit/ui/**/*.variants.json";
 @source "../../vendor/github.com/fastygo/templ/components/**/*.templ";
 @source "../../vendor/github.com/fastygo/templ/components/**/*_templ.go";
 
-@import "./tweakcn.css";
+@import "./tokens.css";
+@import "./theme-blank.css";
 @import "./fonts.css";
 @import "./latty-icons.css";
 

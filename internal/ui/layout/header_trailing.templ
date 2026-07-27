@@ -1,13 +1,13 @@
 package layout
 
 import (
+	"github.com/fastygo/blank/internal/kit/ui/group"
 	"github.com/fastygo/blank/internal/ui/components/toggles"
-	"github.com/fastygo/templ/ui"
 )
 
 // HeaderTrailing renders the locale switch in the header bar.
 templ HeaderTrailing(language toggles.LanguageSwitchProps) {
-	@ui.Group(ui.GroupProps{Class: "flex shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-3"}) {
+	@group.Group(group.GroupProps{Class: "flex shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-3"}) {
 		@toggles.LanguageSwitch(language)
 	}
 }

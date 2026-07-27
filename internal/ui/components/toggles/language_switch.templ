@@ -1,21 +1,29 @@
 package toggles
 
-import "github.com/fastygo/templ/ui"
+import (
+	"github.com/fastygo/blank/internal/kit/ui/button"
+	"github.com/fastygo/blank/internal/kit/ui/group"
+	"github.com/fastygo/blank/internal/kit/ui/inline"
+)
 
 templ LanguageSwitch(data LanguageSwitchProps) {
 	if len(data.Items) > 0 {
-		@ui.Group(ui.GroupProps{
+		@group.Group(group.GroupProps{
 			Class: "inline-flex items-center gap-1 text-xs font-medium text-muted-foreground",
 			Attrs: languageSwitchAttrs(data),
 		}) {
 			for i, item := range data.Items {
 				if i > 0 {
-					@ui.Text(ui.TextProps{Tag: "span", Class: "select-none text-muted-foreground/60"}, "/")
+					@inline.Inline(inline.InlineProps{Class: "select-none text-muted-foreground/60"}) {
+						{ "/" }
+					}
 				}
 				if item.Active {
-					@ui.Text(ui.TextProps{Tag: "span", Class: "text-foreground"}, item.Label)
+					@inline.Inline(inline.InlineProps{Class: "text-foreground"}) {
+						{ item.Label }
+					}
 				} else {
-					@ui.Button(ui.ButtonProps{
+					@button.Button(button.ButtonProps{
 						Href:      item.Href,
 						Variant:   "unstyled",
 						Class:     "rounded-sm px-0.5 transition-colors hover:text-foreground",

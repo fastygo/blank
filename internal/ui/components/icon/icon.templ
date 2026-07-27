@@ -1,6 +1,9 @@
 package icon
 
-import templpkg "github.com/a-h/templ"
+import (
+	templpkg "github.com/a-h/templ"
+	"github.com/fastygo/blank/internal/kit/ui/inline"
+)
 
 type IconProps struct {
 	Name  string
@@ -11,11 +14,9 @@ type IconProps struct {
 }
 
 templ Icon(p IconProps) {
-	<span
-		if p.ID != "" {
-			id={ p.ID }
-		}
-		class={ iconClasses(p) }
-		{ p.Attrs... }
-	></span>
+	@inline.Inline(inline.InlineProps{
+		Class: iconClasses(p),
+		Attrs: iconAttrs(p),
+	}) {
+	}
 }

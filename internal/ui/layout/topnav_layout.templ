@@ -1,14 +1,15 @@
 package layout
 
 import (
+	"github.com/fastygo/blank/internal/kit/ui/block"
+	"github.com/fastygo/blank/internal/kit/ui/box"
 	"github.com/fastygo/blank/internal/ui/components/navigation"
-	"github.com/fastygo/templ/ui"
 )
 
 // TopnavLayout renders header, main slot, footer, and mobile navigation sheet.
 // MobileSheet lives here (not in RootLayout) so trigger and panel stay co-located with Header.
 templ TopnavLayout(props TopnavLayoutProps) {
-	@ui.Box(ui.BoxProps{Class: "flex min-h-screen w-full flex-col"}) {
+	@box.Box(box.BoxProps{Class: "flex min-h-screen w-full flex-col"}) {
 		@Header(HeaderProps{
 			BrandName:       props.Brand,
 			NavItems:        props.NavItems,
@@ -18,7 +19,7 @@ templ TopnavLayout(props TopnavLayoutProps) {
 			Trailing:        props.Trailing,
 			ThemeToggle:     props.Theme,
 		})
-		@ui.Block(ui.BlockProps{Tag: "main", Class: "flex w-full min-w-0 max-w-full flex-1 flex-col"}) {
+		@block.Block(block.BlockProps{Tag: "main", Class: "flex w-full min-w-0 max-w-full flex-1 flex-col"}) {
 			{ children... }
 		}
 		@Footer(props.FooterText)

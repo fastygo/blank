@@ -47,7 +47,7 @@ Do **not** add `internal/ui/blocks/layout/` — use domain folders under `blocks
 
 ## Rules
 
-- Compose with `github.com/fastygo/templ/ui` and `templ/components` where appropriate.
+- Compose with `github.com/fastygo/blank/internal/kit/ui` and `templ/components` where appropriate.
 - Preserve `data-ui8kit-*` hooks for `theme.js` / `ui8kit.js` / `@ui8kit/aria` (see `blank-aria.mdc`).
 - `internal/site/layout_data.go` calls `layout.BuildData` — routing stays in `internal/site/`.
 - **No** `views.*From` wrapper functions. Pages are `views.<Page>(d, f)` registered directly in the router.

@@ -1,7 +1,7 @@
 # `registry:widgets`
 
 **UI + behavior** — loading state, user actions, API calls, timers, glue to app services.
-Composes `components`, `blocks`, and `github.com/fastygo/templ/*` internally.
+Composes `components`, `blocks`, and `internal/kit/ui` internally.
 
 Widgets are registry artifacts with **orchestration**. They are not HTTP handlers and do not own routes.
 

@@ -48,7 +48,7 @@ existing domain for new full scaffolds.
 
 ## Rules
 
-- Compose with `github.com/fastygo/templ/ui` and `templ/components` — **no raw HTML tags**.
+- Compose with `github.com/fastygo/blank/internal/kit/ui` and `templ/components` — **no raw HTML tags**.
 - Tailwind + semantic tokens only; pass **ui8px** policy.
 - **Do not** `require github.com/fastygo/blocks` during active staging in this repo.
 - Interactive patterns: `data-ui8kit` + static ARIA + manifest (see `blank-aria.mdc`); prefer `templ/components` Sheet with `Behavior: "ui8kit"`.

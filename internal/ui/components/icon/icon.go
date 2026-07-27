@@ -1,6 +1,9 @@
 package icon
 
-import uiutils "github.com/fastygo/templ/utils"
+import (
+	"github.com/a-h/templ"
+	uiutils "github.com/fastygo/blank/internal/kit/utils"
+)
 
 func iconClasses(p IconProps) string {
 	sizeClass := "h-4 w-4"
@@ -15,4 +18,15 @@ func iconClasses(p IconProps) string {
 		sizeClass = "h-6 w-6"
 	}
 	return uiutils.Cn("inline-block shrink-0", "latty", "latty-"+p.Name, sizeClass, p.Class)
+}
+
+func iconAttrs(p IconProps) templ.Attributes {
+	attrs := templ.Attributes{}
+	for k, v := range p.Attrs {
+		attrs[k] = v
+	}
+	if p.ID != "" {
+		attrs["id"] = p.ID
+	}
+	return attrs
 }

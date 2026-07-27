@@ -9,8 +9,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"github.com/fastygo/blank/internal/kit/ui/box"
 	"github.com/fastygo/blank/internal/ui/components/appsidebar"
-	"github.com/fastygo/templ/ui"
 )
 
 // DashboardLayout wraps TopnavLayout with a desktop aside beside the main column.
@@ -86,13 +86,13 @@ func DashboardLayout(props DashboardLayoutProps) templ.Component {
 					}
 					return nil
 				})
-				templ_7745c5c3_Err = ui.Box(ui.BoxProps{Class: "flex min-w-0 flex-1 flex-col"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = box.Box(box.BoxProps{Class: "flex min-w-0 flex-1 flex-col"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				return nil
 			})
-			templ_7745c5c3_Err = ui.Box(ui.BoxProps{Class: "flex min-h-0 w-full flex-1 flex-col md:flex-row"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = box.Box(box.BoxProps{Class: "flex min-h-0 w-full flex-1 flex-col md:flex-row"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
